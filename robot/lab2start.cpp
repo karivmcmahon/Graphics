@@ -211,14 +211,14 @@ void init(GLWrapper *glw)
 
 
 		// SEPERATE LOOP FOR NORMAL AFTER ALL POINTS RETRIEVED ??
-		glm::vec3 normal = (cos(0.75f) * glm::vec3(cos(angle), 0, sin(angle)) + sin(angle) * glm::vec3(0, 1, 0));
+		glm::vec3 normal = (cos(0.75f) * glm::vec3(cos((angle * twicePi / 20) * 3.0f)), 0, sin((angle * twicePi / 20) * 3.0f) + sin((angle * twicePi / 20) * 3.0f) * glm::vec3(0, 1, 0));
 		coneNormals.push_back(normal[0]);
 		coneNormals.push_back(normal[1]);
 		coneNormals.push_back(normal[2]);
 
 
-		conePositions.push_back(x + (cos(angle * twicePi / 20) * 5.0f));
-		conePositions.push_back(y + (sin(angle * twicePi / 20) * 5.0f));
+		conePositions.push_back(x + (cos(angle * twicePi / 20) * 3.0f));
+		conePositions.push_back(y + (sin(angle * twicePi / 20) * 3.0f));
 		conePositions.push_back(0.0f);
 		
 
@@ -242,14 +242,14 @@ void init(GLWrapper *glw)
 	{
 
 
-		glm::vec3 normal = (cos(0.0f) * glm::vec3(cos(angle), 0, sin(angle)) + sin(angle) * glm::vec3(0, 1, 0));
+		glm::vec3 normal = (cos(0.0f) * glm::vec3(cos((angle * twicePi / 20) * 3.0f)), 0, sin((angle * twicePi / 20) * 3.0f) + sin((angle * twicePi / 20) * 3.0f) * glm::vec3(0, 1, 0));
 		coneNormals.push_back(normal[0]);
 		coneNormals.push_back(normal[1]);
 	     coneNormals.push_back(normal[2]);
 
 
-		 conePositions.push_back(x + (cos(angle * twicePi / 20) * 5.0f));
-		 conePositions.push_back(y + (sin(angle * twicePi / 20) * 5.0f));
+		 conePositions.push_back(x + (cos(angle * twicePi / 20) * 3.0f));
+		 conePositions.push_back(y + (sin(angle * twicePi / 20) * 3.0f));
 		conePositions.push_back(0.0f);
 		
 
@@ -349,7 +349,7 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	model.pop();
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	// Model matrix : an identity matrix (model will be at the origin)
 	model.push(glm::mat4(1.0f));
