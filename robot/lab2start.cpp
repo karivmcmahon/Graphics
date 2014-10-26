@@ -28,6 +28,8 @@ if you prefer */
 #include <cmath>
 
 GLuint positionBufferObject, normalsBufferObject, colourObject, coneBufferObj, coneColourObj, coneNormalObj;
+GLuint sphereBufferObject, sphereNormals, sphereColours;
+GLuint elementbuffer;
 GLuint program;
 GLuint vao;
 
@@ -40,6 +42,13 @@ std::stack<glm::mat4> model;
 std::vector<GLfloat> conePositions;
 std::vector<GLfloat> coneColours;
 std::vector<GLfloat> coneNormals;
+GLuint drawmode;			// Defines drawing mode of sphere as points, lines or filled polygons
+GLuint colourmode;
+GLuint numlats, numlongs;	//Define the resolution of the sphere object
+GLuint numspherevertices;
+void makeUnitSphere(GLfloat *pVertices, GLuint numlats, GLuint numlongs);
+GLuint makeSphereVBO(GLuint numlats, GLuint numlongs);
+void drawSphere();
 
 /*
 This function is called before entering the main rendering loop.
@@ -55,6 +64,10 @@ void init(GLWrapper *glw)
 	xr = 1.0f;
 	x = 0;
 	y = 0;
+	colourmode = 0;
+	numlats = 20;		// Number of latitudes in our sphere
+	numlongs = 20;		// Number of longitudes in our sphere
+
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
 
@@ -283,6 +296,8 @@ void init(GLWrapper *glw)
 	glBufferData(GL_ARRAY_BUFFER, coneNormals.size(), &coneNormals[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	numspherevertices = makeSphereVBO(numlats, numlongs);
+
 	try
 	{
 		program = glw->LoadShader("lab2.vert", "lab2.frag");
@@ -374,8 +389,8 @@ void display()
 	// Model matrix : an identity matrix (model will be at the origin)
 	model.push(glm::mat4(1.0f));
 	model.top() = glm::rotate(model.top(), -anglex, glm::vec3(0, 1, 0));
-	model.top() = glm::scale(model.top(), glm::vec3(-0.2, 1, 0.3));
-	model.top() = glm::translate(model.top(), glm::vec3(-1, -0.12, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(-0.2, 0.8, 0.3));
+	model.top() = glm::translate(model.top(), glm::vec3(-1, -0.25, 0)); //rotating in clockwise direction around x-axis
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	model.pop();
@@ -384,8 +399,8 @@ void display()
 	// Model matrix : an identity matrix (model will be at the origin)
 	model.push(glm::mat4(1.0f));
 	model.top() = glm::rotate(model.top(), -anglex, glm::vec3(0, 1, 0));
-	model.top() = glm::scale(model.top(), glm::vec3(-0.2, 1, 0.3));
-	model.top() = glm::translate(model.top(), glm::vec3(1.1, -0.12, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(-0.2, 0.8, 0.3));
+	model.top() = glm::translate(model.top(), glm::vec3(1.05, -0.25, 0)); //rotating in clockwise direction around x-axis
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	model.pop();
@@ -457,8 +472,6 @@ void display()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
 	model.push(glm::mat4(1.0f));
-	//model.top() = glm::rotate(model.top(), xr, glm::vec3(1, 0, 0));
-	//model.top() = glm::rotate(model.top(), xr, glm::vec3(0, 1, 0));
     model.top() = glm::translate(model.top(), glm::vec3(0, 0.6, 0)); //rotating in clockwise direction around x-axis
 	
 	model.top() = glm::scale(model.top(), glm::vec3(0.02, 0.2, 0.3));
@@ -475,17 +488,39 @@ void display()
 	glFrontFace(GL_CW);
 
 	model.push(glm::mat4(1.0f));
-	//model.top() = glm::rotate(model.top(), xr, glm::vec3(1, 0, 0));
-	//model.top() = glm::rotate(model.top(), xr, glm::vec3(0, 1, 0));
 	model.top() = glm::translate(model.top(), glm::vec3(0, 0.6, 0)); //rotating in clockwise direction around x-axis
 	model.top() = glm::scale(model.top(), glm::vec3(0.02, 0.2, 0.3));
 	model.top() = glm::rotate(model.top(), -anglex, glm::vec3(0, 1, 0));
 	model.top() = glm::rotate(model.top(), -angle_x, glm::vec3(1, 0, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	model.pop();
+	glDrawArrays(GL_TRIANGLE_FAN, 1086, 2172);
+
+	model.push(glm::mat4(1.0f));
+	model.top() = glm::rotate(model.top(), -anglex, glm::vec3(0, 1, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(-0.20, 0.06, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 	
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	model.pop();
-   glDrawArrays(GL_TRIANGLE_FAN, 1086, 2172);
+	/* Draw our sphere */
+	drawSphere();
+
+	model.push(glm::mat4(1.0f));
+	model.top() = glm::rotate(model.top(), -anglex, glm::vec3(0, 1, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(0.20, 0.06, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
+	
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	model.pop();
+	/* Draw our sphere */
+	drawSphere();
+	
+	
+	
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
@@ -556,6 +591,167 @@ int main(int argc, char* argv[])
 
 	delete(glw);
 	return 0;
+}
+
+/* Make a sphere from two triangle fans (one at each pole) and triangle strips along latitudes */
+GLuint makeSphereVBO(GLuint numlats, GLuint numlongs)
+{
+	GLuint i, j;
+	/* Calculate the number of vertices required in hemisphere */
+	GLuint numvertices = 2 + ((numlats - 1) * (numlongs + 1));
+	GLfloat* pVertices = new GLfloat[numvertices * 3];
+	GLfloat* pColours = new GLfloat[numvertices * 4];
+	makeUnitSphere(pVertices, numlats, numlongs);
+
+	/* Define colours as the x,y,z components of the sphere vertices */
+	for (i = 0; i < numvertices; i++)
+	{
+		pColours[i * 4] = pVertices[i * 3];
+		pColours[i * 4 + 1] = pVertices[i * 3 + 1];
+		pColours[i * 4 + 2] = pVertices[i * 3 + 2];
+		pColours[i * 4 + 3] = 1.f;
+	}
+
+	/* Generate the vertex buffer object */
+	glGenBuffers(1, &sphereBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, sphereBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * numvertices * 3, pVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Store the normals in a buffer object */
+	glGenBuffers(1, &sphereNormals);
+	glBindBuffer(GL_ARRAY_BUFFER, sphereNormals);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)* numvertices * 3, pVertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Store the colours in a buffer object */
+	glGenBuffers(1, &sphereColours);
+	glBindBuffer(GL_ARRAY_BUFFER, sphereColours);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)* numvertices * 4, pColours, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Calculate the number of indices in our index array and allocate memory for it */
+	GLuint numindices = ((numlongs * 2) + 2) * (numlats - 1) + (numlongs + 2);
+	GLuint* pindices = new GLuint[numindices];
+
+	// fill "indices" to define triangle strips
+	GLuint index = 0;		// Current index
+	GLuint start = 1;		// Start index for each latitude row
+	for (j = 0; j < numlats - 2; j++)
+	{
+		for (i = 0; i < numlongs; i++)
+		{
+			pindices[index++] = start + i;
+			pindices[index++] = start + i + numlongs;
+		}
+		pindices[index++] = start; // close the triangle strip loop by going back to the first vertex in the loop
+		pindices[index++] = start + numlongs; // close the triangle strip loop by going back to the first vertex in the loop
+
+		start += numlongs;
+	}
+
+	// Define indices for the last triangle fan for the south pole region
+	pindices[index++] = numvertices - 1;
+	for (i = 0; i < numlongs; i++) pindices[index++] = numvertices - 1 - i;
+
+	// Generate a buffer for the indices
+	glGenBuffers(1, &elementbuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, numindices * sizeof(GLuint), pindices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	delete pindices;
+	delete pColours;
+	delete pVertices;
+	return numvertices;
+}
+
+
+/************************************************************/
+/* Functions define primitive objects						*/
+void makeUnitSphere(GLfloat *pVertices, GLuint numlats, GLuint numlongs)
+{
+	GLfloat DEG_TO_RADIANS = 3.141592f / 180.f;
+	GLuint vnum = 0;
+	GLfloat x, y, z, lat_radians, lon_radians;
+
+	/* Define north pole */
+	pVertices[0] = 0; pVertices[1] = 0; pVertices[2] = 1.f;
+	vnum++;
+
+	GLfloat latstep = 180.f / numlats;
+	GLfloat longstep = 360.f / numlongs;
+
+	/* Define vertices along latitude lines */
+	for (GLfloat lat = 90.f - latstep; lat > -90.f; lat -= latstep)
+	{
+		lat_radians = lat * DEG_TO_RADIANS;
+		for (GLfloat lon = -180.f; lon < 180.f; lon += longstep)
+		{
+			lon_radians = lon * DEG_TO_RADIANS;
+
+			x = cos(lat_radians) * cos(lon_radians);
+			y = cos(lat_radians) * sin(lon_radians);
+			z = sin(lat_radians);
+
+			/* Define the vertex */
+			pVertices[vnum * 3] = x; pVertices[vnum * 3 + 1] = y; pVertices[vnum * 3 + 2] = z;
+			vnum++;
+		}
+	}
+	/* Define south pole */
+	pVertices[vnum * 3] = 0; pVertices[vnum * 3 + 1] = 0; pVertices[vnum * 3 + 2] = -1.f;
+}
+
+/* Draws the sphere form the previously defined vertex and index buffers */
+void drawSphere()
+{
+	GLuint i;
+
+	/* Draw the vertices as GL_POINTS */
+	glBindBuffer(GL_ARRAY_BUFFER, sphereBufferObject);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(0);
+
+	/* Bind the sphere normals */
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, sphereNormals);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+	/* Bind the sphere colours */
+	glBindBuffer(GL_ARRAY_BUFFER, sphereColours);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glPointSize(3.f);
+
+	// Enable this line to show model in wireframe
+	if (drawmode == 1)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	if (drawmode == 2)
+	{
+		glDrawArrays(GL_POINTS, 0, numspherevertices);
+	}
+	else
+	{
+		/* Draw the pole regions as triangle fans */
+		glDrawArrays(GL_TRIANGLE_FAN, 0, numlongs + 1);
+
+		/* Draw the latitude triangle strips */
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
+
+		GLuint lat_offset = 4 * (numlongs * 2 + 2);
+
+		for (i = 0; i < numlats - 2; i++)
+		{
+			glDrawElements(GL_TRIANGLE_STRIP, numlongs * 2 + 2, GL_UNSIGNED_INT, (GLvoid*)(lat_offset*i));
+		}
+
+		glDrawElements(GL_TRIANGLE_FAN, numlongs + 1, GL_UNSIGNED_INT, (GLvoid*)(lat_offset*i + 1));
+	}
 }
 
 
