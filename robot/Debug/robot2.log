@@ -1,4 +1,4 @@
-﻿Build started 26/10/2014 16:34:31.
+﻿Build started 27/10/2014 11:50:43.
      1>Project "C:\Users\Kari\Documents\Graphics\robot\robot2.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (robot.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
@@ -14,4 +14,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.56
+Time Elapsed 00:00:02.29

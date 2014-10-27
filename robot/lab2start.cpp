@@ -66,7 +66,7 @@ void init(GLWrapper *glw)
 	angle_x = 90;
 	anglex = 0;
 	angle_x_inc = 0;
-	armangle = 180;
+	armangle = 0;
 	armymoving = 0;
 	shoulderymoving = 0;
 	elbowmoving = 0;
@@ -388,7 +388,7 @@ void drawRobot()
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 276);
 	model.pop();
-	
+
 
 	glFrontFace(GL_CW);
 
@@ -403,13 +403,13 @@ void drawRobot()
 	model.pop();
 
 	disableBuffers();
-	
 
-	
-	
+
+
+
 	setupCubeBuffers();
 	//HEAD
-    model.push(model.top());
+	model.push(model.top());
 	model.top() = glm::translate(model.top(), glm::vec3(0, 0.50, 0)); //rotating in clockwise direction around x-axis
 	model.top() = glm::scale(model.top(), glm::vec3(0.8, 0.8, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -435,38 +435,71 @@ void drawRobot()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
 
+	
+
+	//Transform for left arm
+	model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(-0.20, 0.10, 0)); //rotating in clockwise direction around x-axis
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	disableBuffers();
 
-	
-	
-	
+
+	//LEFT ELBOW
 	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(-0.20, 0.08, 0)); //rotating in clockwise direction around x-axis
 	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	drawSphere();
 	model.pop();
-	setupCubeBuffers();
 	
-	////LEFT ARM
+	//LEFT ARM
+	setupCubeBuffers();
 	model.push(model.top());
 	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(0, 0, 1));
-	model.top() = glm::translate(model.top(), glm::vec3(-0.24, -0.18, 0)); //rotating in clockwise direction around x-axis
-	model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.8, 0.3));
+	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.9, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
-	//model.pop();
-	////RIGHT ARM
+	model.pop();
+
+
+	//Transform for right arm
 	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(0.22, -0.13, 0)); //rotating in clockwise direction around x-axis
-	model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.8, 0.3));
+	model.top() = glm::translate(model.top(), glm::vec3(0.20, 0.10, 0)); //rotating in clockwise direction around x-axis
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	disableBuffers();
+
+
+	//RIGHT ELBOW
+	model.push(model.top());
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	drawSphere();
+	model.pop();
+
+	//RIGHT ARM
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.9, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
+
+
+	model.pop();
+
+	
 
 	//// RIGHT LEG
 	model.push(model.top());
@@ -523,7 +556,7 @@ void drawRobot()
 	model.pop();
 	disableBuffers();
 
-	
+
 }
 
 void setupCubeBuffers()
@@ -547,6 +580,10 @@ void setupCubeBuffers()
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObject);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+	
+
+
 }
 
 void disableBuffers()
@@ -616,19 +653,19 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	}
 	if (k == 'A')
 	{
-		armymoving += 10 % 360;
+		armymoving += 5 % 360;
 	}
 	if (k == 'S')
 	{
-		armymoving -= 10 % 360;
+		armymoving -= 5 % 360;
 	}
 	if (k == 'Z')
 	{
-		shoulderymoving += 10 % 360;
+		angle_x_inc += 5;
 	}
 	if (k == 'X')
 	{
-		shoulderymoving += 10 % 360;
+		angle_x_inc -= 5;
 	}
 
 }
