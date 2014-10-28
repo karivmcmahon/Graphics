@@ -34,7 +34,7 @@ GLuint program;
 GLuint vao;
 
 /* Position and view globals */
-GLfloat angle_x, armangle, angle_x_inc, anglex, coneangle, xr, x, y, armymoving, elbowmoving, shoulderymoving, neckangle, legmovement,fingermoving;
+GLfloat angle_x, armangle, angle_x_inc, anglex, coneangle, armymoving, xr, x, y, armzmoving, elbowmoving, shoulderymoving, neckangle, legmovement,fingermoving, fangle;
 
 /* Uniforms*/
 GLuint modelID, viewID;
@@ -70,15 +70,17 @@ void init(GLWrapper *glw)
 	angle_x_inc = 0;
 	legmovement = 0;
 	armangle = 0;
+	armzmoving = 0;
 	armymoving = 0;
 	shoulderymoving = 0;
 	elbowmoving = 0;
 	xr = 1.0f;
 	x = 0;
 	y = 0;
+	fangle = 45;
 	colourmode = 0;
-	numlats = 20;		// Number of latitudes in our sphere
-	numlongs = 20;		// Number of longitudes in our sphere
+	numlats = 40;		// Number of latitudes in our sphere
+	numlongs = 40;		// Number of longitudes in our sphere
 
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
@@ -358,15 +360,55 @@ void display()
 	drawRobot();
 	model.pop();
 
-	std::cout << angle_x_inc << "\n";
-	/*if (angle_x_inc >= 170)
+	std::cout << legmovement << "\n";
+	if (legmovement >= 45)
 	{
-		angle_x_inc = 170;
+		legmovement = 45;
 	}
-	if (angle_x_inc <= -90)
+	if (legmovement <= -45)
 	{
-		angle_x_inc = -90;
-	}*/
+		legmovement = -45;
+	}
+	if (neckangle >= 90)
+	{
+		neckangle = 90;
+	}
+	if (neckangle <= -90)
+	{
+		neckangle = -90;
+	}
+	if (fingermoving >= 20)
+	{
+		fingermoving = 20;
+	}
+	if (fingermoving <= 0)
+	{
+		fingermoving = 0;
+	}
+	if (armzmoving >= 170)
+	{
+		armzmoving = 170;
+	}
+	if (armzmoving <= 0)
+	{
+		armzmoving = 0;
+	}
+	if (angle_x_inc <= 0)
+	{
+		angle_x_inc = 0;
+	}
+	if (angle_x_inc >= 120)
+	{
+		angle_x_inc = 120;
+	}
+	if (armymoving <= -60)
+	{
+		armymoving = -60;
+	}
+	if (armymoving >= 60)
+	{
+		armymoving = 60;
+	}
 	
 	
 	glUseProgram(0);
@@ -480,7 +522,8 @@ void drawRobot()
 	//LEFT SHOULDER
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(1, 0, 0));
+	model.top() = glm::rotate(model.top(), -armzmoving, glm::vec3(0, 0, 1));
 	model.top() = glm::translate(model.top(), glm::vec3(0, -0.16, 0)); 
 	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -492,7 +535,8 @@ void drawRobot()
 	//TRANSFORM FOR LEFT ARM
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(1, 0, 0));
+	model.top() = glm::rotate(model.top(), -armzmoving, glm::vec3(0, 0, 1));
 	model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0)); //rotating in clockwise direction around x-axis
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -538,11 +582,24 @@ void drawRobot()
 	model.push(model.top());
 	model.top() = glm::rotate(model.top(), -fingermoving, glm::vec3(0, 0, 1));
 	model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
-	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.15, 0.1));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
+
+	//FINGER 2
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), fingermoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), -fangle, glm::vec3(0, 0, 1));
+	model.top() = glm::translate(model.top(), glm::vec3(-0.01, -0.10, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.15, 0.1));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model.pop();
+
 
 
 	model.pop();
@@ -568,7 +625,8 @@ void drawRobot()
 	//RIGHT SHOULDER
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(1, 0, 0));
+	model.top() = glm::rotate(model.top(), armzmoving, glm::vec3(0, 0, 1));
 	model.top() = glm::translate(model.top(), glm::vec3(0, -0.16, 0)); //rotating in clockwise direction around x-axis
 	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -580,7 +638,8 @@ void drawRobot()
 	//TRANSFORM FOR RIGHT ARM
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(1, 0, 0));
+	model.top() = glm::rotate(model.top(), armzmoving, glm::vec3(0, 0, 1));
 	model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0)); //rotating in clockwise direction around x-axis
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -625,40 +684,26 @@ void drawRobot()
 	//FINGER
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), -fingermoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), fingermoving, glm::vec3(0, 0, 1));
 	model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
-	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.15, 0.1));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
 
-	//Transform for hand
-	//model.push(model.top());
-	//model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
-	//model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
-	//model.top() = glm::translate(model.top(), glm::vec3(0, -0.44, 0)); //rotating in clockwise direction around x-axis
-	//glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	//glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	//disableBuffers();
-	//
-	////Hand sphere
-	//model.push(model.top());
-	//model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
-	//glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	//glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	//drawSphere();
-	//model.pop();
+	//FINGER 2
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), -fingermoving, glm::vec3(0, 0, 1));
+	model.top() = glm::rotate(model.top(), fangle, glm::vec3(0, 0, 1));
+	model.top() = glm::translate(model.top(), glm::vec3(0.01, -0.10, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.15, 0.1));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model.pop();
 
-	////Finger
-	//setupCubeBuffers();
-	//model.push(model.top());
-	//model.top() = glm::rotate(model.top(), fingermoving, glm::vec3(0, 0, 1));
-	//model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
-	//model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
-	//glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	//glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
 	model.pop();
 	model.pop();
@@ -848,11 +893,11 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	}
 	if (k == 'A')
 	{
-		armymoving += 5 % 360;
+		armzmoving += 5 % 360;
 	}
 	if (k == 'S')
 	{
-		armymoving -= 5 % 360;
+		armzmoving -= 5 % 360;
 	}
 	if (k == 'Z')
 	{
@@ -886,7 +931,14 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	{
 		fingermoving -= 5;
 	}
-
+	if (k == 'Y')
+	{
+		armymoving += 5;
+	}
+	if (k == 'U')
+	{
+		armymoving -= 5;
+	}
 }
 
 /* An error callback function to output GLFW errors*/
