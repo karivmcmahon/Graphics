@@ -357,6 +357,16 @@ void display()
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	drawRobot();
 	model.pop();
+
+	std::cout << angle_x_inc << "\n";
+	/*if (angle_x_inc >= 170)
+	{
+		angle_x_inc = 170;
+	}
+	if (angle_x_inc <= -90)
+	{
+		angle_x_inc = -90;
+	}*/
 	
 	
 	glUseProgram(0);
@@ -431,7 +441,7 @@ void drawRobot()
 
 	//NECK
 	model.push(glm::mat4(model.top()));
-model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0)); //rotating in clockwise direction around x-axis
 	model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.25, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -451,7 +461,7 @@ model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0)); //rotating in 
 
 	
 
-	//Transform for left arm
+	//Transform for whole left arm
 	model.push(model.top());
 	model.top() = glm::translate(model.top(), glm::vec3(-0.20, 0.10, 0)); //rotating in clockwise direction around x-axis
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -459,7 +469,7 @@ model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0)); //rotating in 
 	disableBuffers();
 
 
-	//LEFT ELBOW
+	//LEFT SHOULDER SOCKET
 	model.push(model.top());
 	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -467,31 +477,77 @@ model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0)); //rotating in 
 	drawSphere();
 	model.pop();
 	
-	//LEFT ARM
+	//LEFT SHOULDER
 	setupCubeBuffers();
 	model.push(model.top());
 	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(0, 0, 1));
-	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
-	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0)); //rotating in clockwise direction around x-axis
-	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.9, 0.3));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.16, 0)); 
+	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
 	disableBuffers();
 
-	//Hand sphere
+	//TRANSFORM FOR LEFT ARM
+	setupCubeBuffers();
 	model.push(model.top());
 	model.top() = glm::rotate(model.top(), -armymoving, glm::vec3(0, 0, 1));
-	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
-	model.top() = glm::translate(model.top(), glm::vec3(0, -0.44, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0)); //rotating in clockwise direction around x-axis
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+
+	//LEFT ELBOW SPHERE
+	model.push(model.top());
 	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	drawSphere();
 	model.pop();
+	
+	//ARM
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model.pop();
+	
+	
+	//TRANSFORM FOR HAND
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0)); //rotating in clockwise direction around x-axis
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	disableBuffers();
+
+	//// LEFT HAND SPHERE
+	model.push(model.top());
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	drawSphere();
 	model.pop();
 
+	//FINGER
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), -fingermoving, glm::vec3(0, 0, 1));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model.pop();
+
+
+	model.pop();
+	model.pop();
+	model.pop();
 
 	//Transform for right arm
 	model.push(model.top());
@@ -501,52 +557,108 @@ model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0)); //rotating in 
 	disableBuffers();
 
 
-	//RIGHT ELBOW
+	//RIGHT SHOULDER SOCKET
 	model.push(model.top());
 	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	drawSphere();
 	model.pop();
+
+	//RIGHT SHOULDER
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.16, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model.pop();
+	disableBuffers();
+
+	//TRANSFORM FOR RIGHT ARM
+	setupCubeBuffers();
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0)); //rotating in clockwise direction around x-axis
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+
+	//RIGHT ELBOW SPHERE
+	model.push(model.top());
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	drawSphere();
+	model.pop();
+	setupCubeBuffers();
 
 	//RIGHT ARM
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
 	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
-	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0)); //rotating in clockwise direction around x-axis
-	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.9, 0.3));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
 
+
+	//TRANSFORM RIGHT HAND
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
 	model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
-	model.top() = glm::translate(model.top(), glm::vec3(0, -0.44, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0)); //rotating in clockwise direction around x-axis
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	disableBuffers();
-	
-	//Hand sphere
+
+	//// RIGHT HAND SPHERE
 	model.push(model.top());
-	
-	//model.top() = glm::translate(model.top(), glm::vec3(0, -0.44, 0));
 	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	drawSphere();
 	model.pop();
 
+	//FINGER
 	setupCubeBuffers();
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), fingermoving, glm::vec3(0, 0, 1));
-	model.top() = glm::translate(model.top(), glm::vec3(0, -0.14, 0)); //rotating in clockwise direction around x-axis
+	model.top() = glm::rotate(model.top(), -fingermoving, glm::vec3(0, 0, 1));
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
 	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+	model.pop();
+
+	//Transform for hand
+	//model.push(model.top());
+	//model.top() = glm::rotate(model.top(), armymoving, glm::vec3(0, 0, 1));
+	//model.top() = glm::rotate(model.top(), angle_x_inc, glm::vec3(1, 0, 0));
+	//model.top() = glm::translate(model.top(), glm::vec3(0, -0.44, 0)); //rotating in clockwise direction around x-axis
+	//glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	//glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	//disableBuffers();
+	//
+	////Hand sphere
+	//model.push(model.top());
+	//model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
+	//glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	//glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	//drawSphere();
+	//model.pop();
+
+	////Finger
+	//setupCubeBuffers();
+	//model.push(model.top());
+	//model.top() = glm::rotate(model.top(), fingermoving, glm::vec3(0, 0, 1));
+	//model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0)); //rotating in clockwise direction around x-axis
+	//model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
+	//glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	//glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, 36);
 	model.pop();
 	model.pop();
 	model.pop();
