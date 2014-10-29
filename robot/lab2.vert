@@ -10,7 +10,7 @@ uniform mat4 model, view;
 void main()
 {
 
-	vec3 lightDirection = vec3(2,1.0,1.0);
+	vec3 lightDirection = vec3(2,1.0,2.0);
 	mat4 modelViewMatrix = view * model;
 	vec4 position4 = vec4(position, 1.0);
     mat3 normalMatrix = mat3(modelViewMatrix);
@@ -18,7 +18,7 @@ void main()
 	lightDirection = normalize(lightDirection);
 	transNormal = normalize(transNormal);
 	float diffuseComponent = max(dot(transNormal,lightDirection),0.0);
-	vec4 diffuse_colour = vec4(0.0, 0.0, 1.0, 1.0);
+	vec4 diffuse_colour = vec4(0.7, 0.7, 0.7, 1.0);
 	
 	vec4 diffuseLighting = vec4( diffuse_colour * diffuseComponent);
 	vec4 ambient = diffuse_colour * 0.3;
