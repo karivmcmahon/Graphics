@@ -34,8 +34,7 @@ GLuint program;
 GLuint vao;
 
 /* Position and view globals */
-GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y , normals[], vertexPositions[];
-float vertexColours[];
+GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y;
 /* Uniforms*/
 GLuint modelID, viewID;
 GLfloat pi = 3.1415926535898;
@@ -90,64 +89,6 @@ void init(GLWrapper *glw)
 	// Create the vertex array object and make it current
 	glBindVertexArray(vao);
 
-	createCube();
-
-	/* Create a vertex buffer object to store vertices */
-	glGenBuffers(1, &positionBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	/* Create a vertex buffer object to store vertex colours */
-	glGenBuffers(1, &colourObject);
-	glBindBuffer(GL_ARRAY_BUFFER, colourObject);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColours), vertexColours, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &normalsBufferObject);
-	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObject);
-	glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(glm::vec3), normals, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	createCone();
-	/* Create a vertex buffer object to store vertices */
-	glGenBuffers(1, &coneBufferObj);
-	glBindBuffer(GL_ARRAY_BUFFER, coneBufferObj);
-	glBufferData(GL_ARRAY_BUFFER, conePositions.size(), &conePositions[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	/* Create a vertex buffer object to store vertex colours */
-	glGenBuffers(1, &coneColourObj);
-	glBindBuffer(GL_ARRAY_BUFFER, coneColourObj);
-	glBufferData(GL_ARRAY_BUFFER, coneColours.size(), &coneColours[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	/* Create a vertex buffer object to store vertex colours */
-	glGenBuffers(1, &coneNormalObj);
-	glBindBuffer(GL_ARRAY_BUFFER, coneNormalObj);
-	glBufferData(GL_ARRAY_BUFFER, coneNormals.size(), &coneNormals[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	numspherevertices = makeSphereVBO(numlats, numlongs);
-
-	try
-	{
-		program = glw->LoadShader("lab2.vert", "lab2.frag");
-	}
-	catch (std::exception &e)
-	{
-		std::cout << "Caught exception: " << e.what() << std::endl;
-		std::cin.ignore();
-		exit(0);
-	}
-
-	/* Define uniforms to send to vertex shader */
-	modelID = glGetUniformLocation(program, "model");
-	viewID = glGetUniformLocation(program, "view");
-}
-
-void createCube()
-{
 	GLfloat vertexPositions[] =
 	{
 		-0.25f, 0.25f, -0.25f,
@@ -261,6 +202,65 @@ void createCube()
 		0, 1.f, 0, 0, 1.f, 0, 0, 1.f, 0,
 		0, 1.f, 0, 0, 1.f, 0, 0, 1.f, 0,
 	};
+
+
+	/* Create a vertex buffer object to store vertices */
+	glGenBuffers(1, &positionBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, positionBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &colourObject);
+	glBindBuffer(GL_ARRAY_BUFFER, colourObject);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexColours), vertexColours, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &normalsBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, normalsBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, 36 * sizeof(glm::vec3), normals, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	createCone();
+	/* Create a vertex buffer object to store vertices */
+	glGenBuffers(1, &coneBufferObj);
+	glBindBuffer(GL_ARRAY_BUFFER, coneBufferObj);
+	glBufferData(GL_ARRAY_BUFFER, conePositions.size(), &conePositions[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &coneColourObj);
+	glBindBuffer(GL_ARRAY_BUFFER, coneColourObj);
+	glBufferData(GL_ARRAY_BUFFER, coneColours.size(), &coneColours[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &coneNormalObj);
+	glBindBuffer(GL_ARRAY_BUFFER, coneNormalObj);
+	glBufferData(GL_ARRAY_BUFFER, coneNormals.size(), &coneNormals[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	numspherevertices = makeSphereVBO(numlats, numlongs);
+
+	try
+	{
+		program = glw->LoadShader("lab2.vert", "lab2.frag");
+	}
+	catch (std::exception &e)
+	{
+		std::cout << "Caught exception: " << e.what() << std::endl;
+		std::cin.ignore();
+		exit(0);
+	}
+
+	/* Define uniforms to send to vertex shader */
+	modelID = glGetUniformLocation(program, "model");
+	viewID = glGetUniformLocation(program, "view");
+}
+
+void createCube()
+{
+
 }
 
 void createCone()
