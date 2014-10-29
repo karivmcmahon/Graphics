@@ -34,7 +34,7 @@ GLuint program;
 GLuint vao;
 
 /* Position and view globals */
-GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y;
+GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz;
 /* Uniforms*/
 GLuint modelID, viewID;
 GLfloat pi = 3.1415926535898;
@@ -78,6 +78,9 @@ void init(GLWrapper *glw)
 	armMoving = 0;
 	x = 0;
 	y = 0;
+	vx = 0;
+	vy = 0;
+	vz = 0;
 	fingerPosition = 45;
 	colourmode = 0;
 	numlats = 40;		// Number of latitudes in our sphere
@@ -282,14 +285,14 @@ void createCone()
 
 
 		// SEPERATE LOOP FOR NORMAL AFTER ALL POINTS RETRIEVED ??
-		glm::vec3 normal = (cos(0.75f) * glm::vec3(cos((angle * twicePi / 20) * 3.0f)), 0, sin((angle * twicePi / 20) * 3.0f) + sin((angle * twicePi / 20) * 3.0f) * glm::vec3(0, 1, 0));
+		glm::vec3 normal = (cos(0.75f) * glm::vec3(cos((angle * twicePi / 20) * 0.5f)), 0, sin((angle * twicePi / 20) * 0.5f) + sin((angle * twicePi / 20) * 0.5f) * glm::vec3(0, 1, 0));
 		coneNormals.push_back(normal[0]);
 		coneNormals.push_back(normal[1]);
 		coneNormals.push_back(normal[2]);
 
 
-		conePositions.push_back(x + (cos(angle * twicePi / 20) * 3.0f));
-		conePositions.push_back(y + (sin(angle * twicePi / 20) * 3.0f));
+		conePositions.push_back(x + (cos(angle * twicePi / 20) * 0.5f));
+		conePositions.push_back(y + (sin(angle * twicePi / 20) * 0.5f));
 		conePositions.push_back(0.0f);
 
 
@@ -313,14 +316,14 @@ void createCone()
 	{
 
 
-		glm::vec3 normal = (cos(0.0f) * glm::vec3(cos((angle * twicePi / 20) * 3.0f)), 0, sin((angle * twicePi / 20) * 3.0f) + sin((angle * twicePi / 20) * 3.0f) * glm::vec3(0, 1, 0));
+		glm::vec3 normal = (cos(0.0f) * glm::vec3(cos((angle * twicePi / 20) * 0.5f)), 0, sin((angle * twicePi / 20) * 0.5f) + sin((angle * twicePi / 20) * 0.5f) * glm::vec3(0, 1, 0));
 		coneNormals.push_back(normal[0]);
 		coneNormals.push_back(normal[1]);
 		coneNormals.push_back(normal[2]);
 
 
-		conePositions.push_back(x + (cos(angle * twicePi / 20) * 3.0f));
-		conePositions.push_back(y + (sin(angle * twicePi / 20) * 3.0f));
+		conePositions.push_back(x + (cos(angle * twicePi / 20) * 0.5f));
+		conePositions.push_back(y + (sin(angle * twicePi / 20) * 0.5f));
 		conePositions.push_back(0.0f);
 
 
@@ -360,7 +363,11 @@ void display()
 
 	//Model matrix : an identity matrix (model will be at the origin)
 	model.push(glm::mat4(1.0f));
+		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
+		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
+		
+		//View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 		drawRobot();
@@ -428,8 +435,8 @@ void drawHat()
 	//HAT
 	setupConeBuffers();
 	model.push(glm::mat4(1.0f));
-		model.top() = glm::translate(model.top(), glm::vec3(0, 0.7, 0)); //rotating in clockwise direction around x-axis
-		model.top() = glm::scale(model.top(), glm::vec3(0.02, 0.2, 0.3));
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.7, 0)); 
+		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
 		model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
@@ -438,8 +445,8 @@ void drawHat()
 	model.pop();
 	glFrontFace(GL_CW);
 	model.push(glm::mat4(1.0f));
-		model.top() = glm::translate(model.top(), glm::vec3(0, 0.8, 0)); //rotating in clockwise direction around x-axis
-		model.top() = glm::scale(model.top(), glm::vec3(0.02, 0.2, 0.3));
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.8, 0)); 
+		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.3, 0.1));
 		model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
@@ -757,13 +764,13 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'Q')
 	{
 		robotRotation += 10.0f;
-		
-		
+
+
 	}
 	if (k == 'W')
 	{
-		robotRotation -= 10.0f; 
-	
+		robotRotation -= 10.0f;
+
 	}
 	if (k == 'A')
 	{
@@ -812,6 +819,22 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'U')
 	{
 		armMoving -= 5;
+	}
+	if (k == GLFW_KEY_UP)
+	{
+		vx += 5.0;
+	}
+	if (k == GLFW_KEY_DOWN)
+	{
+		vx -= 5.0;
+	}
+	if (k == GLFW_KEY_LEFT)
+	{
+		vy += 5.0;
+	}
+	if (k == GLFW_KEY_RIGHT)
+	{
+		vy -= 5.0;
 	}
 }
 
@@ -1012,6 +1035,8 @@ void drawSphere()
 	glDisableVertexAttribArray(2);
 
 }
+
+
 
 
 
