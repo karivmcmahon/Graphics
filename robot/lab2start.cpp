@@ -36,7 +36,7 @@ GLuint vao;
 /* Position and view globals */
 GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz;
 /* Uniforms*/
-GLuint modelID, viewID;
+GLuint modelID, viewID,colourModeID;
 GLfloat pi = 3.1415926535898;
 std::stack<glm::mat4> model;
 std::vector<GLfloat> conePositions;
@@ -82,7 +82,7 @@ void init(GLWrapper *glw)
 	vy = 0;
 	vz = 0;
 	fingerPosition = 45;
-	colourmode = 0;
+	colourmode = 2;
 	numlats = 40;		// Number of latitudes in our sphere
 	numlongs = 40;		// Number of longitudes in our sphere
 
@@ -258,6 +258,7 @@ void init(GLWrapper *glw)
 
 	/* Define uniforms to send to vertex shader */
 	modelID = glGetUniformLocation(program, "model");
+	colourModeID = glGetUniformLocation(program, "colourmode");
 	viewID = glGetUniformLocation(program, "view");
 }
 
@@ -368,6 +369,7 @@ void display()
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		
 		//View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
+		glUniform1ui(colourModeID, colourmode);
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 		drawRobot();
@@ -476,6 +478,7 @@ void drawNeck()
 		model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0));
 		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.25, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1ui(colourModeID, 0);
 		drawCube();
 	model.pop();
 }
@@ -487,6 +490,7 @@ void drawBody()
 		model.top() = glm::translate(model.top(), glm::vec3(0.0, -0.09, 0));
 		model.top() = glm::scale(model.top(), glm::vec3(0.6, 1, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		
 		drawCube();
 	model.pop();
 }
@@ -498,8 +502,7 @@ void drawArm(GLfloat x, GLfloat side)
 	model.push(model.top());
 		model.top() = glm::translate(model.top(), glm::vec3(x, 0.10, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-
-
+		
 		//SHOULDER SOCKET
 		model.push(model.top());
 			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
@@ -617,7 +620,7 @@ void drawLeg(GLfloat x, GLfloat side)
 	model.push(model.top());
 		model.top() = glm::translate(model.top(), glm::vec3(x, -0.4, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-
+		
 
 		//LEG CONNECTOR
 		model.push(model.top());
@@ -672,8 +675,35 @@ void drawRobot()
 		model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
 		model.top() = glm::translate(model.top(), glm::vec3(0, 0, 0)); 
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		
 		drawHat();
 		drawHead();
+		//HEAD
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.1, 0.55, -0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		drawCube();
+		model.pop();
+
+		//HEAD
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.1, 0.55, -0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		//glUniform1ui(colourModeID, 1);
+		drawCube();
+		model.pop();
+
+		//HEAD
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, -0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.3));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1ui(colourModeID, 1);
+		drawCube();
+		model.pop();
+
 		drawNeck();
 	model.pop();
 
