@@ -6,7 +6,7 @@ layout(location = 1) in vec4 colour;
 layout(location = 2) in vec3 normal;
 out vec4 fcolour;
 uniform mat4 model, view;
-uniform uint colourmode;
+uniform float colourmode;
 
 void main()
 {
@@ -20,17 +20,18 @@ void main()
 	transNormal = normalize(transNormal);
 	float diffuseComponent = max(dot(transNormal,lightDirection),0.0);
 	vec4 diffuse_colour;
-	if(colourmode == 2)
+
+	if (colourmode == 2)
 	{
 		diffuse_colour = vec4(1.0, 0.0, 0.0, 1.0);
 	}
-	if (colourmode == 1)
+	else if (colourmode == 1)
 	{
-		diffuse_colour = vec4(1.0, 0.0, 0.0, 1.0);
+		diffuse_colour = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 	else
 	{
-		diffuse_colour = vec4(0.6, 0.6, 0.6, 1.0);
+		diffuse_colour = vec4(0.8, 0.8, 0.8, 1.0);
 	}
 	
 	vec4 diffuseLighting = vec4( diffuse_colour * diffuseComponent);

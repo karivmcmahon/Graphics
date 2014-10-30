@@ -369,7 +369,7 @@ void display()
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		
 		//View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-		glUniform1ui(colourModeID, colourmode);
+	    glUniform1f(colourModeID, 0);
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 		drawRobot();
@@ -475,10 +475,10 @@ void drawNeck()
 {
 	//NECK
 	model.push(glm::mat4(model.top()));
-		model.top() = glm::translate(model.top(), glm::vec3(0, 0.23, 0));
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.24, 0));
 		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.25, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniform1ui(colourModeID, 0);
+		glUniform1f(colourModeID, 0);
 		drawCube();
 	model.pop();
 }
@@ -487,7 +487,7 @@ void drawBody()
 {
 	////BODY
 	model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(0.0, -0.09, 0));
+		model.top() = glm::translate(model.top(), glm::vec3(0.0, -0.07, 0));
 		model.top() = glm::scale(model.top(), glm::vec3(0.6, 1, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		
@@ -522,7 +522,7 @@ void drawArm(GLfloat x, GLfloat side)
 				model.top() = glm::rotate(model.top(), armMoving, glm::vec3(1, 0, 0));
 				model.top() = glm::rotate(model.top(), armUpDownMovement, glm::vec3(0, 0, 1));
 			}
-			model.top() = glm::translate(model.top(), glm::vec3(0, -0.16, 0));
+			model.top() = glm::translate(model.top(), glm::vec3(0, -0.12, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			drawCube();
@@ -585,7 +585,7 @@ void drawArm(GLfloat x, GLfloat side)
 						{
 							model.top() = glm::rotate(model.top(), fingerMovement, glm::vec3(0, 0, 1));
 						}
-						model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0));
+						model.top() = glm::translate(model.top(), glm::vec3(0, -0.09, 0));
 						model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.15, 0.1));
 						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 						drawCube();
@@ -603,7 +603,7 @@ void drawArm(GLfloat x, GLfloat side)
 							model.top() = glm::rotate(model.top(), -fingerMovement, glm::vec3(0, 0, 1));
 							model.top() = glm::rotate(model.top(), fingerPosition, glm::vec3(0, 0, 1));
 						}
-						model.top() = glm::translate(model.top(), glm::vec3(0.01, -0.10, 0));
+						model.top() = glm::translate(model.top(), glm::vec3(0.01, -0.09, 0));
 						model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.15, 0.1));
 						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 						drawCube();
@@ -618,7 +618,7 @@ void drawLeg(GLfloat x, GLfloat side)
 {
 	//Transform for leg
 	model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(x, -0.4, 0));
+		model.top() = glm::translate(model.top(), glm::vec3(x, -0.37, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		
 
@@ -683,6 +683,7 @@ void drawRobot()
 		model.top() = glm::translate(model.top(), glm::vec3(0.1, 0.55, -0.05));
 		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
 		drawCube();
 		model.pop();
 
@@ -691,7 +692,7 @@ void drawRobot()
 		model.top() = glm::translate(model.top(), glm::vec3(-0.1, 0.55, -0.05));
 		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		//glUniform1ui(colourModeID, 1);
+		glUniform1f(colourModeID, 1);
 		drawCube();
 		model.pop();
 
@@ -700,7 +701,7 @@ void drawRobot()
 		model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, -0.05));
 		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniform1ui(colourModeID, 1);
+		glUniform1f(colourModeID, 2);
 		drawCube();
 		model.pop();
 
@@ -901,11 +902,12 @@ int main(int argc, char* argv[])
 }
 
 /* Make a sphere from two triangle fans (one at each pole) and triangle strips along latitudes */
+/* This version uses indexed vertex buffers for both the fans at the poles and the latitude strips */
 GLuint makeSphereVBO(GLuint numlats, GLuint numlongs)
 {
 	GLuint i, j;
-	/* Calculate the number of vertices required in hemisphere */
-	GLuint numvertices = 2 + ((numlats - 1) * (numlongs + 1));
+	/* Calculate the number of vertices required in sphere */
+	GLuint numvertices = 2 + ((numlats - 1) * numlongs);
 	GLfloat* pVertices = new GLfloat[numvertices * 3];
 	GLfloat* pColours = new GLfloat[numvertices * 4];
 	makeUnitSphere(pVertices, numlats, numlongs);
@@ -938,11 +940,19 @@ GLuint makeSphereVBO(GLuint numlats, GLuint numlongs)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	/* Calculate the number of indices in our index array and allocate memory for it */
-	GLuint numindices = ((numlongs * 2) + 2) * (numlats - 1) + (numlongs + 2);
+	GLuint numindices = ((numlongs * 2) + 2) * (numlats - 1) + ((numlongs + 2) * 2);
 	GLuint* pindices = new GLuint[numindices];
 
 	// fill "indices" to define triangle strips
 	GLuint index = 0;		// Current index
+
+	// Define indices for the first triangle fan for one pole
+	for (i = 0; i < numlongs + 1; i++)
+	{
+		pindices[index++] = i;
+	}
+	pindices[index++] = 1;	// Join last triangle in the triangle fan
+
 	GLuint start = 1;		// Start index for each latitude row
 	for (j = 0; j < numlats - 2; j++)
 	{
@@ -958,8 +968,11 @@ GLuint makeSphereVBO(GLuint numlats, GLuint numlongs)
 	}
 
 	// Define indices for the last triangle fan for the south pole region
-	pindices[index++] = numvertices - 1;
-	for (i = 0; i < numlongs; i++) pindices[index++] = numvertices - 1 - i;
+	for (i = numvertices - 1; i > (numvertices - numlongs - 2); i--)
+	{
+		pindices[index++] = i;
+	}
+	pindices[index] = numvertices - 2;	// Tie up last triangle in fan
 
 	// Generate a buffer for the indices
 	glGenBuffers(1, &elementbuffer);
@@ -974,8 +987,9 @@ GLuint makeSphereVBO(GLuint numlats, GLuint numlongs)
 }
 
 
-/************************************************************/
-/* Functions define primitive objects						*/
+/* Define the vertex positions for a sphere. The array of vertices must have previosuly
+been created.
+*/
 void makeUnitSphere(GLfloat *pVertices, GLuint numlats, GLuint numlongs)
 {
 	GLfloat DEG_TO_RADIANS = 3.141592f / 180.f;
@@ -1027,8 +1041,8 @@ void drawSphere()
 
 	/* Bind the sphere colours */
 	glBindBuffer(GL_ARRAY_BUFFER, sphereColours);
-	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
 
 	glPointSize(3.f);
 
@@ -1044,28 +1058,32 @@ void drawSphere()
 	}
 	else
 	{
-		/* Draw the pole regions as triangle fans */
-		glDrawArrays(GL_TRIANGLE_FAN, 0, numlongs + 1);
-
-		/* Draw the latitude triangle strips */
+		/* Bind the indexed vertex buffer */
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
-		GLuint lat_offset = 4 * (numlongs * 2 + 2);
+		/* Draw the north pole regions as a triangle  */
+		glDrawElements(GL_TRIANGLE_FAN, numlongs + 2, GL_UNSIGNED_INT, (GLvoid*)(0));
 
+		/* Calculate offsets into the indexed array. Note that we multiply offsets by 4
+		because it is a memory offset the indices are type GLuint which is 4-bytes */
+		GLuint lat_offset_jump = (numlongs * 2) + 2;
+		GLuint lat_offset_start = numlongs + 2;
+		GLuint lat_offset_current = lat_offset_start * 4;
+
+		/* Draw the triangle strips of latitudes */
 		for (i = 0; i < numlats - 2; i++)
 		{
-			glDrawElements(GL_TRIANGLE_STRIP, numlongs * 2 + 2, GL_UNSIGNED_INT, (GLvoid*)(lat_offset*i));
+			glDrawElements(GL_TRIANGLE_STRIP, numlongs * 2 + 2, GL_UNSIGNED_INT, (GLvoid*)(lat_offset_current));
+			lat_offset_current += (lat_offset_jump * 4);
 		}
+		/* Draw the south pole as a triangle fan */
+		glDrawElements(GL_TRIANGLE_FAN, numlongs + 2, GL_UNSIGNED_INT, (GLvoid*)(lat_offset_current));
 
-		glDrawElements(GL_TRIANGLE_FAN, numlongs + 1, GL_UNSIGNED_INT, (GLvoid*)(lat_offset*i + 1));
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 	}
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-
 }
-
 
 
 
