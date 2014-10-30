@@ -34,7 +34,7 @@ GLuint program;
 GLuint vao;
 
 /* Position and view globals */
-GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz;
+GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz, kneeMovement;
 /* Uniforms*/
 GLuint modelID, viewID,colourModeID;
 GLfloat pi = 3.1415926535898;
@@ -390,6 +390,14 @@ void movementConstraints()
 	{
 		legmovement = -45;
 	}
+	if (kneeMovement >= 45)
+	{
+		kneeMovement = 45;
+	}
+	if (kneeMovement <= -45)
+	{
+		kneeMovement = -45;
+	}
 	if (neckmovement >= 90)
 	{
 		neckmovement = 90;
@@ -629,42 +637,62 @@ void drawLeg(GLfloat x, GLfloat side)
 			drawSphere();
 		model.pop();
 
+		model.push(model.top());
+		if (side == 0)
+		{
+			model.top() = glm::rotate(model.top(), legmovement, glm::vec3(1, 0, 0));
+		}
+		else
+		{
+			model.top() = glm::rotate(model.top(), -legmovement, glm::vec3(1, 0, 0));
+		}
+		model.top() = glm::translate(model.top(), glm::vec3(0, -0.15, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+
 		//// LEG
 		model.push(model.top());
-			if (side == 0)
-			{
-				model.top() = glm::rotate(model.top(), legmovement, glm::vec3(1, 0, 0));
-			}
-			else
-			{
-				model.top() = glm::rotate(model.top(), -legmovement, glm::vec3(1, 0, 0));
-			}
-			model.top() = glm::translate(model.top(), glm::vec3(0, -0.3, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.2, 1, 0.3));
+
+			//model.top() = glm::translate(model.top(), glm::vec3(0, -0.15, 0));
+			model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.5, 0.3));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			drawCube();
 		model.pop();
 
 		model.push(model.top());
+		
+		model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+
+		//LEG CONNECTOR
+		model.push(model.top());
+
+		//model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			drawSphere();
 		model.pop();
 
+		
+		
+		model.push(model.top());
+
+			model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
+		
+		model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.5, 0.3));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		drawCube();
+		model.pop();
+
 		////SHOE
 		model.push(model.top());
-			if (side == 0)
-			{
-				model.top() = glm::rotate(model.top(), legmovement, glm::vec3(1, 0, 0));
-			}
-			else
-			{
-				model.top() = glm::rotate(model.top(), -legmovement, glm::vec3(1, 0, 0));
-			}
-			model.top() = glm::translate(model.top(), glm::vec3(0, -0.5, -0.05));
-			model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.5));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			drawCube();
+		model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
+		model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, -0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.5));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		drawCube();
+		model.pop();
+		model.pop();
 		model.pop();
 	model.pop();
 }
@@ -699,7 +727,7 @@ void drawRobot()
 		//HEAD
 		model.push(model.top());
 		model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, -0.05));
-		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.3));
+		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.2));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniform1f(colourModeID, 2);
 		drawCube();
@@ -834,6 +862,14 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'N')
 	{
 		legmovement -= 5;
+	}
+	if (k == 'T')
+	{
+		kneeMovement += 5;
+	}
+	if (k == 'O')
+	{
+		kneeMovement -= 5;
 	}
 	if (k == 'F')
 	{

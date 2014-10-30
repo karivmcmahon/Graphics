@@ -1,14 +1,14 @@
-﻿Build started 30/10/2014 15:07:42.
+﻿Build started 30/10/2014 15:52:39.
      1>Project "C:\Users\Kari\Documents\Graphics\robot\robot2.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (robot.vcxproj).  This can lead to incorrect clean and rebuild behavior.
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt lab2start.cpp
          lab2start.cpp
      1>lab2start.cpp(40): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>lab2start.cpp(712): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>lab2start.cpp(713): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>lab2start.cpp(714): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>lab2start.cpp(715): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>lab2start.cpp(740): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>lab2start.cpp(741): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>lab2start.cpp(742): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>lab2start.cpp(743): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Kari\Documents\Graphics\robot\Debug\robot2.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Kari\Documents\Graphics\robot\Debug\robot2.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Kari\Documents\Graphics\robot\Debug\robot2.lib" /MACHINE:X86 Debug\lab2start.obj
@@ -18,4 +18,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.47
+Time Elapsed 00:00:02.13
