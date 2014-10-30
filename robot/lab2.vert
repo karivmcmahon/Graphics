@@ -5,13 +5,13 @@ layout(location = 0) in vec3 position;
 layout(location = 1) in vec4 colour;
 layout(location = 2) in vec3 normal;
 out vec4 fcolour;
-uniform mat4 model, view;
+uniform mat4 model, view, projection;
 uniform float colourmode;
 
 void main()
 {
 
-	vec3 lightDirection = vec3(2,1.0,2.0);
+	vec3 lightDirection = vec3(6,5.0,0.0);
 	mat4 modelViewMatrix = view * model;
 	vec4 position4 = vec4(position, 1.0);
     mat3 normalMatrix = mat3(modelViewMatrix);
@@ -31,7 +31,7 @@ void main()
 	}
 	else
 	{
-		diffuse_colour = vec4(0.8, 0.8, 0.8, 1.0);
+		diffuse_colour = vec4(0.7, 0.7, 0.7, 1.0);
 	}
 	
 	vec4 diffuseLighting = vec4( diffuse_colour * diffuseComponent);
@@ -45,7 +45,7 @@ void main()
 	
 	fcolour = ambient + diffuseLighting + specular;
 	
-	gl_Position =   view * model  * position4;
+	gl_Position =  (projection * view * model)  * position4;
 	
 	
 }

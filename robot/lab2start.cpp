@@ -36,7 +36,8 @@ GLuint vao;
 /* Position and view globals */
 GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz, kneeMovement;
 /* Uniforms*/
-GLuint modelID, viewID,colourModeID;
+GLuint modelID, viewID,colourModeID, projectionID;
+GLfloat aspect_ratio = 1.3333f;
 GLfloat pi = 3.1415926535898;
 std::stack<glm::mat4> model;
 std::vector<GLfloat> conePositions;
@@ -260,6 +261,7 @@ void init(GLWrapper *glw)
 	modelID = glGetUniformLocation(program, "model");
 	colourModeID = glGetUniformLocation(program, "colourmode");
 	viewID = glGetUniformLocation(program, "view");
+	projectionID = glGetUniformLocation(program, "projection");
 }
 
 void createCube()
@@ -357,21 +359,26 @@ void display()
 
 	// Camera matrix
 	glm::mat4 View = glm::lookAt(
-		glm::vec3(0, 0, 0.1), // Camera is at (0,0,4), in World Space
+		glm::vec3(0, 0, -4), // Camera is at (0,0,4), in World Space
 		glm::vec3(0, 0, 0), // and looks at the origin
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 		);
+
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	glm::mat4 Projection = glm::perspective(30.0f, aspect_ratio, 0.1f, 100.0f);
 
 	//Model matrix : an identity matrix (model will be at the origin)
 	model.push(glm::mat4(1.0f));
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
+		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		
 		//View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
 	    glUniform1f(colourModeID, 0);
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+		glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 		drawRobot();
 	model.pop();
 
@@ -715,6 +722,18 @@ void drawRobot()
 		drawCube();
 		model.pop();
 
+		setupConeBuffers();
+		model.push(glm::mat4(1.0f));
+		model.top() = glm::translate(model.top(), glm::vec3(0.5, 0.55, 0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
+		model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
+		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
+		//model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
+		glDrawArrays(GL_TRIANGLE_FAN, 276, 552);
+		model.pop();
+
 		//HEAD
 		model.push(model.top());
 		model.top() = glm::translate(model.top(), glm::vec3(-0.1, 0.55, -0.05));
@@ -810,6 +829,8 @@ void disableConeBuffers()
 static void reshape(GLFWwindow* window, int w, int h)
 {
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	aspect_ratio = ((float)w / 640.f*4.f) / ((float)h / 480.f*3.f);
+
 }
 
 /* change view angle, exit upon ESC */
@@ -863,7 +884,7 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	{
 		legmovement -= 5;
 	}
-	if (k == 'T')
+	if (k == 'I')
 	{
 		kneeMovement += 5;
 	}
@@ -902,6 +923,14 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == GLFW_KEY_RIGHT)
 	{
 		vy -= 5.0;
+	}
+	if (k == 'K')
+	{
+		vz += 5.0;
+	}
+	if (k == 'L')
+	{
+		vz -= 5.0;
 	}
 }
 
