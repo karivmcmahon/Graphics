@@ -36,7 +36,7 @@ GLuint vao;
 /* Position and view globals */
 GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz, kneeMovement;
 /* Uniforms*/
-GLuint modelID, viewID,colourModeID, projectionID;
+GLuint modelID, viewID,colourModeID, projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
 GLfloat pi = 3.1415926535898;
 std::stack<glm::mat4> model;
@@ -262,6 +262,7 @@ void init(GLWrapper *glw)
 	colourModeID = glGetUniformLocation(program, "colourmode");
 	viewID = glGetUniformLocation(program, "view");
 	projectionID = glGetUniformLocation(program, "projection");
+	lightPosID = glGetUniformLocation(program, "lightpos");
 }
 
 void createCube()
@@ -355,7 +356,8 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(program);
-	
+	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	glm::mat4 Projection = glm::perspective(30.0f, aspect_ratio, 0.1f, 100.0f);
 
 	// Camera matrix
 	glm::mat4 View = glm::lookAt(
@@ -364,14 +366,15 @@ void display()
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 		);
 
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-	glm::mat4 Projection = glm::perspective(30.0f, aspect_ratio, 0.1f, 100.0f);
-
+	
+	
 	//Model matrix : an identity matrix (model will be at the origin)
 	model.push(glm::mat4(1.0f));
+	
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
+		glm::vec4 lightpos = View * glm::vec4(0.0, 2.0, -2.0, 1.0);
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		
 		//View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
@@ -379,6 +382,7 @@ void display()
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 		glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+		glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
 		drawRobot();
 	model.pop();
 
