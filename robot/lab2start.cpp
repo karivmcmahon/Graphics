@@ -29,12 +29,13 @@ if you prefer */
 
 GLuint positionBufferObject, normalsBufferObject, colourObject, coneBufferObj, coneColourObj, coneNormalObj;
 GLuint sphereBufferObject, sphereNormals, sphereColours;
+GLuint boltBufferObject, boltNormalObject, boltColourObject;
 GLuint elementbuffer;
 GLuint program;
 GLuint vao;
 
 /* Position and view globals */
-GLfloat coneRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz, kneeMovement;
+GLfloat coneRotation, boltRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz, kneeMovement;
 /* Uniforms*/
 GLuint modelID, viewID,colourModeID, projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
@@ -43,12 +44,16 @@ std::stack<glm::mat4> model;
 std::vector<GLfloat> conePositions;
 std::vector<GLfloat> coneColours;
 std::vector<GLfloat> coneNormals;
+std::vector<glm::vec3> boltPositions;
+std::vector<GLfloat> boltsColours;
+std::vector<glm::vec3> boltsNormals;
 GLuint drawmode;			// Defines drawing mode of sphere as points, lines or filled polygons
 GLuint colourmode;
 GLuint numlats, numlongs;	//Define the resolution of the sphere object
 GLuint numspherevertices;
 void makeUnitSphere(GLfloat *pVertices, GLuint numlats, GLuint numlongs);
 GLuint makeSphereVBO(GLuint numlats, GLuint numlongs);
+GLfloat twicePi = 2.0f * pi;
 void drawSphere();
 void drawRobot();
 void drawCube();
@@ -58,7 +63,10 @@ void drawNeck();
 void drawBody();
 void drawArm();
 void drawLeg();
+void drawBolt();
 void createCone();
+void createBolt();
+void setUpBoltBuffers();
 void movementConstraints();
 void setUpCube();
 void setupConeBuffers();
@@ -70,6 +78,7 @@ Use it for all your initialisation stuff
 void init(GLWrapper *glw)
 {	
 	coneRotation = 90;
+	boltRotation = 90;
 	robotRotation = 0;
 	neckmovement = 0;
 	fingerMovement = 0;
@@ -244,6 +253,32 @@ void init(GLWrapper *glw)
 	glBufferData(GL_ARRAY_BUFFER, coneNormals.size(), &coneNormals[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+
+	createBolt();
+
+	/* Create a vertex buffer object to store vertices */
+	glGenBuffers(1, &boltBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, boltBufferObject);
+	glBufferData(GL_ARRAY_BUFFER, boltPositions.size() * sizeof(glm::vec3), &boltPositions[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	std::cout << "BUFFA" << "\n";
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &boltColourObject);
+	glBindBuffer(GL_ARRAY_BUFFER, boltColourObject);
+	glBufferData(GL_ARRAY_BUFFER, boltsColours.size(), &boltsColours[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	std::cout << "BUFFA" << "\n";
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &boltNormalObject);
+	glBindBuffer(GL_ARRAY_BUFFER, boltNormalObject);
+	glBufferData(GL_ARRAY_BUFFER, boltsNormals.size() * sizeof(glm::vec3), &boltsNormals[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	std::cout << "BUFFA" << "\n";
 	numspherevertices = makeSphereVBO(numlats, numlongs);
 
 	try
@@ -265,9 +300,45 @@ void init(GLWrapper *glw)
 	lightPosID = glGetUniformLocation(program, "lightpos");
 }
 
-void createCube()
+void createBolt()
 {
+	for (GLfloat length = 0; length <= 2.0f; length += 0.01)
+	{
+		boltPositions.push_back(glm::vec3(0.0f, 0.0f, length));
+		
+		boltsColours.push_back(0.0f);
+		boltsColours.push_back(0.0f);
+		boltsColours.push_back(1.0f);
+		
 
+		
+		for (GLfloat angle = 0.0; angle <= 360; angle += 4)
+		{
+
+			boltPositions.push_back(glm::vec3((x + (cos(angle * twicePi / 40)) * 0.7f), (y + (sin(angle * twicePi / 40)) * 0.7f), length));
+			
+
+			boltsColours.push_back(0.0f);
+			boltsColours.push_back(1.0f);
+			boltsColours.push_back(1.0f);
+
+		
+
+
+
+
+		}
+	}
+	// for flat shading
+	for (int v = 0; v < boltPositions.size(); v += 3)
+	{
+		glm::vec3 normal = glm::cross(boltPositions.at(v+1) - boltPositions.at(v),
+									  boltPositions.at(v+2) - boltPositions.at(v));
+		boltsNormals.push_back(normal);
+		boltsNormals.push_back(normal);
+		boltsNormals.push_back(normal);
+	}
+	
 }
 
 void createCone()
@@ -283,7 +354,6 @@ void createCone()
 	coneColours.push_back(1.0f);
 	coneColours.push_back(1.0f);
 
-	GLfloat twicePi = 2.0f * pi;
 	for (GLfloat angle = 0.0; angle <= 90; angle++)
 	{
 
@@ -756,6 +826,24 @@ void drawRobot()
 		drawCube();
 		model.pop();
 
+		model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(-0.22, 0.5, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.1));
+		model.top() = glm::rotate(model.top(), boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
+		drawBolt();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.22, 0.5, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.1));
+		model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
+		drawBolt();
+		model.pop();
+
 		drawNeck();
 	model.pop();
 
@@ -791,6 +879,35 @@ void drawCube()
 
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+
+}
+
+void drawBolt()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, boltBufferObject);
+	glEnableVertexAttribArray(0);
+
+	/* glVertexAttribPointer(index, size, type, normalised, stride, pointer)
+	index relates to the layout qualifier in the vertex shader and in
+	glEnableVertexAttribArray() and glDisableVertexAttribArray() */
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, boltColourObject);
+	glEnableVertexAttribArray(1);
+
+	/* glVertexAttribPointer(index, size, type, normalised, stride, pointer)
+	index relates to the layout qualifier in the vertex shader and in
+	glEnableVertexAttribArray() and glDisableVertexAttribArray() */
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, boltNormalObject);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 73968);
+
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
