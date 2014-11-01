@@ -41,9 +41,9 @@ GLuint modelID, viewID,colourModeID, projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
 GLfloat pi = 3.1415926535898;
 std::stack<glm::mat4> model;
-std::vector<GLfloat> conePositions;
+std::vector<glm::vec3> conePositions;
 std::vector<GLfloat> coneColours;
-std::vector<GLfloat> coneNormals;
+std::vector<glm::vec3> coneNormals;
 std::vector<glm::vec3> boltPositions;
 std::vector<GLfloat> boltsColours;
 std::vector<glm::vec3> boltsNormals;
@@ -235,10 +235,11 @@ void init(GLWrapper *glw)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	createCone();
+	std::cout << "BEAKAS" << "\n";
 	/* Create a vertex buffer object to store vertices */
 	glGenBuffers(1, &coneBufferObj);
 	glBindBuffer(GL_ARRAY_BUFFER, coneBufferObj);
-	glBufferData(GL_ARRAY_BUFFER, conePositions.size(), &conePositions[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, conePositions.size() * sizeof(glm::vec3), &conePositions[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	/* Create a vertex buffer object to store vertex colours */
@@ -250,7 +251,7 @@ void init(GLWrapper *glw)
 	/* Create a vertex buffer object to store vertex colours */
 	glGenBuffers(1, &coneNormalObj);
 	glBindBuffer(GL_ARRAY_BUFFER, coneNormalObj);
-	glBufferData(GL_ARRAY_BUFFER, coneNormals.size(), &coneNormals[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, coneNormals.size() * sizeof(glm::vec3), &coneNormals[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
@@ -343,75 +344,64 @@ void createBolt()
 
 void createCone()
 {
-	conePositions.push_back(0.0f);
-	conePositions.push_back(0.0f);
-	conePositions.push_back(0.75f);
-
-
+	conePositions.push_back(glm::vec3(0.0f, 0.0f, 0.75f));
 
 	coneColours.push_back(0.0f);
 	coneColours.push_back(0.0f);
 	coneColours.push_back(1.0f);
-	coneColours.push_back(1.0f);
+	
 
 	for (GLfloat angle = 0.0; angle <= 90; angle++)
 	{
 
 
-		// SEPERATE LOOP FOR NORMAL AFTER ALL POINTS RETRIEVED ??
-		glm::vec3 normal = (cos(0.75f) * glm::vec3(cos((angle * twicePi / 20) * 0.5f)), 0, sin((angle * twicePi / 20) * 0.5f) + sin((angle * twicePi / 20) * 0.5f) * glm::vec3(0, 1, 0));
-		coneNormals.push_back(normal[0]);
-		coneNormals.push_back(normal[1]);
-		coneNormals.push_back(normal[2]);
-
-
-		conePositions.push_back(x + (cos(angle * twicePi / 20) * 0.5f));
-		conePositions.push_back(y + (sin(angle * twicePi / 20) * 0.5f));
-		conePositions.push_back(0.0f);
+		
+		conePositions.push_back(glm::vec3((x + (cos(angle * twicePi / 20) * 0.5f)), (y + (sin(angle * twicePi / 20) * 0.5f)), 0.0f));
 
 
 		coneColours.push_back(0.0f);
 		coneColours.push_back(0.0f);
 		coneColours.push_back(1.0f);
-		coneColours.push_back(1.0f);
-
+		
 
 
 	}
+	
 
 	std::cout << conePositions.size() << "\n";
 
-	conePositions.push_back(0.0f);
-	conePositions.push_back(0.0f);
-	conePositions.push_back(0.0f);
+	conePositions.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
 
 
 	for (GLfloat angle = 0.0; angle <= 90; angle++)
 	{
 
 
-		glm::vec3 normal = (cos(0.0f) * glm::vec3(cos((angle * twicePi / 20) * 0.5f)), 0, sin((angle * twicePi / 20) * 0.5f) + sin((angle * twicePi / 20) * 0.5f) * glm::vec3(0, 1, 0));
-		coneNormals.push_back(normal[0]);
-		coneNormals.push_back(normal[1]);
-		coneNormals.push_back(normal[2]);
+	
 
-
-		conePositions.push_back(x + (cos(angle * twicePi / 20) * 0.5f));
-		conePositions.push_back(y + (sin(angle * twicePi / 20) * 0.5f));
-		conePositions.push_back(0.0f);
+		conePositions.push_back(glm::vec3((x + (cos(angle * twicePi / 20) * 0.5f)), (y + (sin(angle * twicePi / 20) * 0.5f)), 0.0f));
 
 
 		coneColours.push_back(0.0f);
 		coneColours.push_back(0.0f);
 		coneColours.push_back(1.0f);
-		coneColours.push_back(1.0f);
-
+		
 
 
 	}
 
 
 	std::cout << conePositions.size() << "\n";
+	for (int v = 0; v < conePositions.size() - 1; v += 3)
+	{
+		std::cout << v << "\n";
+		glm::vec3 normal = glm::cross(conePositions.at(v + 1) - conePositions.at(v),
+			conePositions.at(v + 2) - conePositions.at(v));
+		coneNormals.push_back(normal);
+		coneNormals.push_back(normal);
+		coneNormals.push_back(normal);
+		std::cout << "bye" << "\n";
+	}
 }
 
 //Called to update the display.
@@ -444,7 +434,7 @@ void display()
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-		glm::vec4 lightpos = View * glm::vec4(0.0, 2.0, -2.0, 1.0);
+		glm::vec4 lightpos = View * glm::vec4(0.0, 2.5, -3.0, 1.0);
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		
 		//View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
@@ -532,6 +522,7 @@ void drawHat()
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 276);
 	model.pop();
 	glFrontFace(GL_CW);
@@ -542,6 +533,7 @@ void drawHat()
 		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 		model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
 		glDrawArrays(GL_TRIANGLE_FAN, 276, 552);
 	model.pop();
 	glDisableVertexAttribArray(0);
@@ -556,6 +548,7 @@ void drawHead()
 		model.top() = glm::translate(model.top(), glm::vec3(0, 0.50, 0));
 		model.top() = glm::scale(model.top(), glm::vec3(0.8, 0.8, 0.3));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
 		drawCube();
 	model.pop();
 }
@@ -582,6 +575,33 @@ void drawBody()
 		
 		drawCube();
 	model.pop();
+
+	model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(0,-0.07, -0.1));
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
+	//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniform1f(colourModeID, 1);
+	drawBolt();
+	model.pop();
+
+	model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(0, 0.05, -0.1));
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
+	//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniform1f(colourModeID, 1);
+	drawBolt();
+	model.pop();
+
+	model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, -0.1));
+	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
+	//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniform1f(colourModeID, 1);
+	drawBolt();
+	model.pop();
 }
 
 void drawArm(GLfloat x, GLfloat side)
@@ -591,7 +611,7 @@ void drawArm(GLfloat x, GLfloat side)
 	model.push(model.top());
 		model.top() = glm::translate(model.top(), glm::vec3(x, 0.10, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		
+		glUniform1f(colourModeID, 0);
 		//SHOULDER SOCKET
 		model.push(model.top());
 			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
