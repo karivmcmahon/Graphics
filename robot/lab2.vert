@@ -9,12 +9,14 @@ layout(location = 2) in vec3 normal;
 // These are the uniforms that are defined in the application
 uniform mat4 model, view, projection;
 uniform float colourmode;
+uniform uint emitmode;
 
 out vec4 fcolour;
 out vec4 diffuse_albedo;
 out vec4 P;
 out vec3 normals;
 out mat3 normalmatrix;
+out vec3 emissive;
 
 
 void main()
@@ -38,6 +40,8 @@ void main()
 	{
 		diffuse_albedo = vec4(0.5, 0.5, 0.6, 1.0);
 	}
+	
+	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.8); 
 
 	fcolour = colour;
 	gl_Position =  (projection * view * model)  * position_h;

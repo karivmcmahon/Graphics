@@ -30,6 +30,7 @@ if you prefer */
 GLuint positionBufferObject, normalsBufferObject, colourObject, coneBufferObj, coneColourObj, coneNormalObj;
 GLuint sphereBufferObject, sphereNormals, sphereColours;
 GLuint boltBufferObject, boltNormalObject, boltColourObject;
+GLuint starBufferObject, starNormalObject, starColourObject;
 GLuint elementbuffer;
 GLuint program;
 GLuint vao;
@@ -37,7 +38,7 @@ GLuint vao;
 /* Position and view globals */
 GLfloat coneRotation, boltRotation, elbowBasedMovement, robotRotation,armMoving,armUpDownMovement,  neckmovement, legmovement, fingerMovement, fingerPosition, x , y, vx, vy , vz, kneeMovement;
 /* Uniforms*/
-GLuint modelID, viewID,colourModeID, projectionID, lightPosID;
+GLuint modelID, viewID,colourModeID, projectionID, lightPosID, emitModeID;
 GLfloat aspect_ratio = 1.3333f;
 GLfloat pi = 3.1415926535898;
 std::stack<glm::mat4> model;
@@ -47,6 +48,9 @@ std::vector<glm::vec3> coneNormals;
 std::vector<glm::vec3> boltPositions;
 std::vector<GLfloat> boltsColours;
 std::vector<glm::vec3> boltsNormals;
+std::vector<glm::vec3> starPositions;
+std::vector<GLfloat> starColours;
+std::vector<glm::vec3> starNormals;
 GLuint drawmode;			// Defines drawing mode of sphere as points, lines or filled polygons
 GLuint colourmode;
 GLuint numlats, numlongs;	//Define the resolution of the sphere object
@@ -64,8 +68,10 @@ void drawBody();
 void drawArm();
 void drawLeg();
 void drawBolt();
+void drawStar();
 void createCone();
 void createBolt();
+void createStar();
 void setUpBoltBuffers();
 void movementConstraints();
 void setUpCube();
@@ -263,23 +269,43 @@ void init(GLWrapper *glw)
 	glBufferData(GL_ARRAY_BUFFER, boltPositions.size() * sizeof(glm::vec3), &boltPositions[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	std::cout << "BUFFA" << "\n";
-
+	
 	/* Create a vertex buffer object to store vertex colours */
 	glGenBuffers(1, &boltColourObject);
 	glBindBuffer(GL_ARRAY_BUFFER, boltColourObject);
 	glBufferData(GL_ARRAY_BUFFER, boltsColours.size(), &boltsColours[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	std::cout << "BUFFA" << "\n";
 
 	/* Create a vertex buffer object to store vertex colours */
 	glGenBuffers(1, &boltNormalObject);
 	glBindBuffer(GL_ARRAY_BUFFER, boltNormalObject);
 	glBufferData(GL_ARRAY_BUFFER, boltsNormals.size() * sizeof(glm::vec3), &boltsNormals[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	createStar();
 
-	std::cout << "BUFFA" << "\n";
+	/* Create a vertex buffer object to store vertices */
+	glGenBuffers(1, &starBufferObject);
+	glBindBuffer(GL_ARRAY_BUFFER, starBufferObject);
+	glBufferData(GL_ARRAY_BUFFER,starPositions.size() * sizeof(glm::vec3), &starPositions[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &starColourObject);
+	glBindBuffer(GL_ARRAY_BUFFER, starColourObject);
+	glBufferData(GL_ARRAY_BUFFER, starColours.size(), &starColours[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+	/* Create a vertex buffer object to store vertex colours */
+	glGenBuffers(1, &starNormalObject);
+	glBindBuffer(GL_ARRAY_BUFFER, starNormalObject);
+	glBufferData(GL_ARRAY_BUFFER, starNormals.size() * sizeof(glm::vec3), &starNormals[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	std::cout << starPositions.size() << "\n";
+	
 	numspherevertices = makeSphereVBO(numlats, numlongs);
 
 	try
@@ -299,6 +325,7 @@ void init(GLWrapper *glw)
 	viewID = glGetUniformLocation(program, "view");
 	projectionID = glGetUniformLocation(program, "projection");
 	lightPosID = glGetUniformLocation(program, "lightpos");
+	emitModeID = glGetUniformLocation(program, "emitmode");
 }
 
 void createBolt()
@@ -340,6 +367,46 @@ void createBolt()
 		boltsNormals.push_back(normal);
 	}
 	
+}
+
+void createStar()
+{
+	for (GLfloat length = 0; length <= 2.0f; length += 0.01)
+	{
+		starPositions.push_back(glm::vec3(0.0f, 0.0f, length));
+
+		starColours.push_back(1.0f);
+		starColours.push_back(1.0f);
+		starColours.push_back(1.0f);
+
+
+
+		for (GLfloat angle = 0.0; angle <= 360; angle += 4)
+		{
+
+			starPositions.push_back(glm::vec3((x + (cos(angle * twicePi / 10)) * 1.0f), (y + (sin(angle * twicePi / 10)) * 1.0f), length));
+
+
+			starColours.push_back(1.0f);
+			starColours.push_back(1.0f);
+			starColours.push_back(1.0f);
+
+
+
+
+
+
+		}
+	}
+	// for flat shading
+	for (int v = 0; v < starPositions.size(); v += 3)
+	{
+		glm::vec3 normal = glm::cross(starPositions.at(v + 1) - starPositions.at(v),
+			starPositions.at(v + 2) - starPositions.at(v));
+		starNormals.push_back(normal);
+		starNormals.push_back(normal);
+		starNormals.push_back(normal);
+	}
 }
 
 void createCone()
@@ -443,8 +510,74 @@ void display()
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 		glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 		glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
+		glUniform1ui(emitModeID, 0);
+	
+		model.push(model.top());
+
+		model.top() = glm::translate(model.top(), glm::vec3(0.5, 0.5, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.5, 0.5, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.3, 0.9, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.3, 0.9, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.9, 0.9, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.9, 0.9, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		//model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+		model.pop();
+
+
 		drawRobot();
 	model.pop();
+
+	
 
 	movementConstraints();	
 	glUseProgram(0);
@@ -523,6 +656,7 @@ void drawHat()
 		model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniform1f(colourModeID, 2);
+		glUniform1ui(emitModeID, 0);
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 276);
 	model.pop();
 	glFrontFace(GL_CW);
@@ -534,6 +668,7 @@ void drawHat()
 		model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniform1f(colourModeID, 2);
+		glUniform1ui(emitModeID, 0);
 		glDrawArrays(GL_TRIANGLE_FAN, 276, 552);
 	model.pop();
 	glDisableVertexAttribArray(0);
@@ -932,6 +1067,34 @@ void drawBolt()
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 
+}
+
+void drawStar()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, starBufferObject);
+	glEnableVertexAttribArray(0);
+
+	/* glVertexAttribPointer(index, size, type, normalised, stride, pointer)
+	index relates to the layout qualifier in the vertex shader and in
+	glEnableVertexAttribArray() and glDisableVertexAttribArray() */
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, starColourObject);
+	glEnableVertexAttribArray(1);
+
+	/* glVertexAttribPointer(index, size, type, normalised, stride, pointer)
+	index relates to the layout qualifier in the vertex shader and in
+	glEnableVertexAttribArray() and glDisableVertexAttribArray() */
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, starNormalObject);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 18492);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }
 
 
