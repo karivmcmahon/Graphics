@@ -1,25 +1,31 @@
-﻿Build started 02/11/2014 11:33:08.
+﻿Build started 02/11/2014 13:45:56.
      1>Project "C:\Users\Kari\Documents\Graphics\Assignment1Robot\Assignment1Robot.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt robotScene.cpp wrapper_glfw.cpp
-         wrapper_glfw.cpp
-     1>wrapper_glfw.cpp(226): warning C4101: 'e' : unreferenced local variable
-         Generating Code...
-         Compiling...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt robotScene.cpp
          robotScene.cpp
      1>robotScene.cpp(34): warning C4305: 'initializing' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(312): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(326): warning C4018: '<' : signed/unsigned mismatch
-     1>robotScene.cpp(340): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(354): warning C4018: '<' : signed/unsigned mismatch
-     1>robotScene.cpp(388): warning C4018: '<' : signed/unsigned mismatch
-     1>robotScene.cpp(882): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(883): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(884): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(885): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(317): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(331): warning C4018: '<' : signed/unsigned mismatch
+     1>robotScene.cpp(345): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(359): warning C4018: '<' : signed/unsigned mismatch
+     1>robotScene.cpp(393): warning C4018: '<' : signed/unsigned mismatch
+     1>robotScene.cpp(437): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(438): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(439): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(440): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(542): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(543): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(545): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(546): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(576): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(577): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(578): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(829): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(830): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(831): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(832): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
          GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\Assignment1Robot.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\Assignment1Robot.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\Assignment1Robot.lib" /MACHINE:X86 Debug\robotScene.obj
          Debug\wrapper_glfw.obj
@@ -28,4 +34,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.72
+Time Elapsed 00:00:02.39

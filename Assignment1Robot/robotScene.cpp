@@ -58,8 +58,13 @@ void drawNeck();
 void drawBody();
 void drawArm();
 void drawLeg();
+void drawEye(GLfloat x);
 void drawBolt();
+void drawLips();
 void drawStar();
+void drawBoltButton(GLfloat y);
+void drawBoltEars(GLfloat x);
+void drawStarSky(GLfloat x, GLfloat y);
 void createCone();
 void createBolt();
 void createStar();
@@ -89,8 +94,8 @@ void init(GLWrapper *glw)
 	vz = 0;
 	fingerPosition = 45;
 	colourmode = 2;
-	numlats = 40;		// Number of latitudes in our sphere
-	numlongs = 40;		// Number of longitudes in our sphere
+	numlats = 40;		
+	numlongs = 40;		
 
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
@@ -421,11 +426,18 @@ void display()
 
 	//Model matrix : an identity matrix - Sets up the scene
 	model.push(glm::mat4(1.0f));
+		//SCENE
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
 		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, -3.0, 1.0);
-		model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
+		//model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
+		drawStarSky(0.5, 0.5);
+		drawStarSky(-0.5, 0.5);
+		drawStarSky(0.3, 0.9);
+		drawStarSky(-0.3, 0.9);
+		drawStarSky(0.9, 0.9);
+		drawStarSky(-0.9, 0.9);
 		glUniform1f(colourModeID, 0);
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -433,65 +445,29 @@ void display()
 		glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
 		glUniform1ui(emitModeID, 0);
 
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(0.5, 0.5, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 0);
-			glUniform1ui(emitModeID, 1);
-			drawStar();
-		model.pop();
-
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(-0.5, 0.5, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 0);
-			glUniform1ui(emitModeID, 1);
-			drawStar();
-		model.pop();
-
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(0.3, 0.9, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 0);
-			glUniform1ui(emitModeID, 1);
-			drawStar();
-		model.pop();
-
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(-0.3, 0.9, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 0);
-			glUniform1ui(emitModeID, 1);
-			drawStar();
-		model.pop();
-
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(-0.9, 0.9, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 0);
-			glUniform1ui(emitModeID, 1);
-			drawStar();
-		model.pop();
-
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(0.9, 0.9, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 0);
-			glUniform1ui(emitModeID, 1);
-			drawStar();
-		model.pop();
-	drawRobot();
+		    //ROBOT
+			model.push(model.top());
+				model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
+				glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+				drawRobot();
+			model.pop();
 	model.pop();
 	//Calls movement checks - to make movement seem realistic
 	movementConstraints();
 	glUseProgram(0);
 
+}
+
+void drawStarSky(GLfloat x, GLfloat y)
+{
+	model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(x, y, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 1);
+		drawStar();
+	model.pop();
 }
 
 /**
@@ -563,6 +539,12 @@ void drawHead()
 		glUniform1f(colourModeID, 0);
 		drawCube();
 	model.pop();
+	drawEye(0.1);
+	drawEye(-0.1);
+	drawLips();
+	drawBoltEars(0.22);
+	drawBoltEars(-0.22);
+	
 }
 
 /**
@@ -591,32 +573,22 @@ void drawBody()
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		drawCube();
 	model.pop();
+	drawBoltButton(-0.07);
+	drawBoltButton(0.05);
+	drawBoltButton(-0.20);
+	
+}
 
+void drawBoltButton(GLfloat y)
+{
 	model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(0, -0.07, -0.1));
-		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
-		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniform1f(colourModeID, 1);
-		drawBolt();
-	model.pop();
-
-	model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(0, 0.05, -0.1));
-		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
-		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniform1f(colourModeID, 1);
-		drawBolt();
-	model.pop();
-
-	model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, -0.1));
+		model.top() = glm::translate(model.top(), glm::vec3(0, y, -0.1));
 		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
 		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniform1f(colourModeID, 1);
 		drawBolt();
 	model.pop();
 }
-
 /**
 Draws robots arm
 **/
@@ -806,78 +778,53 @@ model.pop();
 model.pop();
 }
 
+void drawEye(GLfloat x)
+{
+	model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(x, 0.55, -0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
+		drawCube();
+	model.pop();
+}
+
+void drawLips()
+{
+	model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, -0.05));
+		model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.2));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
+		drawCube();
+	model.pop();
+}
+
+void drawBoltEars(GLfloat x)
+{
+	model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(x, 0.5, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.1));
+		model.top() = glm::rotate(model.top(), boltRotation, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
+		drawBolt();
+	model.pop();
+}
+
 /**
 Builds robot shape
 **/
 void drawRobot()
 {
 	model.push(model.top());
-	model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
-	model.top() = glm::translate(model.top(), glm::vec3(0, 0, 0));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-
-	drawHat();
-	drawHead();
-	//HEAD
-	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(0.1, 0.55, -0.05));
-	model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(colourModeID, 1);
-	drawCube();
+		model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		drawHat();
+		drawHead();
+		drawNeck();
 	model.pop();
-
-	setupConeBuffers();
-	model.push(glm::mat4(1.0f));
-	model.top() = glm::translate(model.top(), glm::vec3(0.5, 0.55, 0.05));
-	model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
-	model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
-	model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
-	//model.top() = glm::rotate(model.top(), -coneRotation, glm::vec3(1, 0, 0));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(colourModeID, 2);
-	glDrawArrays(GL_TRIANGLE_FAN, 276, 552);
-	model.pop();
-
-	//HEAD
-	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(-0.1, 0.55, -0.05));
-	model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(colourModeID, 1);
-	drawCube();
-	model.pop();
-
-	//HEAD
-	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, -0.05));
-	model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.2));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(colourModeID, 2);
-	drawCube();
-	model.pop();
-
-	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(-0.22, 0.5, 0));
-	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.1));
-	model.top() = glm::rotate(model.top(), boltRotation, glm::vec3(0, 1, 0));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(colourModeID, 1);
-	drawBolt();
-	model.pop();
-
-	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(0.22, 0.5, 0));
-	model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.1));
-	model.top() = glm::rotate(model.top(), -boltRotation, glm::vec3(0, 1, 0));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(colourModeID, 1);
-	drawBolt();
-	model.pop();
-
-	drawNeck();
-	model.pop();
-
 	drawBody();
 	drawArm(0.20, 1);
 	drawArm(-0.20, 0);
