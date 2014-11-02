@@ -1,3 +1,8 @@
+/**
+Shape class stores the creation and drawing of all shapes in the application
+Created by Kari McMahon October 2014
+**/
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -22,24 +27,18 @@
 class Shape
 {
 	public:
-		  GLfloat pi;
-		  GLfloat twicePi;
+		  GLfloat pi, twicePi;
 		  GLfloat x, y;
-		  std::vector<glm::vec3> conePositions;
-		  std::vector<GLfloat> coneColours;
-		  std::vector<glm::vec3> coneNormals;
-		  std::vector<glm::vec3> boltPositions;
-		  std::vector<GLfloat> boltsColours;
-		  std::vector<glm::vec3> boltsNormals;
-		  std::vector<glm::vec3> starPositions;
-		  std::vector<GLfloat> starColours;
-		  std::vector<glm::vec3> starNormals;
+		  std::vector<glm::vec3> conePositions, boltPositions, starPositions;
+		  std::vector<GLfloat> coneColours,boltsColours,starColours;
+		  std::vector<glm::vec3> coneNormals, boltsNormals, starNormals;
 		  GLuint positionBufferObject, normalsBufferObject, colourObject;
 		  GLuint sphereBufferObject, sphereNormals, sphereColours, elementbuffer;
 		  GLuint coneBufferObj, coneColourObj, coneNormalObj;
 		  GLuint boltBufferObject, boltNormalObject, boltColourObject;
 		  GLuint starBufferObject, starNormalObject, starColourObject;
 		  GLuint numlats, numlongs;
+		 
 		  Shape()
 		  {
 				pi = 3.1415926535898;
@@ -51,7 +50,7 @@ class Shape
 		  }
 		
 	  
-		
+	     /** Creates cone positions, normals and colours and places in buffer **/
 		void createCone()
 		{
 			conePositions.push_back(glm::vec3(0.0f, 0.0f, 0.75f));
@@ -98,7 +97,7 @@ class Shape
 		}
 
 		/*
-		Creates a bolt like shape for the robot by setting positions, normals and colours
+		Creates a bolt like shape for the robot by setting positions, normals and colours then places in buffer
 		*/
 		void createBolt()
 		{
@@ -143,7 +142,7 @@ class Shape
 
 
 		/*
-		Creates a star like shape by setting positions, colours and normals
+		Creates a star like shape by setting positions, colours and normals and places in buffer
 		*/
 		void createStar()
 		{
@@ -359,7 +358,7 @@ class Shape
 		}
 
 		/**
-		Draws Cone
+		Draws Cone shape
 		**/
 		void drawCone()
 		{
@@ -435,6 +434,9 @@ class Shape
 			
 		}
 
+		/**
+		Draws cube shape - Example from Iain Martin
+		**/
 		void createCube()
 		{
 			//Set up  cube positions, colours and normals then send into vertex buffers
@@ -569,7 +571,7 @@ class Shape
 		}
 
 		/**
-		Draws cube shape
+		Draws cube shape - Example from Iain Martin
 		**/
 		void drawCube()
 		{

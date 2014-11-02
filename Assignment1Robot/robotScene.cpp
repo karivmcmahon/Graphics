@@ -31,9 +31,6 @@ GLfloat aspect_ratio = 1.3333f;
 std::stack<glm::mat4> model;		
 GLuint colourmode;
 	
-GLuint numspherevertices;
-void makeUnitSphere(GLfloat *pVertices, GLuint numlats, GLuint numlongs);
-GLuint makeSphereVBO(GLuint numlats, GLuint numlongs);
 void drawRobot();
 void drawHat();
 void drawHead();
@@ -46,10 +43,9 @@ void drawLips();
 void drawBoltButton(GLfloat y);
 void drawBoltEars(GLfloat x);
 void drawStarSky(GLfloat x, GLfloat y);
-void setUpBoltBuffers();
+
 void movementConstraints();
-void setUpCube();
-void setupConeBuffers();
+
 GLfloat robotScene::coneRotation;
 Shape s;
 
@@ -86,8 +82,8 @@ void init(GLWrapper *glw)
 	s.createBolt();
 	//Set up star positions, colours and normals then pass to buffer
 	s.createStar();
-	//Sets up sphere VBP
-	numspherevertices = s.makeSphereVBO(40, 40);
+	//Sets up sphere VBO
+	s.makeSphereVBO(40, 40);
 	try
 	{
 		program = glw->LoadShader("robotScene.vert", "robotScene.frag");
