@@ -12,9 +12,6 @@ By Kari McMahon in October 2014
 class robotScene
 {
 	public:
-		robotScene();
-		~robotScene();
 		/* Position and view globals */
-public:
-		static GLfloat angle_x, angle_x_inc;
+		static GLfloat coneRotation;
 };
