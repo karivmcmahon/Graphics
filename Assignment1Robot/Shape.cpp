@@ -2,7 +2,7 @@
 Shape class stores the creation and drawing of all shapes in the application
 Created by Kari McMahon October 2014
 **/
-
+#pragma once
 #include <string>
 #include <iostream>
 #include <vector>

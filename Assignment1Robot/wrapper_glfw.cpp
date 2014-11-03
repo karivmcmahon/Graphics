@@ -3,7 +3,7 @@
   By Kari McMahon in October 2014
   Layout based on Iain Martins lab 2 example
   */
-
+#pragma once
 #include "wrapper_glfw.h"
 
 /* Inlcude some standard headers */

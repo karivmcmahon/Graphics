@@ -73,6 +73,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Robot.cpp" />
     <ClCompile Include="robotScene.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="wrapper_glfw.cpp" />
