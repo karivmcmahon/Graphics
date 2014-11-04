@@ -27,16 +27,20 @@ Created by Kari McMahon October 2014
 class Shape
 {
 	public:
+		  //Pi variables for some shape calculations
 		  GLfloat pi, twicePi;
 		  GLfloat x, y;
+		  //Vectors to store positions , colours and normals for various shapes
 		  std::vector<glm::vec3> conePositions, boltPositions, starPositions;
 		  std::vector<GLfloat> coneColours,boltsColours,starColours;
 		  std::vector<glm::vec3> coneNormals, boltsNormals, starNormals;
+		  //Objects for the buffer
 		  GLuint positionBufferObject, normalsBufferObject, colourObject;
 		  GLuint sphereBufferObject, sphereNormals, sphereColours, elementbuffer;
 		  GLuint coneBufferObj, coneColourObj, coneNormalObj;
 		  GLuint boltBufferObject, boltNormalObject, boltColourObject;
 		  GLuint starBufferObject, starNormalObject, starColourObject;
+		  //Latitude and longitude for sphere
 		  GLuint numlats, numlongs;
 		 
 		  Shape()
@@ -269,8 +273,8 @@ class Shape
 		}
 
 
-		/* Define the vertex positions for a sphere. The array of vertices must have previosuly
-		been created - Example from iain martin
+		/*
+		Define the vertex positions for a sphere - Example from iain martin
 		*/
 		void makeUnitSphere(GLfloat *pVertices, GLuint numlats, GLuint numlongs)
 		{

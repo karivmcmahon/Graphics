@@ -1,5 +1,5 @@
 /*
-*  Class for Assignment by Kari McMahon - October 2014
+*  View Class for Assignment by Kari McMahon - October 2014
 * Layout based on Iain Martin's lab 2 example
 * /
 
@@ -10,11 +10,9 @@
 
 #include "wrapper_glfw.h"
 #include <iostream>
-
-
 #include "Robot.cpp"
-
 #include "robotScene.h"
+
 /* GLM core */
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
@@ -26,25 +24,26 @@
 
 GLuint program;
 GLuint vao;
-
+//View movement variables
 GLfloat   vx, vy, vz;
-
+//Uniforms
 GLuint  viewID,  projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
-
 std::stack<glm::mat4> model;
-void drawStarSky(GLfloat x, GLfloat y);
-
-void movementConstraints();
 Robot robot;
 Shape shape;
+
+void drawStarSky(GLfloat x, GLfloat y);
+void movementConstraints();
+void consoleOutput();
+
 
 /*
 * Initialisation method
 */
 void init(GLWrapper *glw)
 {
-	
+	//Sets up view movemenet variables
 	vx = 0;
 	vy = 0;
 	vz = 0;
@@ -82,6 +81,8 @@ void init(GLWrapper *glw)
 	projectionID = glGetUniformLocation(program, "projection");
 	lightPosID = glGetUniformLocation(program, "lightpos");
 	robot.emitModeID = glGetUniformLocation(program, "emitmode");
+
+	consoleOutput();
 	
 }
 
@@ -112,54 +113,77 @@ void display()
 
 	//Robot::model matrix : an identity matrix - Sets up the scene
 	model.push(glm::mat4(1.0f));
-	//SCENE
-	View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
-	View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
-	View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-	glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, -3.0, 1.0);
-
-	glUniform1f(robot.colourModeID, 0);
-	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
-	glUniform1ui(robot.emitModeID, 0);
-	drawStarSky(0.5, 0.5);
-	drawStarSky(-0.5, 0.5);
-	drawStarSky(0.3, 0.9);
-	drawStarSky(-0.3, 0.9);
-	drawStarSky(0.9, 0.9);
-	drawStarSky(-0.9, 0.9);
-	//ROBOT
-	model.push(model.top());
-	model.top() = glm::rotate(model.top(), robot.robotRotation, glm::vec3(0, 1, 0));
-	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	robot.drawRobot();
+		
+		//SCENE
+		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
+		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
+		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
+		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, -3.0, 1.0);
+		glUniform1f(robot.colourModeID, 0);
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+		glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+		glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
+		glUniform1ui(robot.emitModeID, 0);
+		drawStarSky(0.5, 0.5);
+		drawStarSky(-0.5, 0.5);
+		drawStarSky(0.3, 0.9);
+		drawStarSky(-0.3, 0.9);
+		drawStarSky(0.9, 0.9);
+		drawStarSky(-0.9, 0.9);
+		
+		//ROBOT
+		model.push(model.top());
+			model.top() = glm::rotate(model.top(), robot.robotRotation, glm::vec3(0, 1, 0));
+			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+			robot.drawRobot();
+		model.pop();
 	model.pop();
-	model.pop();
+	
 	//Calls movement checks - to make movement seem realistic
 	movementConstraints();
 	glUseProgram(0);
 
 }
 
+/**
+Draws positions of stars to make the scene have a starry sky
+**/
 void drawStarSky(GLfloat x, GLfloat y)
 {
 	model.push(model.top());
-	model.top() = glm::translate(model.top(), glm::vec3(x, y, 0));
-	model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-	glUniform1f(robot.colourModeID, 0);
-	glUniform1ui(robot.emitModeID, 1);
-	shape.drawStar();
+		model.top() = glm::translate(model.top(), glm::vec3(x, y, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 0);
+		glUniform1ui(robot.emitModeID, 1);
+		shape.drawStar();
 	model.pop();
 }
 
-
+/**
+Console output that displays controls for the application
+**/
+void consoleOutput()
+{
+	std::cout << "--------------CONTROLS-----------------" << "\n";
+	std::cout << "\n";
+	std::cout << "--------View----------" << "\n";
+	std::cout << "Press up arrow key to move view upwards" << "\n";
+	std::cout << "Press down arrow key to move view downwards" << "\n";
+	std::cout << "Press left arrow key to rotate view left in the x direction" << "\n";
+	std::cout << "Press right arrow key to rotate view right in the x direction" << "\n";
+	std::cout << "Press K key to rotate view left in the z direction" << "\n";
+	std::cout << "Press L key to rotate view right in the z direction" << "\n";
+	std::cout << "\n";
+	std::cout << "-------Robot---------" << "\n";
+	std::cout << "Press Q key to rotate robot left and W key to rotate robot right" << "\n";
+	//std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" << "\n";
+}
 
 
 /**
-Checks on robot movement's to make the robot's movements seem realistic
+Checks on movement constraints - especially robot to make movements seem realistic 
 **/
 void movementConstraints()
 {

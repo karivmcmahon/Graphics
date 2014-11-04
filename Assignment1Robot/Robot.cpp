@@ -27,8 +27,9 @@ Created by Kari McMahon October 2014
 class Robot
 {
 public:
-	
+	//Uniforms
     GLuint modelID,  colourModeID, emitModeID;	
+	//Sets up various movement variables for robot
 	GLfloat neckmovement, robotRotation, elbowBasedMovement, armMoving, armUpDownMovement, legmovement, fingerMovement, fingerPosition, kneeMovement;
 	GLfloat coneRotation, boltRotation;
 	Robot()
@@ -45,6 +46,9 @@ public:
 		fingerPosition = 45;
 	}
 
+	/**
+	* Draws the robot
+	**/
 	void drawRobot()
 	{
 		model.push(model.top());
@@ -63,11 +67,10 @@ public:
 	}
 
 	/**
-	Draws robots cone hats
+	Draws robots cone hat
 	**/
 	void drawHat()
 	{
-		//HAT
 		model.push(glm::mat4(1.0f));
 			model.top() = glm::translate(model.top(), glm::vec3(0, 0.7, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
@@ -82,9 +85,11 @@ public:
 
 	}
 	
+	/**
+	Draws the robots head
+	**/
 	void drawHead()
 	{
-		//std::cout << model.size();
 		model.push(model.top());
 			model.top() = glm::translate(model.top(), glm::vec3(0, 0.50, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.8, 0.8, 0.3));
@@ -104,7 +109,6 @@ public:
 	**/
 	void drawNeck()
 	{
-		//NECK
 		model.push(glm::mat4(model.top()));
 			model.top() = glm::translate(model.top(), glm::vec3(0, 0.24, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.25, 0.3));
@@ -114,6 +118,9 @@ public:
 		model.pop();
 	}
 
+	/**
+	Draws thr robot's eye
+	**/
 	void drawEye(GLfloat x)
 	{
 		model.push(model.top());
@@ -125,6 +132,9 @@ public:
 		model.pop();
 	}
 
+	/**
+	Draws the robots lips
+	**/
 	void drawLips()
 	{
 		model.push(model.top());
@@ -136,6 +146,9 @@ public:
 		model.pop();
 	}
 
+	/**
+	Draws the robots bolt ears
+	**/
 	void drawBoltEars(GLfloat x)
 	{
 		model.push(model.top());
@@ -153,7 +166,6 @@ public:
 	**/
 	void drawBody()
 	{
-		////BODY
 		model.push(model.top());
 			model.top() = glm::translate(model.top(), glm::vec3(0.0, -0.07, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.6, 1, 0.3));
@@ -166,6 +178,9 @@ public:
 		drawBoltButton(-0.20);
 	}
 
+	/**
+	Draws robots buttons
+	**/
 	void drawBoltButton(GLfloat y)
 	{
 		model.push(model.top());
@@ -178,7 +193,7 @@ public:
 	}
 
 	/**
-	Draws robots arm
+	Creates and draws robots arm
 	**/
 	void drawArm(GLfloat x, GLfloat side)
 	{
@@ -300,7 +315,7 @@ public:
 	}
 
 	/**
-	Draws leg for robot
+	Creates and draws leg for robot
 	**/
 	void drawLeg(GLfloat x, GLfloat side)
 	{
@@ -316,6 +331,7 @@ public:
 				shape.drawSphere();
 			model.pop();
 
+			//Transformation for leg
 			model.push(model.top());
 				if (side == 0)
 				{
@@ -328,24 +344,26 @@ public:
 				model.top() = glm::translate(model.top(), glm::vec3(0, -0.15, 0));
 				glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 
-				//// LEG
+				// THIGH
 				model.push(model.top());
 					model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.5, 0.3));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 					shape.drawCube();
 				model.pop();
 
+				//Transform for knee downwards 
 				model.push(model.top());
 					model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 
-				//LEG CONNECTOR
+				// KNEE CAP
 				model.push(model.top());
 					model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 					shape.drawSphere();
 				model.pop();
 
+				//LEG
 				model.push(model.top());
 					model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
 					model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
@@ -367,12 +385,17 @@ public:
 	model.pop();
 	}
 
+	/**
+	Key pressed to move the robot in various ways
+	**/
 	void robotKeyMoves(int k)
 	{
-		if (k == 'Q')	robotRotation += 10.0f;
-		if (k == 'W')	robotRotation -= 10.0f;
-		if (k == 'C')	neckmovement += 5;
-		if (k == 'V')	neckmovement -= 5;
+		if (k == 'Q')	robotRotation -= 10.0f;
+		if (k == 'W')	robotRotation += 10.0f;
+
+		if (k == 'R')	neckmovement -= 5;
+		if (k == 'E')	neckmovement += 5;
+
 		if (k == 'A')	armUpDownMovement += 5 % 360;
 		if (k == 'S')	armUpDownMovement -= 5 % 360;
 		if (k == 'Z')	elbowBasedMovement += 5;
@@ -387,6 +410,9 @@ public:
 		if (k == 'U')	armMoving -= 5;
 	}
 
+	/**
+	Movement constraints to make movement seem realistic to a robot
+	**/
 	void robotMovementConstraints()
 	{
 		if (legmovement >= 45)	legmovement = 45;

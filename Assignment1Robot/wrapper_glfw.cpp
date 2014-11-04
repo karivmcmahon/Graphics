@@ -7,7 +7,6 @@
 #include "wrapper_glfw.h"
 
 /* Inlcude some standard headers */
-
 #include <iostream>
 #include <fstream>
 #include <vector>

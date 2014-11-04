@@ -1,5 +1,5 @@
 /**
-robotScene.h
+robotScene.h - Will store any global variables for project
 By Kari McMahon in October 2014
 */
 #include <stack>
