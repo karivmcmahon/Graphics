@@ -106,7 +106,7 @@ void display()
 
 	// Camera matrix
 	glm::mat4 View = glm::lookAt(
-		glm::vec3(0, 0, -4), // Camera is at (0,0,-4), in World Space
+		glm::vec3(0, 0, 4), // Camera is at (0,0,-4), in World Space
 		glm::vec3(0, 0, 0), // and looks at the origin
 		glm::vec3(0, 1, 0)  // Head is up 
 		);
@@ -118,7 +118,7 @@ void display()
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, -4.0, 1.0);
+		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, 4.0, 1.0);
 		glUniform1f(robot.colourModeID, 0);
 		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);

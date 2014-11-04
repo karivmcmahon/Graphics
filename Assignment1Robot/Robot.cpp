@@ -124,7 +124,7 @@ public:
 	void drawEye(GLfloat x)
 	{
 		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(x, 0.55, -0.05));
+			model.top() = glm::translate(model.top(), glm::vec3(x, 0.55, 0.05));
 			model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.3));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			glUniform1f(colourModeID, 1);
@@ -138,7 +138,7 @@ public:
 	void drawLips()
 	{
 		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, -0.05));
+			model.top() = glm::translate(model.top(), glm::vec3(0, 0.40, 0.05));
 			model.top() = glm::scale(model.top(), glm::vec3(0.25, 0.05, 0.2));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			glUniform1f(colourModeID, 2);
@@ -184,8 +184,8 @@ public:
 	void drawBoltButton(GLfloat y)
 	{
 		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(0, y, -0.1));
-			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.05));
+			model.top() = glm::translate(model.top(), glm::vec3(0, y, 0.1));
+			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, -0.05));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			glUniform1f(colourModeID, 1);
 			shape.drawBolt();
@@ -254,7 +254,7 @@ public:
 
 				//ARM
 				model.push(model.top());
-					model.top() = glm::rotate(model.top(), elbowBasedMovement, glm::vec3(1, 0, 0));
+					model.top() = glm::rotate(model.top(), -elbowBasedMovement, glm::vec3(1, 0, 0));
 					model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0));
 					model.top() = glm::scale(model.top(), glm::vec3(0.15, 0.4, 0.3));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -264,7 +264,7 @@ public:
 
 				//TRANSFORM FOR HAND
 				model.push(model.top());
-					model.top() = glm::rotate(model.top(), elbowBasedMovement, glm::vec3(1, 0, 0));
+					model.top() = glm::rotate(model.top(), -elbowBasedMovement, glm::vec3(1, 0, 0));
 					model.top() = glm::translate(model.top(), glm::vec3(0, -0.20, 0));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 
@@ -375,7 +375,7 @@ public:
 				////SHOE
 				model.push(model.top());
 					model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
-					model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, -0.05));
+					model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0.05));
 					model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.5));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 					shape.drawCube();
