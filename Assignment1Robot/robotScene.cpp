@@ -118,7 +118,7 @@ void display()
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, -3.0, 1.0);
+		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, -4.0, 1.0);
 		glUniform1f(robot.colourModeID, 0);
 		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);

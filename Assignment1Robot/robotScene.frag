@@ -13,6 +13,7 @@ uniform vec4 lightpos;
 
 
 vec3 specular_albedo = vec3(1.0, 1.0, 1.0);
+
 vec3 global_ambient = vec3(0.05, 0.05, 0.05);
 float  shininess = 8.0;
 
@@ -33,5 +34,5 @@ void main()
 	V = normalize(-P.xyz);	
 	R = reflect(-L, N);
 	vec3 specular = pow(max(dot(R, V), 0.0), shininess) * specular_albedo;
-	outputColor = vec4((ambient + diffuse + specular ) + emissive, 1.0);
+	outputColor = vec4((ambient + diffuse + specular ) + emissive + global_ambient, 1.0);
 }

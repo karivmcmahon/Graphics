@@ -57,7 +57,7 @@ class Shape
 	     /** Creates cone positions, normals and colours and places in buffer **/
 		void createCone()
 		{
-			conePositions.push_back(glm::vec3(0.0f, 0.0f, 0.75f));
+			conePositions.push_back(glm::vec3(0.0f, 0.0f, 0.8f));
 			coneColours.push_back(0.0f);
 			coneColours.push_back(0.0f);
 			coneColours.push_back(1.0f);
@@ -68,15 +68,8 @@ class Shape
 				coneColours.push_back(0.0f);
 				coneColours.push_back(1.0f);
 			}
-			conePositions.push_back(glm::vec3(0.0f, 0.0f, 0.0f));
-			for (GLfloat angle = 0.0; angle <= 90; angle++)
-			{
-				conePositions.push_back(glm::vec3((x + (cos(angle * twicePi / 20) * 0.5f)), (y + (sin(angle * twicePi / 20) * 0.5f)), 0.0f));
-				coneColours.push_back(0.0f);
-				coneColours.push_back(0.0f);
-				coneColours.push_back(1.0f);
-			}
-			for (int v = 0; v < conePositions.size() - 1; v += 3)
+			
+			for (int v = 0; v < conePositions.size() - sizeof(glm::vec3); v += 3)
 			{
 				glm::vec3 normal = glm::cross(conePositions.at(v + 1) - conePositions.at(v),
 					conePositions.at(v + 2) - conePositions.at(v));
@@ -150,7 +143,7 @@ class Shape
 		*/
 		void createStar()
 		{
-			for (GLfloat length = 0; length <= 2.0f; length += 0.01)
+			for (GLfloat length = 0; length < 0.5f; length += 0.01)
 			{
 				starPositions.push_back(glm::vec3(0.0f, 0.0f, length));
 				starColours.push_back(1.0f);
@@ -164,7 +157,8 @@ class Shape
 					starColours.push_back(1.0f);
 				}
 			}
-			for (int v = 0; v < starPositions.size(); v += 3)
+			std::cout << sizeof(glm::vec3) << "\n";
+			for (int v = 0; v < starPositions.size() - sizeof(glm::vec3); v += 3)
 			{
 				glm::vec3 normal = glm::cross(starPositions.at(v + 1) - starPositions.at(v),
 					starPositions.at(v + 2) - starPositions.at(v));
@@ -497,47 +491,47 @@ class Shape
 
 			/* Define an array of colours */
 			float vertexColours[] = {
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
 
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 0.5f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
 
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
 
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 0.5f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
 
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
+				0.5f, 0.5f, 0.5f, 1.0f,
 
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
-				0.0f, 0.0f, 1.0f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 0.5f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
+				0.3f, 0.3f, 0.3f, 1.0f,
 
 
 			};

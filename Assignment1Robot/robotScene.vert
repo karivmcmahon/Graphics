@@ -37,9 +37,13 @@ void main()
 	{
 		diffuse_albedo = vec4(0.0, 0.0, 0.0, 1.0);
 	}
+	else if (colourmode == 3)
+	{
+		diffuse_albedo = vec4(0.0, 0.0, 1.0, 1.0);
+	}
 	else
 	{
-		diffuse_albedo = vec4(0.5, 0.5, 0.6, 1.0);
+		diffuse_albedo = vec4(0.5, 0.5, 0.5, 1.0);
 	}
 	
 	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.8); 

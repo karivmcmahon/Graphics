@@ -100,8 +100,8 @@ public:
 		drawEye(0.1);
 		drawEye(-0.1);
 		drawLips();
-		drawBoltEars(0.22);
-		drawBoltEars(-0.22);
+		drawBoltEars(0.2);
+		drawBoltEars(-0.23);
 	}
 
 	/**
@@ -153,10 +153,10 @@ public:
 	{
 		model.push(model.top());
 			model.top() = glm::translate(model.top(), glm::vec3(x, 0.5, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.05, 0.1));
+			model.top() = glm::scale(model.top(), glm::vec3(0.02, 0.08, 0.03));
 			model.top() = glm::rotate(model.top(), boltRotation, glm::vec3(0, 1, 0));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			glUniform1f(colourModeID, 1);
+			glUniform1f(colourModeID, 3);
 			shape.drawBolt();
 		model.pop();
 	}
