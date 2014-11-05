@@ -252,7 +252,7 @@ public:
 					shape.drawSphere();
 				model.pop();
 
-				//ARM
+				//FORE ARM
 				model.push(model.top());
 					model.top() = glm::rotate(model.top(), -elbowBasedMovement, glm::vec3(1, 0, 0));
 					model.top() = glm::translate(model.top(), glm::vec3(0, -0.10, 0));
@@ -388,8 +388,10 @@ public:
 	/**
 	Key pressed to move the robot in various ways
 	**/
-	void robotKeyMoves(int k)
+	void robotKeyMoves(int k, int action)
 	{
+		if (action != GLFW_PRESS) return;
+
 		if (k == 'Q')	robotRotation -= 10.0f;
 		if (k == 'W')	robotRotation += 10.0f;
 
@@ -398,16 +400,23 @@ public:
 
 		if (k == 'A')	armUpDownMovement += 5 % 360;
 		if (k == 'S')	armUpDownMovement -= 5 % 360;
-		if (k == 'Z')	elbowBasedMovement += 5;
-		if (k == 'X')	elbowBasedMovement -= 5;
-		if (k == 'B')	legmovement += 5;
-		if (k == 'N')	legmovement -= 5;
-		if (k == 'I')	kneeMovement += 5;
-		if (k == 'O')	kneeMovement -= 5;
-		if (k == 'F')	fingerMovement += 5;
-		if (k == 'G')	fingerMovement -= 5;
+
+		if (k == 'D')	elbowBasedMovement += 5;
+		if (k == 'F')	elbowBasedMovement -= 5;
+
 		if (k == 'Y')	armMoving += 5;
 		if (k == 'U')	armMoving -= 5;
+
+		if (k == 'Z')	legmovement += 5;
+		if (k == 'X')	legmovement -= 5;
+
+		if (k == 'C')	kneeMovement += 5;
+		if (k == 'V')	kneeMovement -= 5;
+
+		if (k == 'G')	fingerMovement += 5;
+		if (k == 'H')	fingerMovement -= 5;
+
+		
 	}
 
 	/**

@@ -141,7 +141,7 @@ void display()
 	model.pop();
 	
 	//Calls movement checks - to make movement seem realistic
-	movementConstraints();
+	robot.robotMovementConstraints();
 	glUseProgram(0);
 
 }
@@ -177,8 +177,16 @@ void consoleOutput()
 	std::cout << "Press L key to rotate view right in the z direction" << "\n";
 	std::cout << "\n";
 	std::cout << "-------Robot---------" << "\n";
+	std::cout << "Please note there are constraints on the robots movements so they seem realistic" << "\n";
 	std::cout << "Press Q key to rotate robot left and W key to rotate robot right" << "\n";
-	//std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" << "\n";
+	std::cout << "Press Y key and U key to move in the x direction" << "\n";
+	std::cout << "Press A key to move arm upwards and S key to move arm downwards" << "\n";
+	std::cout << "Press D key to move forearm forward in the x direction and F key move forearm in the direction" << "\n";
+	std::cout << "Press G key to move finger inwards and press H key to move finger outwards" << "\n";
+	std::cout << "Press Z and X key to move legs in x direcion" << "\n";
+	std::cout << "Press C and V to move lower leg in x direction" << "\n";
+
+	//std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" << " << "\n";
 }
 
 
@@ -211,7 +219,7 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == GLFW_KEY_RIGHT)vy -= 5.0;
 	if (k == 'K')	vz += 5.0;
 	if (k == 'L')	vz -= 5.0;
-	robot.robotKeyMoves(k);
+	robot.robotKeyMoves(k, action);
 
 }
 

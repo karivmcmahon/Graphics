@@ -1,4 +1,4 @@
-﻿Build started 04/11/2014 18:24:27.
+﻿Build started 05/11/2014 11:55:52.
      1>Project "C:\Users\Kari\Documents\Graphics\Assignment1Robot\Assignment1Robot.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Robot.cpp robotScene.cpp Shape.cpp wrapper_glfw.cpp
@@ -80,4 +80,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:06.03
+Time Elapsed 00:00:06.00
