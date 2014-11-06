@@ -25,7 +25,7 @@
 GLuint program;
 GLuint vao;
 //View movement variables
-GLfloat   vx, vy, vz;
+GLfloat   vx, vy, vz, angle;
 //Uniforms
 GLuint  viewID,  projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
@@ -47,6 +47,7 @@ void init(GLWrapper *glw)
 	vx = 0;
 	vy = 0;
 	vz = 0;
+	angle = 90;
 	
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
@@ -63,6 +64,7 @@ void init(GLWrapper *glw)
 	shape.createStar();
 	//Sets up sphere VBO
 	shape.makeSphereVBO(40, 40);
+	shape.createCylinder();
 	try
 	{
 		program = glw->LoadShader("robotScene.vert", "robotScene.frag");
@@ -136,6 +138,16 @@ void display()
 			model.top() = glm::rotate(model.top(), robot.robotRotation, glm::vec3(0, 1, 0));
 			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			robot.drawRobot();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-1, 0, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+		model.top() = glm::rotate(model.top(), -angle, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 2);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCylinder();
 		model.pop();
 	model.pop();
 	
@@ -216,6 +228,8 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == GLFW_KEY_RIGHT)vy -= 5.0;
 	if (k == 'K')	vz += 5.0;
 	if (k == 'L')	vz -= 5.0;
+	if (k == 'O')	angle += 5.0;
+	if (k == 'P') angle -= 5.0;
 	robot.robotKeyMoves(k, action);
 	movementConstraints(); //calls movement constraints to check key pressed makes variables still within constraints
 

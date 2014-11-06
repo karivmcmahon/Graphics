@@ -6,6 +6,7 @@ Created by Kari McMahon October 2014
 #include <string>
 #include <iostream>
 #include <vector>
+#include <stack>
 
 /* Static Libs */
 #pragma comment(lib, "glfw3.lib")
@@ -31,15 +32,19 @@ class Shape
 		  GLfloat pi, twicePi;
 		  GLfloat x, y;
 		  //Vectors to store positions , colours and normals for various shapes
-		  std::vector<glm::vec3> conePositions, boltPositions, starPositions;
-		  std::vector<GLfloat> coneColours,boltsColours,starColours;
-		  std::vector<glm::vec3> coneNormals, boltsNormals, starNormals;
+		  std::vector<glm::vec3> conePositions, boltPositions, starPositions, cylinderStripPositions, cylinderTopPositions, cylinderBottomPositions;
+		  std::vector<GLfloat> coneColours,boltsColours,starColours, cylinderStripColours, cylinderTopColours, cylinderBottomColours;
+		  std::vector<glm::vec3> coneNormals, boltsNormals, starNormals, cylinderStripNormals, cylinderTopNormals, cylinderBottomNormals;
+		  std::stack<glm::mat4> model2;
 		  //Objects for the buffer
 		  GLuint positionBufferObject, normalsBufferObject, colourObject;
 		  GLuint sphereBufferObject, sphereNormals, sphereColours, elementbuffer;
 		  GLuint coneBufferObj, coneColourObj, coneNormalObj;
 		  GLuint boltBufferObject, boltNormalObject, boltColourObject;
 		  GLuint starBufferObject, starNormalObject, starColourObject;
+		  GLuint cylinderStripBufferObject, cylinderStripNormalObject, cylinderStripColourObject;
+		  GLuint cylinderTopBufferObject, cylinderTopNormalObject, cylinderTopColourObject;
+		  GLuint cylinderBottomBufferObject, cylinderBottomNormalObject, cylinderBottomColourObject;
 		  //Latitude and longitude for sphere
 		  GLuint numlats, numlongs;
 		 
@@ -51,6 +56,98 @@ class Shape
 				y = 0;
 				numlats = 40;
 				numlongs = 40;
+		  }
+
+		  void createCylinder()
+		  {
+			  for (int i = 0; i <= 32; i++) {
+				  double angle = (2 * pi / 32) * i;
+				  double x = cos(angle);
+				  double y = sin(angle);
+				  cylinderStripPositions.push_back(glm::vec3(float(x) * 0.7,float(y) * 0.7,6.0f));
+				  cylinderStripColours.push_back(0.0f);
+				  cylinderStripColours.push_back(0.0f);
+				  cylinderStripColours.push_back(1.0f);
+				  cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
+				 
+				  cylinderStripPositions.push_back(glm::vec3(float(x) * 0.7, float(y) * 0.7, 0.0f));
+				  cylinderStripColours.push_back(0.0f);
+				  cylinderStripColours.push_back(0.0f);
+				  cylinderStripColours.push_back(1.0f);
+				  cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
+				  
+			  }
+			  cylinderTopPositions.push_back(glm::vec3(0,0,6.0));    // Center vertex for top of cylinder.
+			  
+			  for (int i = 0; i <= 32; i++) {  // Vertices around the top.
+				  double angle = (2 * pi / 32) * i;
+				  double x = cos(angle);
+				  double y = sin(angle);
+				  cylinderTopPositions.push_back(glm::vec3(float(x) * 0.7, float(y) * 0.7, 6.0f));
+				  cylinderTopColours.push_back(0.0f);
+				  cylinderTopColours.push_back(0.0f);
+				  cylinderTopColours.push_back(1.0f);
+				  cylinderTopNormals.push_back(glm::vec3(0, 0, 1));
+			  }
+
+			  cylinderBottomPositions.push_back(glm::vec3(0, 0, 0));    // Center vertex for top of cylinder.
+
+			  for (int i = 0; i <= 32; i++) {  // Vertices around the top.
+				  double angle = (2 * pi / 32) * i;
+				  double x = cos(angle);
+				  double y = sin(angle);
+				  cylinderBottomPositions.push_back(glm::vec3(float(x) * 0.7, float(y) * 0.7, 0.0f));
+				  cylinderBottomColours.push_back(0.0f);
+				  cylinderBottomColours.push_back(0.0f);
+				  cylinderBottomColours.push_back(1.0f);
+				  cylinderBottomNormals.push_back(glm::vec3(0, 0, -1));
+			  }
+
+			 
+			  glGenBuffers(1, &cylinderStripBufferObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderStripBufferObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderStripPositions.size() * sizeof(glm::vec3), &cylinderStripPositions[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderStripColourObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderStripColourObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderStripColours.size(), &cylinderStripColours[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderStripNormalObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderStripNormalObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderStripNormals.size() * sizeof(glm::vec3), &cylinderStripNormals[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderTopBufferObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderTopBufferObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderTopPositions.size() * sizeof(glm::vec3), &cylinderTopPositions[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderTopColourObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderTopColourObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderTopColours.size(), &cylinderTopColours[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderTopNormalObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderTopNormalObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderTopNormals.size() * sizeof(glm::vec3), &cylinderTopNormals[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderBottomBufferObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomBufferObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderBottomPositions.size() * sizeof(glm::vec3), &cylinderBottomPositions[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderBottomColourObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomColourObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderBottomColours.size(), &cylinderBottomColours[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+			  glGenBuffers(1, &cylinderBottomNormalObject);
+			  glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomNormalObject);
+			  glBufferData(GL_ARRAY_BUFFER, cylinderBottomNormals.size() * sizeof(glm::vec3), &cylinderBottomNormals[0], GL_STATIC_DRAW);
+			  glBindBuffer(GL_ARRAY_BUFFER, 0);
 		  }
 		
 	  
@@ -593,6 +690,75 @@ class Shape
 			glDisableVertexAttribArray(1);
 			glDisableVertexAttribArray(2);
 
+		}
+
+		void drawCylinder()
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderTopBufferObject);
+			glEnableVertexAttribArray(0);
+
+
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderTopColourObject);
+			glEnableVertexAttribArray(1);
+
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderTopBufferObject);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+
+
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, 1440);
+
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderStripBufferObject);
+			glEnableVertexAttribArray(0);
+
+			
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderStripColourObject);
+			glEnableVertexAttribArray(1);
+
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderStripBufferObject);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 2880);
+
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomBufferObject);
+			glEnableVertexAttribArray(0);
+
+
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomColourObject);
+			glEnableVertexAttribArray(1);
+
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glEnableVertexAttribArray(2);
+			glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomBufferObject);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, 1440);
+			
+
+			glDisableVertexAttribArray(0);
+			glDisableVertexAttribArray(1);
+
+			
+
+
+			
 		}
 	
 
