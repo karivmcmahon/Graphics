@@ -113,12 +113,11 @@ void display()
 
 	//Robot::model matrix : an identity matrix - Sets up the scene
 	model.push(glm::mat4(1.0f));
-		
-		//SCENE
+		//Set scene
 		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, 4.0, 1.0);
+		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, 4.0, 1.0); //light position
 		glUniform1f(robot.colourModeID, 0);
 		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -132,7 +131,7 @@ void display()
 		drawStarSky(0.9, 0.9);
 		drawStarSky(-0.9, 0.9);
 		
-		//ROBOT
+		//ROBOT DRAW
 		model.push(model.top());
 			model.top() = glm::rotate(model.top(), robot.robotRotation, glm::vec3(0, 1, 0));
 			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -140,8 +139,6 @@ void display()
 		model.pop();
 	model.pop();
 	
-	//Calls movement checks - to make movement seem realistic
-	robot.robotMovementConstraints();
 	glUseProgram(0);
 
 }
@@ -181,12 +178,11 @@ void consoleOutput()
 	std::cout << "Press Q key to rotate robot left and W key to rotate robot right" << "\n";
 	std::cout << "Press Y key and U key to move in the x direction" << "\n";
 	std::cout << "Press A key to move arm upwards and S key to move arm downwards" << "\n";
-	std::cout << "Press D key to move forearm forward in the x direction and F key move forearm in the direction" << "\n";
+	std::cout << "Press D key to move forearm forward in the x direction and F key move forearm in the x direction" << "\n";
 	std::cout << "Press G key to move finger inwards and press H key to move finger outwards" << "\n";
 	std::cout << "Press Z and X key to move legs in x direcion" << "\n";
 	std::cout << "Press C and V to move lower leg in x direction" << "\n";
-
-	//std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" << " << "\n";
+	std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" <<  "\n";
 }
 
 
@@ -206,6 +202,7 @@ static void reshape(GLFWwindow* window, int w, int h)
 
 }
 
+/** Gets key responses **/
 static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 {
 	if (action != GLFW_PRESS) return;
@@ -220,6 +217,7 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'K')	vz += 5.0;
 	if (k == 'L')	vz -= 5.0;
 	robot.robotKeyMoves(k, action);
+	movementConstraints(); //calls movement constraints to check key pressed makes variables still within constraints
 
 }
 
@@ -241,7 +239,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	/* Note it you might want to move this call to the wrapper class */
+
 	glw->setErrorCallback(error_callback);
 
 	glw->setRenderer(display);

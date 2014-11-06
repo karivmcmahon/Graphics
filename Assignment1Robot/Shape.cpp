@@ -305,7 +305,7 @@ class Shape
 		}
 
 		/**
-		Draws star shape
+		Draws a star shape
 		**/
 		void drawStar()
 		{
@@ -330,7 +330,7 @@ class Shape
 		}
 
 		/**
-		Draws bolt shape
+		Draws a bolt shape
 		**/
 		void drawBolt()
 		{
@@ -356,7 +356,7 @@ class Shape
 		}
 
 		/**
-		Draws Cone shape
+		Draws a cone shape
 		**/
 		void drawCone()
 		{

@@ -22,13 +22,13 @@ out vec3 emissive;
 
 void main()
 {
+	normals = normal; //Normals to send to fragment shader
+	vec4 position_h = vec4(position, 1.0);	
+	mat4 mv_matrix = view * model;		
+	P = mv_matrix * position_h;	
+    normalmatrix = mat3(transpose(inverse(mv_matrix))); //Need to do this as scaling objects
 
-	normals = normal;
-	vec4 position_h = vec4(position, 1.0);	// Convert the (x,y,z) position to homogeneous coords (x,y,z,w)
-	mat4 mv_matrix = view * model;		// Calculate the model-view transformation
-	P = mv_matrix * position_h;	// Modify the vertex position (x, y, z, w) by the model-view transformation
-    normalmatrix = mat3(transpose(inverse(mv_matrix)));
-
+	//Setting colours for application based on uniform
 	if (colourmode == 2)
 	{
 		diffuse_albedo = vec4(1.0, 0.0, 0.0, 1.0);
@@ -46,6 +46,7 @@ void main()
 		diffuse_albedo = vec4(0.5, 0.5, 0.5, 1.0);
 	}
 	
+	//Emissive colour
 	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.8); 
 
 	fcolour = colour;

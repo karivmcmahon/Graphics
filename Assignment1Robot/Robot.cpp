@@ -28,10 +28,12 @@ class Robot
 {
 public:
 	//Uniforms
-    GLuint modelID,  colourModeID, emitModeID;	
+	GLuint modelID, colourModeID, emitModeID;
 	//Sets up various movement variables for robot
-	GLfloat neckmovement, robotRotation, elbowBasedMovement, armMoving, armUpDownMovement, legmovement, fingerMovement, fingerPosition, kneeMovement;
+	GLfloat neckmovement, robotRotation, elbowBasedMovement, armMoving, armUpDownMovement, legmovement, fingerMovement;
+	GLfloat	fingerPosition, kneeMovement, speed;
 	GLfloat coneRotation, boltRotation;
+	//Initialise
 	Robot()
 	{
 		coneRotation = 90;
@@ -44,10 +46,11 @@ public:
 		armUpDownMovement = 0;
 		armMoving = 0;
 		fingerPosition = 45;
+		speed = 1.0f;
 	}
 
 	/**
-	* Draws the robot
+	* Draws the robot completely
 	**/
 	void drawRobot()
 	{
@@ -74,8 +77,6 @@ public:
 		model.push(glm::mat4(1.0f));
 			model.top() = glm::translate(model.top(), glm::vec3(0, 0.7, 0));
 			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
-			model.top() = glm::rotate(model.top(), -neckmovement, glm::vec3(0, 1, 0));
-			model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 			model.top() = glm::rotate(model.top(), -(coneRotation), glm::vec3(1, 0, 0));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			glUniform1f(colourModeID, 2);
@@ -84,7 +85,7 @@ public:
 		model.pop();
 
 	}
-	
+
 	/**
 	Draws the robots head
 	**/
@@ -119,7 +120,7 @@ public:
 	}
 
 	/**
-	Draws thr robot's eye
+	Draws the robot's eye
 	**/
 	void drawEye(GLfloat x)
 	{
@@ -198,11 +199,11 @@ public:
 	void drawArm(GLfloat x, GLfloat side)
 	{
 
-		//Transform for arm
+		//Transform for whole arm
 		model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(x, 0.10, 0));
-		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniform1f(colourModeID, 0);
+			model.top() = glm::translate(model.top(), glm::vec3(x, 0.10, 0));
+			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+			glUniform1f(colourModeID, 0);
 
 			//SHOULDER SOCKET
 			model.push(model.top());
@@ -230,7 +231,7 @@ public:
 			model.pop();
 
 
-			//TRANSFORM FOR ARM
+			//TRANSFORM FOR FOREARM
 			model.push(model.top());
 				if (side == 0)
 				{
@@ -269,7 +270,7 @@ public:
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 
 
-					//// HAND SPHERE
+					// HAND SPHERE
 					model.push(model.top());
 						model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
 						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
@@ -309,9 +310,9 @@ public:
 						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 						shape.drawCube();
 					model.pop();
-				model.pop();
 			model.pop();
 		model.pop();
+	model.pop();
 	}
 
 	/**
@@ -321,9 +322,9 @@ public:
 	{
 		//Transform for leg
 		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(x, -0.37, 0));
-			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		
+		model.top() = glm::translate(model.top(), glm::vec3(x, -0.37, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+
 			//LEG CONNECTOR
 			model.push(model.top());
 				model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
@@ -356,30 +357,30 @@ public:
 					model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
 					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 
-				// KNEE CAP
-				model.push(model.top());
-					model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
-					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-					shape.drawSphere();
-				model.pop();
+					// KNEE CAP
+					model.push(model.top());
+						model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.06, 0.06));
+						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+						shape.drawSphere();
+					model.pop();
 
-				//LEG
-				model.push(model.top());
-					model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
-					model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
-					model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.5, 0.3));
-					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-					shape.drawCube();
-				model.pop();
+					//LEG
+					model.push(model.top());
+						model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
+						model.top() = glm::translate(model.top(), glm::vec3(0, -0.17, 0));
+						model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.5, 0.3));
+						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+						shape.drawCube();
+					model.pop();
 
-				////SHOE
-				model.push(model.top());
-					model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
-					model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0.05));
-					model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.5));
-					glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
-					shape.drawCube();
-				model.pop();
+					//SHOE
+					model.push(model.top());
+						model.top() = glm::rotate(model.top(), -kneeMovement, glm::vec3(1, 0, 0));
+						model.top() = glm::translate(model.top(), glm::vec3(0, -0.27, 0.05));
+						model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.5));
+						glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+						shape.drawCube();
+					model.pop();
 			model.pop();
 		model.pop();
 	model.pop();
@@ -392,31 +393,31 @@ public:
 	{
 		if (action != GLFW_PRESS) return;
 
-		if (k == 'Q')	robotRotation -= 10.0f;
-		if (k == 'W')	robotRotation += 10.0f;
+		if (k == 'Q')	robotRotation -= 10.0f; //rotate robot left
+		if (k == 'W')	robotRotation += 10.0f; //rotate robot right
 
-		if (k == 'R')	neckmovement -= 5;
-		if (k == 'E')	neckmovement += 5;
+		if (k == 'R')	neckmovement -= 5; //rotate robot neck right
+		if (k == 'E')	neckmovement += 5; //rotate robot neck left
 
-		if (k == 'A')	armUpDownMovement += 5 % 360;
-		if (k == 'S')	armUpDownMovement -= 5 % 360;
+		if (k == 'A')	armUpDownMovement += 5 % 360; //Moves arm up
+		if (k == 'S')	armUpDownMovement -= 5 % 360; //Moves arm down
 
-		if (k == 'D')	elbowBasedMovement += 5;
-		if (k == 'F')	elbowBasedMovement -= 5;
+		if (k == 'D')	elbowBasedMovement += 5; // Move forearm outwards
+		if (k == 'F')	elbowBasedMovement -= 5; //Move forearm inwards
 
-		if (k == 'Y')	armMoving += 5;
-		if (k == 'U')	armMoving -= 5;
+		if (k == 'Y')	armMoving += 5; //Move arm  in walking movement
+		if (k == 'U')	armMoving -= 5; //Move arm  in walking movement
 
-		if (k == 'Z')	legmovement += 5;
-		if (k == 'X')	legmovement -= 5;
+		if (k == 'Z')	legmovement += 5; //Move leg in walking movement
+		if (k == 'X')	legmovement -= 5; //Move leg in walking movement
 
-		if (k == 'C')	kneeMovement += 5;
-		if (k == 'V')	kneeMovement -= 5;
+		if (k == 'C')	kneeMovement += 5; //Move shin and shoes movement
+		if (k == 'V')	kneeMovement -= 5; //Move shin and shoes movement
 
-		if (k == 'G')	fingerMovement += 5;
-		if (k == 'H')	fingerMovement -= 5;
+		if (k == 'G')	fingerMovement += 5; //Move fingers inwards
+		if (k == 'H')	fingerMovement -= 5; //Move fingers outwards
 
-		
+
 	}
 
 	/**
@@ -440,10 +441,9 @@ public:
 		if (armMoving >= 60) armMoving = 60;
 	}
 
-	
+
 
 
 };
-
 
 
