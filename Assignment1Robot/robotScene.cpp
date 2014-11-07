@@ -25,7 +25,7 @@
 GLuint program;
 GLuint vao;
 //View movement variables
-GLfloat   vx, vy, vz, angle;
+GLfloat   vx, vy, vz, angle, angle2, coneangle, movingTail, inc;
 //Uniforms
 GLuint  viewID,  projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
@@ -43,11 +43,15 @@ void consoleOutput();
 */
 void init(GLWrapper *glw)
 {
+	inc = 0.03;
 	//Sets up view movemenet variables
 	vx = 0;
 	vy = 0;
 	vz = 0;
 	angle = 90;
+	angle2 = 45;
+	coneangle = 25;
+	movingTail = 0;
 	
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
@@ -140,16 +144,172 @@ void display()
 			robot.drawRobot();
 		model.pop();
 
+		
+		//Pet Body Shape
 		model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(-1, 0, 0));
-		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-		model.top() = glm::rotate(model.top(), -angle, glm::vec3(0, 1, 0));
+			model.top() = glm::translate(model.top(), glm::vec3(1, -0.8, 0));
+			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+			model.top() = glm::rotate(model.top(), -angle, glm::vec3(0, 1, 0));
+			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+			
+			
+		//model.pop();
+		model.push(model.top());
+			model.top() = glm::translate(model.top(), glm::vec3(0, 0, 0));
+			
+	
+			glUniform1f(robot.colourModeID, 2);
+			glUniform1ui(robot.emitModeID, 0);
+			shape.drawCylinder();
+			model.pop();
+		//Front leg 1
+		model.push(model.top());
+			model.top() = glm::translate(model.top(), glm::vec3(0.2, -0.9, 0.6));
+			model.top() = glm::scale(model.top(), glm::vec3(0.3, 3, 0.2));
+			//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+			glUniform1f(robot.colourModeID, 2);
+			glUniform1ui(robot.emitModeID, 0);
+			shape.drawCube();
+		model.pop();
+		//Front leg 2
+		model.push(model.top());
+			model.top() = glm::translate(model.top(), glm::vec3(-0.2, -0.9, 0.6));
+			model.top() = glm::scale(model.top(), glm::vec3(0.3, 3, 0.2));
+			//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+			glUniform1f(robot.colourModeID, 2);
+			glUniform1ui(robot.emitModeID, 0);
+			shape.drawCube();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.2, -0.9, 3.5));
+		model.top() = glm::scale(model.top(), glm::vec3(0.3, 3, 0.2));
+		//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
 		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 		glUniform1f(robot.colourModeID, 2);
 		glUniform1ui(robot.emitModeID, 0);
-		shape.drawCylinder();
+		shape.drawCube();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.2, -0.9, 3.5));
+		model.top() = glm::scale(model.top(), glm::vec3(0.3, 3, 0.2));
+		//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 2);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCube();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.9, 3.5));
+		model.top() = glm::scale(model.top(), glm::vec3(0.3, 1, 0.2));
+		//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 2);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCube();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 1.8, 3.5));
+		
+		model.push(model.top());
+		
+		model.top() = glm::scale(model.top(), glm::vec3(1, 1, 0.8));
+		//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 2);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawSphere();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.4, 0.9, 0));
+		
+		model.top() = glm::scale(model.top(), glm::vec3(0.5, 0.5, 0.4));
+		model.top() = glm::rotate(model.top(), -coneangle, glm::vec3(0, 0, 1));
+		model.top() = glm::rotate(model.top(), -(robot.coneRotation), glm::vec3(1, 0, 0));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 0);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCone();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.4, 0.9, 0));
+
+		model.top() = glm::scale(model.top(), glm::vec3(0.5, 0.5, 0.4));
+		model.top() = glm::rotate(model.top(), coneangle, glm::vec3(0, 0, 1));
+		model.top() = glm::rotate(model.top(), -(robot.coneRotation), glm::vec3(1, 0, 0));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 0);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCone();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(-0.4, 0.45, 0.6));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.2));
+		//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 1);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawSphere();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0.4, 0.45, 0.6));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.2));
+		//model.top() = glm::rotate(model.top(), -angle2, glm::vec3(0, 0, ));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 1);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawSphere();
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.15, 0.6));
+		model.top() = glm::scale(model.top(), glm::vec3(0.5, 0.5, 0.4));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 1);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCone();
+		model.pop();
+
+
+	/**	model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 1.0, 0));
+		model.top() = glm::rotate(model.top(), angle2, glm::vec3(1, 0, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.5, 0.5, 0.2));
+		model.top() = glm::rotate(model.top(), -(robot.coneRotation), glm::vec3(1, 0, 0));
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 2);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCone();
+		model.pop(); **/
+		
+		model.pop();
+
+		model.push(model.top());
+		model.top() = glm::rotate(model.top(), movingTail, glm::vec3(0, 0, 1));
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.9, -0.2));
+		model.top() = glm::rotate(model.top(), -angle2, glm::vec3(1, 0, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.4, 2, 0.2));
+		
+		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(robot.colourModeID, 2);
+		glUniform1ui(robot.emitModeID, 0);
+		shape.drawCube();
+		model.pop();
+
 		model.pop();
 	model.pop();
+
+	movingTail += inc;
+	if (movingTail >= 2 || movingTail <= 0) inc = -inc;
 	
 	glUseProgram(0);
 
