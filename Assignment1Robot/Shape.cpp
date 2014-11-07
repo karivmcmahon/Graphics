@@ -64,7 +64,7 @@ class Shape
 				  double angle = (2 * pi / 32) * i;
 				  double x = cos(angle);
 				  double y = sin(angle);
-				  cylinderStripPositions.push_back(glm::vec3(float(x) * 0.7,float(y) * 0.7,4.0f));
+				  cylinderStripPositions.push_back(glm::vec3(float(x) * 0.7,float(y) * 0.7,2.5f));
 				  cylinderStripColours.push_back(0.0f);
 				  cylinderStripColours.push_back(0.0f);
 				  cylinderStripColours.push_back(1.0f);
@@ -77,13 +77,13 @@ class Shape
 				  cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
 				  
 			  }
-			  cylinderTopPositions.push_back(glm::vec3(0,0,4.0));    // Center vertex for top of cylinder.
+			  cylinderTopPositions.push_back(glm::vec3(0,0,2.5));    // Center vertex for top of cylinder.
 			  
 			  for (int i = 0; i <= 32; i++) {  // Vertices around the top.
 				  double angle = (2 * pi / 32) * i;
 				  double x = cos(angle);
 				  double y = sin(angle);
-				  cylinderTopPositions.push_back(glm::vec3(float(x) * 0.7, float(y) * 0.7, 4.0f));
+				  cylinderTopPositions.push_back(glm::vec3(float(x) * 0.7, float(y) * 0.7, 2.5f));
 				  cylinderTopColours.push_back(0.0f);
 				  cylinderTopColours.push_back(0.0f);
 				  cylinderTopColours.push_back(1.0f);

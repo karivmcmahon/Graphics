@@ -31,7 +31,7 @@ public:
 	GLuint modelID, colourModeID, emitModeID;
 	//Sets up various movement variables for robot
 	GLfloat neckmovement, robotRotation, elbowBasedMovement, armMoving, armUpDownMovement, legmovement, fingerMovement;
-	GLfloat	fingerPosition, kneeMovement, speed;
+	GLfloat	fingerPosition, kneeMovement, speed, angle2, coneangle, movingTail, movingLegs;
 	GLfloat coneRotation, boltRotation;
 	//Initialise
 	Robot()
@@ -47,6 +47,10 @@ public:
 		armMoving = 0;
 		fingerPosition = 45;
 		speed = 1.0f;
+		angle2 = 45;
+		coneangle = 25;
+		movingTail = 0;
+		movingLegs = 0;
 	}
 
 	/**
@@ -67,6 +71,155 @@ public:
 		drawArm(-0.20, 0);
 		drawLeg(0.1, 1);
 		drawLeg(-0.1, 0);
+	}
+
+	/**
+	Draws the pet robot
+	**/
+	void drawPetRobot()
+	{
+		//body
+		model.push(model.top());
+			model.top() = glm::translate(model.top(), glm::vec3(0, 0, 0));
+			glUniform1f(colourModeID, 2);
+			glUniform1ui(emitModeID, 0);
+			shape.drawCylinder();
+			drawPetLeg(0.2, -0.9, 0.6);
+			drawPetLeg(-0.2, -0.9, 0.6);
+			drawPetLeg(0.2, -0.9, 2.1);
+			drawPetLeg(-0.2, -0.9, 2.1);
+		model.pop();
+		drawPetNeck();
+		drawPetHead();
+		drawPetTail();
+	}
+
+	/**
+	Draws the pet legs
+	**/
+	void drawPetLeg(GLfloat x, GLfloat y, GLfloat z)
+	{
+		model.push(model.top());	
+		model.top() = glm::translate(model.top(), glm::vec3(x,y,z));
+		model.top() = glm::scale(model.top(), glm::vec3(0.3, 3, 0.2));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
+		glUniform1ui(emitModeID, 0);
+		shape.drawCube();
+		model.pop();
+	}
+
+	/**
+	Draws the pets legs
+	**/
+	void drawPetNeck()
+	{
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.9, 2.8));
+		model.top() = glm::rotate(model.top(), angle2, glm::vec3(1, 0, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.3, 2, 0.2));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
+		glUniform1ui(emitModeID, 0);
+		shape.drawCube();
+		model.pop();
+	}
+
+	/**
+	Draws the pets head
+	**/
+	void drawPetHead()
+	{
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 1.8, 3.0));
+		model.top() = glm::rotate(model.top(), movingTail, glm::vec3(0, 0, 1));
+
+		model.push(model.top());
+		model.top() = glm::scale(model.top(), glm::vec3(1, 1, 0.8));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
+		glUniform1ui(emitModeID, 0);
+		shape.drawSphere();
+		model.pop();
+
+		drawPetEar(0.4, 0.9, 0);
+		drawPetEar(-0.4, 0.9, 1);
+		drawPetEye(-0.4, 0.45);
+		drawPetEye(0.4, 0.45);
+		drawPetNose();
+		model.pop();
+	}
+
+	/** 
+	Draws the pets eyes
+	**/
+	void drawPetEye(GLfloat x, GLfloat y)
+	{
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(x, y, 0.6));
+		model.top() = glm::scale(model.top(), glm::vec3(0.2, 0.2, 0.2));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
+		glUniform1ui(emitModeID, 0);
+		shape.drawSphere();
+		model.pop();
+	}
+
+	/**
+	Draws the pets ears
+	**/
+	void drawPetEar(GLfloat x, GLfloat y, GLfloat side)
+	{
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(x, y, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.5, 0.5, 0.4));
+		if (side == 0)
+		{
+			model.top() = glm::rotate(model.top(), -coneangle, glm::vec3(0, 0, 1));
+		}
+		else
+		{
+			model.top() = glm::rotate(model.top(), coneangle, glm::vec3(0, 0, 1));
+		}
+		model.top() = glm::rotate(model.top(), -(coneRotation), glm::vec3(1, 0, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 0);
+		glUniform1ui(emitModeID, 0);
+		shape.drawCone();
+		model.pop();
+	}
+
+	/**
+	Draws the pets tail
+	**/
+	void drawPetTail()
+	{
+		model.push(model.top());
+		model.top() = glm::rotate(model.top(), movingTail, glm::vec3(0, 0, 1));
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.9, -0.2));
+		model.top() = glm::rotate(model.top(), -angle2, glm::vec3(1, 0, 0));
+		model.top() = glm::scale(model.top(), glm::vec3(0.4, 2, 0.2));
+
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 2);
+		glUniform1ui(emitModeID, 0);
+		shape.drawCube();
+		model.pop();
+	}
+
+	/**
+	Draws the pets nose
+	**/
+	void drawPetNose()
+	{
+		model.push(model.top());
+		model.top() = glm::translate(model.top(), glm::vec3(0, 0.15, 0.6));
+		model.top() = glm::scale(model.top(), glm::vec3(0.5, 0.5, 0.4));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
+		glUniform1f(colourModeID, 1);
+		glUniform1ui(emitModeID, 0);
+		shape.drawCone();
+		model.pop();
 	}
 
 	/**
