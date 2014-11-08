@@ -2,7 +2,6 @@
 *  View Class for Assignment by Kari McMahon - October 2014
 * Layout based on Iain Martin's lab 2 example
 * /
-
 /* Static Libs */
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glloadD.lib")
@@ -25,9 +24,9 @@
 GLuint program;
 GLuint vao;
 //View movement variables
-GLfloat   vx, vy, vz, angle,  speed,  speed2;
+GLfloat   vx, vy, vz, angle, speed, speed2;
 //Uniforms
-GLuint  viewID,  projectionID, lightPosID;
+GLuint  viewID, projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
 std::stack<glm::mat4> model;
 Robot robot;
@@ -50,8 +49,8 @@ void init(GLWrapper *glw)
 	vy = 0;
 	vz = 0;
 	angle = 0;
-	
-	
+
+
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
 
@@ -78,7 +77,7 @@ void init(GLWrapper *glw)
 		std::cin.ignore();
 		exit(0);
 	}
-	
+
 	/* Define uniforms to send to vertex shader */
 	robot.modelID = glGetUniformLocation(program, "model");
 	robot.colourModeID = glGetUniformLocation(program, "colourmode");
@@ -88,7 +87,7 @@ void init(GLWrapper *glw)
 	robot.emitModeID = glGetUniformLocation(program, "emitmode");
 
 	consoleOutput();
-	
+
 }
 
 
@@ -118,65 +117,65 @@ void display()
 
 	//Robot::model matrix : an identity matrix - Sets up the scene
 	model.push(glm::mat4(1.0f));
-		//Set scene
-		View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
-		View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
-		View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-		glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, 4.0, 1.0); //light position
-		glUniform1f(robot.colourModeID, 0);
-		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-		glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-		glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
-		glUniform1ui(robot.emitModeID, 0);
-		drawStarSky(0.5, 0.5);
-		drawStarSky(-0.5, 0.5);
-		drawStarSky(0.3, 0.9);
-		drawStarSky(-0.3, 0.9);
-		drawStarSky(0.9, 0.9);
-		drawStarSky(-0.9, 0.9);
-		
-		//ROBOT DRAW
-		model.push(model.top());
-			model.top() = glm::rotate(model.top(), robot.robotRotation, glm::vec3(0, 1, 0));
-			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			robot.drawRobot();
-		model.pop();
+	//Set scene
+	View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
+	View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
+	View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
+	glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, 4.0, 1.0); //light position
+	glUniform1f(robot.colourModeID, 0);
+	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+	glUniform4fv(lightPosID, 1, glm::value_ptr(lightpos));
+	glUniform1ui(robot.emitModeID, 0);
+	drawStarSky(0.5, 0.5);
+	drawStarSky(-0.5, 0.5);
+	drawStarSky(0.3, 0.9);
+	drawStarSky(-0.3, 0.9);
+	drawStarSky(0.9, 0.9);
+	drawStarSky(-0.9, 0.9);
 
-		
-		//Pet Body Shape
-		model.push(model.top());
-			model.top() = glm::translate(model.top(), glm::vec3(0.6, -0.8, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-			model.top() = glm::rotate(model.top(), angle, glm::vec3(0, 1, 0));
-			glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-			robot.drawPetRobot();
-		model.pop();
-			
-			
-	
-		
-
-		
-		
-
-		
+	//ROBOT DRAW
+	model.push(model.top());
+	model.top() = glm::rotate(model.top(), robot.robotRotation, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	robot.drawRobot();
+	model.pop();
 
 
-	
+	//Pet Body Shape
+	model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(0.6, -0.8, 0));
+	model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+	model.top() = glm::rotate(model.top(), angle, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	robot.drawPetRobot();
+	model.pop();
 
-		
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	model.pop();
-	
+
 
 	robot.movingTail += speed;
 	robot.movingLegs += speed2;
 	if (robot.movingTail >= 15 || robot.movingTail <= -15) speed = -speed;
 	if (robot.movingLegs >= 20 || robot.movingLegs <= -20) speed2 = -speed2;
 
-	
-	
+
+
 	glUseProgram(0);
 
 }
@@ -187,12 +186,12 @@ Draws positions of stars to make the scene have a starry sky
 void drawStarSky(GLfloat x, GLfloat y)
 {
 	model.push(model.top());
-		model.top() = glm::translate(model.top(), glm::vec3(x, y, 0));
-		model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
-		glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
-		glUniform1f(robot.colourModeID, 0);
-		glUniform1ui(robot.emitModeID, 1);
-		shape.drawStar();
+	model.top() = glm::translate(model.top(), glm::vec3(x, y, 0));
+	model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.1));
+	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniform1f(robot.colourModeID, 0);
+	glUniform1ui(robot.emitModeID, 1);
+	shape.drawStar();
 	model.pop();
 }
 
@@ -220,12 +219,14 @@ void consoleOutput()
 	std::cout << "Press G key to move finger inwards and press H key to move finger outwards" << "\n";
 	std::cout << "Press Z and X key to move legs in x direcion" << "\n";
 	std::cout << "Press C and V to move lower leg in x direction" << "\n";
-	std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" <<  "\n";
+	std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" << "\n";
+	std::cout << "--------Cat--------" << "\n";
+	std::cout << "Press O key to rotate cat right and P key to rotate cat left" << "\n";
 }
 
 
 /**
-Checks on movement constraints - especially robot to make movements seem realistic 
+Checks on movement constraints - especially robot to make movements seem realistic
 **/
 void movementConstraints()
 {
@@ -290,7 +291,7 @@ int main(int argc, char* argv[])
 
 	glw->eventLoop();
 
-	
+
 
 	delete(glw);
 	return 0;

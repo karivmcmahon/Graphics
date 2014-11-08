@@ -228,8 +228,10 @@ public:
 	void drawHat()
 	{
 		model.push(glm::mat4(1.0f));
+		
 			model.top() = glm::translate(model.top(), glm::vec3(0, 0.7, 0));
-			model.top() = glm::scale(model.top(), glm::vec3(0.05, 0.2, 0.1));
+			model.top() = glm::scale(model.top(), glm::vec3(0.1, 0.1, 0.2));
+			model.top() = glm::rotate(model.top(), -robotRotation, glm::vec3(0, 1, 0));
 			model.top() = glm::rotate(model.top(), -(coneRotation), glm::vec3(1, 0, 0));
 			glUniformMatrix4fv(modelID, 1, GL_FALSE, &(model.top())[0][0]);
 			glUniform1f(colourModeID, 2);
