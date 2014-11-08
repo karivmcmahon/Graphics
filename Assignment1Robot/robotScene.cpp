@@ -28,6 +28,7 @@ GLfloat   vx, vy, vz, angle, speed, speed2;
 //Uniforms
 GLuint  viewID, projectionID, lightPosID;
 GLfloat aspect_ratio = 1.3333f;
+GLfloat zoom;
 std::stack<glm::mat4> model;
 Robot robot;
 Shape shape;
@@ -49,7 +50,7 @@ void init(GLWrapper *glw)
 	vy = 0;
 	vz = 0;
 	angle = 0;
-
+	zoom = 30.0f;
 
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
@@ -108,7 +109,7 @@ void display()
 	glUseProgram(program);
 
 	// Projection matrix 
-	glm::mat4 Projection = glm::perspective(30.0f, aspect_ratio, 0.1f, 100.0f);
+	glm::mat4 Projection = glm::perspective(zoom, aspect_ratio, 0.1f, 100.0f);
 
 	// Camera matrix
 	glm::mat4 View = glm::lookAt(
@@ -119,11 +120,12 @@ void display()
 
 	//Robot::model matrix : an identity matrix - Sets up the scene - Stack helps create interconnected parts
 	model.push(glm::mat4(1.0f));
+	
 	//Set scene
 	View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
 	View = glm::rotate(View, -vy, glm::vec3(0, 1, 0));
 	View = glm::rotate(View, -vz, glm::vec3(0, 0, 1));
-	glm::vec4 lightpos = View * glm::vec4(2.0, 4.5, 4.0, 1.0); //light position
+	glm::vec4 lightpos = View * glm::vec4(0, 2, 1, 1); //light position
 	glUniform1f(robot.colourModeID, 0);
 	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -152,6 +154,15 @@ void display()
 	model.top() = glm::rotate(model.top(), angle, glm::vec3(0, 1, 0));
 	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
 	robot.drawPetRobot();
+	model.pop();
+	
+	//Ground
+	model.push(model.top());
+	model.top() = glm::translate(model.top(), glm::vec3(0, -1.2, 0));
+	model.top() = glm::scale(model.top(), glm::vec3(5, 0.1, 5));
+	glUniformMatrix4fv(robot.modelID, 1, GL_FALSE, &(model.top())[0][0]);
+	glUniform1f(robot.colourModeID, 0);
+	shape.drawSphere();
 	model.pop();
 
 	model.pop();
@@ -189,19 +200,17 @@ void consoleOutput()
 	std::cout << "--------------CONTROLS-----------------" << "\n";
 	std::cout << "\n";
 	std::cout << "--------View----------" << "\n";
-	std::cout << "Press up arrow key to move view upwards" << "\n";
-	std::cout << "Press down arrow key to move view downwards" << "\n";
-	std::cout << "Press left arrow key to rotate view left in the x direction" << "\n";
-	std::cout << "Press right arrow key to rotate view right in the x direction" << "\n";
-	std::cout << "Press K key to rotate view left in the z direction" << "\n";
-	std::cout << "Press L key to rotate view right in the z direction" << "\n";
+	std::cout << "Press up arrow key to move camera view upwards and down arrow key to move camera view downwards" << "\n";
+	std::cout << "Press left arrow key to rotate view left in the x direction and  right arrow key to rotate view right in the x direction" << "\n";
+	std::cout << "Press K key to rotate view left in the z direction and press L key to rotate view right in the z direction" << "\n";
+	std::cout << "Press 1 key to zoom out and press 2 key to zoom in" << "\n";
 	std::cout << "\n";
 	std::cout << "-------Robot---------" << "\n";
 	std::cout << "Please note there are constraints on the robots movements so they seem realistic" << "\n";
 	std::cout << "Press Q key to rotate robot left and W key to rotate robot right" << "\n";
-	std::cout << "Press Y key and U key to move in the x direction" << "\n";
+	std::cout << "Press Y key and U key to move arms in the x direction" << "\n";
 	std::cout << "Press A key to move arm upwards and S key to move arm downwards" << "\n";
-	std::cout << "Press D key to move forearm forward in the x direction and F key move forearm in the x direction" << "\n";
+	std::cout << "Press D key to move forearm forward in the x direction and F key move forearm backward in the x direction" << "\n";
 	std::cout << "Press G key to move finger inwards and press H key to move finger outwards" << "\n";
 	std::cout << "Press Z and X key to move legs in x direcion" << "\n";
 	std::cout << "Press C and V to move lower leg in x direction" << "\n";
@@ -246,7 +255,9 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'P') angle -= 5.0;
 	if (k == 'N') speed += 0.1; speed2 += 0.1;
 	if (k == 'M') speed -= 0.1; speed2 -= 0.1;
-	robot.robotKeyMoves(k, action);
+	if (k == '1') zoom += 0.5;
+	if (k == '2') zoom -= 0.5;
+	robot.robotKeyMoves(k, action); //controls to move robot
 	movementConstraints(); //calls movement constraints to check key pressed makes variables still within constraints
 
 }

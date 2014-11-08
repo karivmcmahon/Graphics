@@ -749,14 +749,7 @@ public:
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 
-
-
-
-
 	}
-
-
-
 
 };
 

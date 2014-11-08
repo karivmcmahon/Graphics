@@ -71,6 +71,7 @@ public:
 		drawArm(-0.20, 0);
 		drawLeg(0.1, 1);
 		drawLeg(-0.1, 0);
+		
 	}
 
 	/**
@@ -576,7 +577,7 @@ public:
 	}
 
 	/**
-	Movement constraints to make movement seem realistic to a robot
+	Movement constraints to make movement seem realistic to a robot's movements
 	**/
 	void robotMovementConstraints()
 	{

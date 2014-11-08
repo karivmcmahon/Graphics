@@ -1,15 +1,7 @@
-﻿Build started 08/11/2014 12:19:25.
+﻿Build started 08/11/2014 18:19:16.
      1>Project "C:\Users\Kari\Documents\Graphics\Assignment1Robot\Assignment1Robot.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Robot.cpp robotScene.cpp Shape.cpp wrapper_glfw.cpp
-         wrapper_glfw.cpp
-     1>wrapper_glfw.cpp(225): warning C4101: 'e' : unreferenced local variable
-         Shape.cpp
-     1>Shape.cpp(53): warning C4305: '=' : truncation from 'double' to 'GLfloat'
-     1>Shape.cpp(195): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>Shape.cpp(209): warning C4018: '<' : signed/unsigned mismatch
-     1>Shape.cpp(240): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>Shape.cpp(255): warning C4018: '<' : signed/unsigned mismatch
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Robot.cpp Shape.cpp robotScene.cpp
          robotScene.cpp
      1>c:\users\kari\documents\graphics\assignment1robot\Shape.cpp(53): warning C4305: '=' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Shape.cpp(195): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
@@ -20,30 +12,36 @@
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(71): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(72): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(73): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(87): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(88): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(89): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(90): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(145): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(91): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(146): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(147): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(148): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(256): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(149): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(257): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(259): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(258): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(260): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(332): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(261): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(333): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(334): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(46): warning C4305: '=' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(135): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(136): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>c:\users\kari\documents\graphics\assignment1robot\Robot.cpp(335): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(47): warning C4305: '=' : truncation from 'double' to 'GLfloat'
      1>robotScene.cpp(137): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>robotScene.cpp(138): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(247): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
-     1>robotScene.cpp(248): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(139): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(140): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(256): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>robotScene.cpp(257): warning C4305: '-=' : truncation from 'double' to 'GLfloat'
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         Shape.cpp
+     1>Shape.cpp(53): warning C4305: '=' : truncation from 'double' to 'GLfloat'
+     1>Shape.cpp(195): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>Shape.cpp(209): warning C4018: '<' : signed/unsigned mismatch
+     1>Shape.cpp(240): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
+     1>Shape.cpp(255): warning C4018: '<' : signed/unsigned mismatch
          Robot.cpp
      1>c:\users\kari\documents\graphics\assignment1robot\Shape.cpp(53): warning C4305: '=' : truncation from 'double' to 'GLfloat'
      1>c:\users\kari\documents\graphics\assignment1robot\Shape.cpp(195): warning C4305: '+=' : truncation from 'double' to 'GLfloat'
@@ -54,21 +52,21 @@
      1>Robot.cpp(71): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(72): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(73): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>Robot.cpp(87): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(88): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(89): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(90): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>Robot.cpp(145): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>Robot.cpp(91): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(146): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(147): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(148): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>Robot.cpp(256): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>Robot.cpp(149): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(257): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>Robot.cpp(259): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>Robot.cpp(258): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(260): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
-     1>Robot.cpp(332): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>Robot.cpp(261): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(333): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
      1>Robot.cpp(334): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
+     1>Robot.cpp(335): warning C4305: 'argument' : truncation from 'double' to 'GLfloat'
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          Generating Code...
        Link:
@@ -76,24 +74,9 @@
          Debug\robotScene.obj
          Debug\Shape.obj
          Debug\wrapper_glfw.obj
-     1>glfw3.lib(context.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(gamma.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(init.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(input.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(monitor.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(window.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_gamma.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_init.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_joystick.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_monitor.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_time.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_window.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(wgl_context.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glloadD.lib(gl_load.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glloadD.lib(gl_load_cpp.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
          Assignment1Robot.vcxproj -> C:\Users\Kari\Documents\Graphics\Assignment1Robot\Debug\Assignment1Robot.exe
      1>Done Building Project "C:\Users\Kari\Documents\Graphics\Assignment1Robot\Assignment1Robot.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:11.34
+Time Elapsed 00:00:06.41
