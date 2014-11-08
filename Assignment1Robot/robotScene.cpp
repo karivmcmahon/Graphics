@@ -43,7 +43,7 @@ void consoleOutput();
 void init(GLWrapper *glw)
 {
 	speed = 0.5;
-	speed2 = 0.10;
+	speed2 = 0.1;
 	//Sets up view movemenet variables
 	vx = 0;
 	vy = 0;
@@ -66,6 +66,7 @@ void init(GLWrapper *glw)
 	shape.createStar();
 	//Sets up sphere VBO
 	shape.makeSphereVBO(40, 40);
+	//Sets up cylnder positions, colours and normals then pass to buffer
 	shape.createCylinder();
 	try
 	{
@@ -86,6 +87,7 @@ void init(GLWrapper *glw)
 	lightPosID = glGetUniformLocation(program, "lightpos");
 	robot.emitModeID = glGetUniformLocation(program, "emitmode");
 
+	//Displays controls
 	consoleOutput();
 
 }
@@ -115,7 +117,7 @@ void display()
 		glm::vec3(0, 1, 0)  // Head is up 
 		);
 
-	//Robot::model matrix : an identity matrix - Sets up the scene
+	//Robot::model matrix : an identity matrix - Sets up the scene - Stack helps create interconnected parts
 	model.push(glm::mat4(1.0f));
 	//Set scene
 	View = glm::rotate(View, -vx, glm::vec3(1, 0, 0));
@@ -152,29 +154,13 @@ void display()
 	robot.drawPetRobot();
 	model.pop();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	model.pop();
 
-
+	//Animation for cats head and tail
 	robot.movingTail += speed;
 	robot.movingLegs += speed2;
 	if (robot.movingTail >= 15 || robot.movingTail <= -15) speed = -speed;
 	if (robot.movingLegs >= 20 || robot.movingLegs <= -20) speed2 = -speed2;
-
-
 
 	glUseProgram(0);
 
@@ -222,6 +208,7 @@ void consoleOutput()
 	std::cout << "Press E key to rotate robot's neck left and R key to rotate robot's neck right" << "\n";
 	std::cout << "--------Cat--------" << "\n";
 	std::cout << "Press O key to rotate cat right and P key to rotate cat left" << "\n";
+	std::cout << "Press N key to increase speed and M key to decreasd speed" << "\n";
 }
 
 
@@ -257,6 +244,8 @@ static void keyCallback(GLFWwindow* window, int k, int s, int action, int mods)
 	if (k == 'L')	vz -= 5.0;
 	if (k == 'O')	angle += 5.0;
 	if (k == 'P') angle -= 5.0;
+	if (k == 'N') speed += 0.1; speed2 += 0.1;
+	if (k == 'M') speed -= 0.1; speed2 -= 0.1;
 	robot.robotKeyMoves(k, action);
 	movementConstraints(); //calls movement constraints to check key pressed makes variables still within constraints
 

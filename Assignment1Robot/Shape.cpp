@@ -36,7 +36,6 @@ public:
 	std::vector<glm::vec3> conePositions, boltPositions, starPositions, cylinderStripPositions, cylinderTopPositions, cylinderBottomPositions;
 	std::vector<GLfloat> coneColours, boltsColours, starColours, cylinderStripColours, cylinderTopColours, cylinderBottomColours;
 	std::vector<glm::vec3> coneNormals, boltsNormals, starNormals, cylinderStripNormals, cylinderTopNormals, cylinderBottomNormals;
-	std::stack<glm::mat4> model2;
 	//Objects for the buffer
 	GLuint positionBufferObject, normalsBufferObject, colourObject;
 	GLuint sphereBufferObject, sphereNormals, sphereColours, elementbuffer;
@@ -59,6 +58,9 @@ public:
 		numlongs = 40;
 	}
 
+	/**
+	Creates the positions, normals and colours for the cylinder
+	**/
 	void createCylinder()
 	{
 		for (int i = 0; i <= 32; i++) {
@@ -169,14 +171,6 @@ public:
 			coneColours.push_back(1.0f);
 		}
 
-	/**	for (int v = 0; v < conePositions.size() - sizeof(glm::vec3); v += 3)
-		{
-			glm::vec3 normal = glm::cross(conePositions.at(v + 1) - conePositions.at(v),
-				conePositions.at(v + 2) - conePositions.at(v));
-			coneNormals.push_back(normal);
-			coneNormals.push_back(normal);
-			coneNormals.push_back(normal);
-		}**/
 		glGenBuffers(1, &coneBufferObj);
 		glBindBuffer(GL_ARRAY_BUFFER, coneBufferObj);
 		glBufferData(GL_ARRAY_BUFFER, conePositions.size() * sizeof(glm::vec3), &conePositions[0], GL_STATIC_DRAW);
@@ -422,7 +416,7 @@ public:
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, starNormalObject);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 18492);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, starPositions.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -447,7 +441,7 @@ public:
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, boltNormalObject);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 73968);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, boltPositions.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -711,11 +705,8 @@ public:
 		glEnableVertexAttribArray(2);
 		glBindBuffer(GL_ARRAY_BUFFER, cylinderTopBufferObject);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-
-
-
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 1440);
+		
+		glDrawArrays(GL_TRIANGLE_FAN, 0, cylinderTopPositions.size());
 
 		glBindBuffer(GL_ARRAY_BUFFER, cylinderStripBufferObject);
 		glEnableVertexAttribArray(0);
@@ -732,7 +723,7 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, cylinderStripBufferObject);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 2880);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, cylinderStripPositions.size());
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -752,7 +743,7 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomBufferObject);
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 1440);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, cylinderBottomPositions.size());
 
 
 		glDisableVertexAttribArray(0);

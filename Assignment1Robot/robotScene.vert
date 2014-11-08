@@ -47,7 +47,7 @@ void main()
 	}
 	
 	//Emissive colour
-	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.8); 
+	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.4); 
 
 	fcolour = colour;
 	gl_Position =  (projection * view * model)  * position_h;
