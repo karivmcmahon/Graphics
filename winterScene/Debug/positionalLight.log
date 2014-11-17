@@ -1,24 +1,12 @@
-﻿Build started 15/11/2014 18:36:36.
+﻿Build started 17/11/2014 15:59:36.
      1>Project "C:\Users\Kari\Documents\Graphics\winterScene\positionalLight.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt object_ldr.cpp winterScene.cpp terrain_object.cpp wrapper_glfw.cpp
-         wrapper_glfw.cpp
-     1>wrapper_glfw.cpp(236): warning C4101: 'e' : unreferenced local variable
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt terrain_object.cpp
          terrain_object.cpp
-     1>terrain_object.cpp(115): warning C4018: '<' : signed/unsigned mismatch
-     1>terrain_object.cpp(130): warning C4018: '<' : signed/unsigned mismatch
-     1>terrain_object.cpp(135): warning C4018: '<' : signed/unsigned mismatch
-     1>terrain_object.cpp(137): warning C4018: '<' : signed/unsigned mismatch
-         winterScene.cpp
-     1>winterScene.cpp(92): warning C4101: 'e' : unreferenced local variable
-         GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-         GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-         object_ldr.cpp
-     1>object_ldr.cpp(149): warning C4018: '<' : signed/unsigned mismatch
-     1>object_ldr.cpp(166): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>object_ldr.cpp(167): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>object_ldr.cpp(168): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-         Generating Code...
+     1>terrain_object.cpp(118): warning C4018: '<' : signed/unsigned mismatch
+     1>terrain_object.cpp(133): warning C4018: '<' : signed/unsigned mismatch
+     1>terrain_object.cpp(138): warning C4018: '<' : signed/unsigned mismatch
+     1>terrain_object.cpp(140): warning C4018: '<' : signed/unsigned mismatch
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Kari\Documents\Graphics\winterScene\Debug\winterScene.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Kari\Documents\Graphics\winterScene\Debug\winterScene.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Kari\Documents\Graphics\winterScene\Debug\winterScene.lib" /MACHINE:X86 Debug\object_ldr.obj
          Debug\winterScene.obj
@@ -48,4 +36,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:06.46
+Time Elapsed 00:00:04.20
