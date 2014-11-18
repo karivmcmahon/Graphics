@@ -6,7 +6,7 @@ Iain Martin November 2014
 #include "terrain_object.h"
 #include "SOIL.h"
 #include <glm/gtc/noise.hpp>
-
+#include <iostream>
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
@@ -22,6 +22,9 @@ terrain_object::terrain_object()
 	zsize = 0;
 	perlin_octaves = 4;
 	height_scale = 0.3f;
+	frequency = 0.8;
+	scalee = 3;
+
 }
 
 
@@ -99,6 +102,8 @@ void terrain_object::drawObject(int drawmode,GLuint textureID)
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -186,7 +191,7 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 	normals = new glm::vec3[numvertices];
 
 	/* First calculate the noise array which we'll use for our vertex height values */
-	calculateNoise(0.8f, 3.f);
+	calculateNoise(frequency, scalee);
 
 	/* Debug code to check that noise values are sensible */
 	//	for (int i = 0; i < (xsize*zsize*perlin_octaves); i++)
@@ -282,5 +287,15 @@ void terrain_object::calculateNormals()
 	{
 		normals[v] = glm::normalize(normals[v]);
 	}
+}
+
+void terrain_object::keyPresses(int key)
+{
+	
+	if (key == 'Z') perlin_octaves += 1.0f;
+	if (key == 'X') perlin_octaves -= 1.0f;
+	if (key == 'C') scalee += 1.0f;
+	if (key == 'V') scalee -= 1.0f;
+	std::cout << "perlin : " << perlin_octaves << std::endl;
 }
 

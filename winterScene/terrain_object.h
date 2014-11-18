@@ -19,6 +19,7 @@ public:
 	void calculateNoise(GLfloat freq, GLfloat scale);
 	void createTerrain(GLuint xp, GLuint yp, GLfloat xs, GLfloat ys);
 	void calculateNormals();
+	void keyPresses(int key);
 
 	void createObject();
 	void drawObject(int drawmode, GLuint textureID);
@@ -42,5 +43,7 @@ public:
 	GLfloat height;
 	GLuint perlin_octaves;
 	GLfloat height_scale;
+	GLfloat frequency;
+	GLfloat scalee;
 };
 

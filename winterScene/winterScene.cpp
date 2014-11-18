@@ -31,6 +31,7 @@ GLuint quad_vbo2, quad_normals2, quad_colours2, quad_tex_coords2;
 GLuint quad_vbo3, quad_normals3, quad_colours3, quad_tex_coords3;
 GLuint quad_vbo4, quad_normals4, quad_colours4, quad_tex_coords4;
 GLuint quad_vbo5, quad_normals5, quad_colours5, quad_tex_coords5;
+GLuint quad_vbo6, quad_normals6, quad_colours6, quad_tex_coords6;
 GLuint program;		/* Identifier for the shader prgoram */
 GLuint vao;			/* Vertex array (Containor) object. This is the index of the VAO that will be the container for
 					   our buffer objects */
@@ -62,7 +63,7 @@ void init(GLWrapper *glw)
 	glGenVertexArrays(1, &vao);
 	// Create the vertex array object and make it current
 	glBindVertexArray(vao);
-	terrain.createTerrain(10,10, 100.f, 100.f);
+	terrain.createTerrain(30,30, 200.f, 200.f);
 	terrain.createObject();
 
 	
@@ -81,20 +82,26 @@ void init(GLWrapper *glw)
 
 	try
 	{
-
-		textureID = SOIL_load_OGL_texture("snow.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		//Frost bite 512 or hanging stone for treeS
+		textureID = SOIL_load_OGL_texture("snow4.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID2 = SOIL_load_OGL_texture("star3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-		textureID3 = SOIL_load_OGL_texture("hangingstone_ft.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-		textureID4 = SOIL_load_OGL_texture("hangingstone_bk.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-		textureID5 = SOIL_load_OGL_texture("hangingstone_lf.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-		textureID6 = SOIL_load_OGL_texture("hangingstone_rt.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
-		textureID7 = SOIL_load_OGL_texture("hangingstone_up.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		textureID3 = SOIL_load_OGL_texture("purplenebula_ft.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		textureID4 = SOIL_load_OGL_texture("purplenebula_bk.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		textureID5 = SOIL_load_OGL_texture("purplenebula_lf.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		textureID6 = SOIL_load_OGL_texture("purplenebula_rt.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		textureID7 = SOIL_load_OGL_texture("purplenebula_up.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		/* check for an error during the load process */
 		if (textureID == 0)
 		{
 			printf("SOIL loading error: '%s'\n", SOIL_last_result());
 		}
-	
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		int loc = glGetUniformLocation(program, "tex1");
 		int loc2 = glGetUniformLocation(program, "tex1");
 		if (loc >= 0) glUniform1i(loc, 0);
@@ -117,9 +124,9 @@ void init(GLWrapper *glw)
 	{
 		// Vertex positions
 		50.0f, 50.0f,  50.0f,
-		50.0f, -50.0f, 50.0f,
+		50.0f, -10.0f, 50.0f,
 		-50.0f, 50.0f, 50.0f,
-		-50.0f, -50.0f,  50.0f,
+		-50.0f, -10.0f,  50.0f,
 
 		// Normals
 		0, 1.f, 0,
@@ -147,9 +154,9 @@ void init(GLWrapper *glw)
 	static const GLfloat quad_data2[] =
 	{
 		-50.0f, 50.0f, -50.0f,
-		-50.0f, -50.0f, -50.0f,
+		-50.0f, -10.0f, -50.0f,
 		50.0f, 50.0f, -50.0f,
-		50.0f, -50.0f,- 50.0f,
+		50.0f, -10.0f,- 50.0f,
 
 		// Normals
 		0, 1.f, 0,
@@ -176,9 +183,9 @@ void init(GLWrapper *glw)
 	static const GLfloat quad_data3[] =
 	{
 		-50.0f, 50.0f, 50.0f,
-		-50.0f, -50.0f, 50.0f,
+		-50.0f, -10.0f, 50.0f,
 		-50.0f, 50.0f, -50.0f,
-		-50.0f, -50.0f, -50.0f,
+		-50.0f, -10.0f, -50.0f,
 
 		// Normals
 		0, 1.f, 0,
@@ -207,9 +214,9 @@ void init(GLWrapper *glw)
 	{
 		// Vertex positions
 		50.0f, 50.0, -50.0f,
-		50.0f, -50.0, -50.0f,
+		50.0f, -10.0, -50.0f,
 		50.0f, 50.0, 50.0f,
-		50.0f, -50.0, 50.0f,
+		50.0f, -10.0, 50.0f,
 
 		// Normals
 		0, 1.f, 0,
@@ -257,6 +264,37 @@ void init(GLWrapper *glw)
 	// specify the byte offset into the buffer for each vertex attribute set.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_data5), quad_data5, GL_STATIC_DRAW);
 
+	glGenBuffers(1, &quad_vbo6);
+	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo6);
+	// Create data for our quad with vertices, normals and texturee coordinates 
+	static const GLfloat quad_data6[] =
+	{
+		// Vertex positions
+		50.0f, -10.0, -50.0f,
+		-50.0f, -10.0, -50.0f,
+		50.0f, -10.0, 50.0f,
+		-50.0f, -10.0, 50.0f,
+
+
+		// Normals
+		0, 1.f, 0,
+		0, 1.f, 0,
+		0, 1.f, 0,
+		0, 1.f, 0,
+
+		// Texture coordinates. Note we only need two per vertex but have a
+		// redundant third to fit the texture coords in the same buffer for this simple object
+		0.0f, 1.0f, 0,
+		0.0f, 0.0f, 0,
+		1.0f, 1.0f, 0,
+		1.0f, 0.0f, 0,
+	};
+
+	// Copy the data into the buffer. See how this example combines the vertices, normals and texture
+	// coordinates in the same buffer and uses the last parameter of  glVertexAttribPointer() to
+	// specify the byte offset into the buffer for each vertex attribute set.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_data6), quad_data6, GL_STATIC_DRAW);
+
 
 }
 
@@ -294,16 +332,18 @@ void display()
 
 	// Define the normal matrix
 	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * model)));
-
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
 
 	
 	
 
 	terrain.drawObject(0, textureID);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	
 
 
 	//TOP
@@ -416,6 +456,25 @@ void renderSkybox()
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo6);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(12 * sizeof(float)));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(24 * sizeof(float)));
+	glEnable(GL_TEXTURE_2D);
+	/* Draw our textured quad*/
+	glBindTexture(GL_TEXTURE_2D, textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 	glDepthMask(1);
 
 
@@ -448,6 +507,9 @@ static void keyCallback(GLFWwindow* window, int key, int s, int action, int mods
 	if (key == '6') vz -= 1.0f;
 	if (key == 'A') zoom += 5.0f;
 	if (key == 'S') zoom -= 5.0f;
+	terrain.keyPresses(key);
+	//terrain.createTerrain(10, 10, 20.f, 20.f);
+	//terrain.createObject();
 	
 
 }
