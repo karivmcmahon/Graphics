@@ -1,9 +1,9 @@
-﻿Build started 23/11/2014 15:21:44.
+﻿Build started 23/11/2014 22:41:22.
      1>Project "C:\Users\Kari\Documents\Graphics\winterScene\positionalLight.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt winterScene.cpp
          winterScene.cpp
-     1>winterScene.cpp(111): warning C4101: 'e' : unreferenced local variable
+     1>winterScene.cpp(113): warning C4101: 'e' : unreferenced local variable
          GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
        Link:
@@ -17,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.17
+Time Elapsed 00:00:03.06

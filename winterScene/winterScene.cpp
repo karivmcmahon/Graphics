@@ -21,6 +21,7 @@ if you prefer */
 #include "SOIL.h"
 #include "tree.h"
 #include <iostream>
+#include <stdlib.h>
 
 /* Include GLM core and matrix extensions*/
 #include <glm/glm.hpp>
@@ -33,6 +34,7 @@ GLuint quad_vbo3, quad_normals3, quad_colours3, quad_tex_coords3;
 GLuint quad_vbo4, quad_normals4, quad_colours4, quad_tex_coords4;
 GLuint quad_vbo5, quad_normals5, quad_colours5, quad_tex_coords5;
 GLuint quad_vbo6, quad_normals6, quad_colours6, quad_tex_coords6;
+std::vector < int > randoms,randomsz;
 GLuint program;		/* Identifier for the shader prgoram */
 GLuint vao;			/* Vertex array (Containor) object. This is the index of the VAO that will be the container for
 					   our buffer objects */
@@ -64,7 +66,7 @@ void init(GLWrapper *glw)
 	glGenVertexArrays(1, &vao);
 	// Create the vertex array object and make it current
 	glBindVertexArray(vao);
-	terrain.createTerrain(30,30, 200.f, 200.f);
+	terrain.createTerrain(30,30, 100.f, 100.f);
 	terrain.createObject();
 	trees.createTree();
 	
@@ -296,7 +298,12 @@ void init(GLWrapper *glw)
 	// coordinates in the same buffer and uses the last parameter of  glVertexAttribPointer() to
 	// specify the byte offset into the buffer for each vertex attribute set.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_data6), quad_data6, GL_STATIC_DRAW);
-
+	for (int i = 0; i < 20; i++)
+	{
+		randoms.push_back(rand() % 25);
+		randomsz.push_back(rand() % 25);
+	}
+	
 
 }
 
@@ -349,15 +356,68 @@ void display()
 
 	//trees.lsystem_transform.push(trees.lsystem_transform.top());
 	terrain.drawObject(0, textureID);
+	
 	//trees.lsystem_transform.pop();
-	trees.lsystem_transform.push(glm::mat4(1.0f));
-	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(10, -8, 0));
-	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1, 1.5, 1));
+/*	for (int x = 0; x < 4; x++)
+{
+
+			trees.lsystem_transform.push(glm::mat4(1.0f));
+			trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), terrain.vertices[ randoms.at(x) ]);
+			trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1, 1.5, 1));
+			trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+			glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+			trees.trees(3, texID, modelID, colourmodeID);
+		
+
+} */
+
+	/*trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), terrain.vertices[0]);
+	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1.5, 4, 1));
 	trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
 	trees.trees(3, texID, modelID, colourmodeID);
 
-	
+	trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), terrain.vertices[4]);
+	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1.5, 4, 1));
+	trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	trees.trees(3, texID, modelID, colourmodeID); */
+	/*for (int i = 0; i < 20; i++)
+	{
+		GLuint x = randoms.at(i);
+		GLuint z = randomsz.at(i);
+		trees.lsystem_transform.push(glm::mat4(1.0f));
+		trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(x,terrain.getHeight(x,z),z));
+		//trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1.5, 4, 1));
+		//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+		glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+		trees.trees(3, texID, modelID, colourmodeID);
+
+		
+	}*/
+
+	trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(10, terrain.getHeight(10,10), 10));
+	//trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1.5, 4, 1));
+	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	trees.trees(3, texID, modelID, colourmodeID);
+
+	trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(10, terrain.getHeight(10, 20), 20));
+	//trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1.5, 4, 1));
+	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	trees.trees(3, texID, modelID, colourmodeID);
+
+	trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(-10, terrain.getHeight(-10, -10), -10));
+	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(0.8, 1, 0.8));
+	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	trees.trees(3, texID, modelID, colourmodeID);
 	
 	
 

@@ -23,11 +23,13 @@ public:
 
 	void createObject();
 	void drawObject(int drawmode, GLuint textureID);
+	GLfloat getHeight(GLuint x, GLuint z);
 
 	glm::vec3 *vertices;
 	glm::vec3 *normals;
 	std::vector<GLushort> elements;
 	std::vector<glm::vec3> texCoords;
+	std::vector<glm::vec3> pos;
 	GLfloat* noise;
 
 	GLuint vbo_mesh_vertices;

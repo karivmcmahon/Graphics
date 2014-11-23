@@ -174,7 +174,13 @@ void terrain_object::calculateNoise(GLfloat freq, GLfloat scale)
 		}
 	}
 }
-
+GLfloat terrain_object::getHeight(GLuint x, GLuint z)
+{
+	//GLfloat heights = noise[(x*zsize + z) * 4 + 3];
+	float fScaleC = float(z) / (height - 0.5f)*height_scale;
+	float fScaleR = float(x) / (height - 0.5f)*height_scale;
+	return fScaleC - fScaleR;
+}
 /* Define the vertex array that specifies the terrain
 (x, y) specifies the pixel dimensions of the heightfield (x * y) vertices
 (xs, ys) specifies the size of the heightfield region
@@ -244,7 +250,7 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 			elements.push_back(bottom++);
 		}
 	}
-
+	
 	calculateNormals();
 }
 
@@ -265,11 +271,13 @@ void terrain_object::calculateNormals()
 			GLuint v1 = elements[element_pos];
 			GLuint v2 = elements[element_pos + 1];
 			GLuint v3 = elements[element_pos + 2];
-
+			//pos.push_back(glm::vec3(v1, v2, v3));
 			// Define the two vectors for the triangle
 			AB = vertices[v2] - vertices[v1];
 			AC = vertices[v3] - vertices[v1];
-
+			pos.push_back(vertices[v1]);
+			
+			
 			// Calculate the cross product
 			cross_product = glm::cross(AB, AC);
 
@@ -291,6 +299,8 @@ void terrain_object::calculateNormals()
 	{
 		normals[v] = glm::normalize(normals[v]);
 	}
+
+	
 }
 
 void terrain_object::keyPresses(int key)
