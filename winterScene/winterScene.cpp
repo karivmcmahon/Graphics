@@ -19,6 +19,7 @@ if you prefer */
 #include "object_ldr.h"
 #include "terrain_object.h"
 #include "SOIL.h"
+#include "tree.h"
 #include <iostream>
 
 /* Include GLM core and matrix extensions*/
@@ -43,12 +44,12 @@ GLfloat  vx, vy, vz;
 GLfloat light_x, light_y, light_z;
 
 /* Uniforms*/
-GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, textureID, textureID2,textureID3, textureID4,textureID5, textureID6, textureID7;
+GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, textureID, textureID2,textureID3, textureID4,textureID5, textureID6, textureID7, texID;
 GLuint colourmodeID, emitmodeID;
 
 GLfloat aspect_ratio;		/* Aspect ratio of the window defined in the reshape callback*/
 terrain_object terrain;
-
+tree trees;
 void renderSkybox();
 /*
 This function is called before entering the main rendering loop.
@@ -65,7 +66,7 @@ void init(GLWrapper *glw)
 	glBindVertexArray(vao);
 	terrain.createTerrain(30,30, 200.f, 200.f);
 	terrain.createObject();
-
+	trees.createTree();
 	
 
 	/* Load and build the vertex and fragment shaders */
@@ -83,6 +84,7 @@ void init(GLWrapper *glw)
 	try
 	{
 		//Frost bite 512 or hanging stone for treeS
+		texID = SOIL_load_OGL_texture("bark2.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID = SOIL_load_OGL_texture("snow4.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID2 = SOIL_load_OGL_texture("star3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID3 = SOIL_load_OGL_texture("purplenebula_ft.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
@@ -316,7 +318,7 @@ void display()
 
 	renderSkybox();
 	// Define the model transformations for the cube
-	glm::mat4 model = glm::mat4(1.0f);
+	trees.lsystem_transform.push(glm::mat4(1.0f));
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	glm::mat4 Projection = glm::perspective(zoom, aspect_ratio, 0.1f, 100.0f);
 	// Camera matrix
@@ -331,27 +333,28 @@ void display()
 	glm::vec4 lightpos = View *  glm::vec4(light_x, light_y, light_z, 1.0);
 
 	// Define the normal matrix
-	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * model)));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
+	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
 	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
 
-	
-	
-
+	trees.lsystem_transform.push(trees.lsystem_transform.top());
 	terrain.drawObject(0, textureID);
+	trees.lsystem_transform.pop();
 
 	
+	trees.lsystem_transform.push(trees.lsystem_transform.top());
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(0, -5, 0));
+	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(0.5, 0.5, 0.5));
+	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), 180.0f, glm::vec3(0, 1,0));
+	trees.trees(3,texID,modelID, colourmodeID);
+	trees.lsystem_transform.pop();
 
-
-	//TOP
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	trees.lsystem_transform.pop();
+	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), 90.0f, glm::vec3(0.5,));
+	
 	
 
 	glUseProgram(0);
@@ -378,8 +381,10 @@ void renderSkybox()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	//BACk
-	/* Draw our textured quad*/
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
+
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo2);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -407,7 +412,6 @@ void renderSkybox()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(12 * sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(24 * sizeof(float)));
-	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureID5);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -426,7 +430,6 @@ void renderSkybox()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)(0));
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)(12 * sizeof(float)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)(24 * sizeof(float)));
-
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, textureID6);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

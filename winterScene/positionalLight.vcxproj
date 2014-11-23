@@ -75,6 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="object_ldr.cpp" />
+    <ClCompile Include="tree.cpp" />
     <ClCompile Include="winterScene.cpp" />
     <ClCompile Include="terrain_object.cpp" />
     <ClCompile Include="wrapper_glfw.cpp" />
@@ -82,6 +83,7 @@
   <ItemGroup>
     <ClInclude Include="object_ldr.h" />
     <ClInclude Include="terrain_object.h" />
+    <ClInclude Include="tree.h" />
     <ClInclude Include="wrapper_glfw.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

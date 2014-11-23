@@ -125,6 +125,9 @@ void terrain_object::drawObject(int drawmode,GLuint textureID)
 		GLuint location = sizeof(GLushort) * (i * zsize * 2);
 		glDrawElements(GL_TRIANGLE_STRIP, zsize * 2, GL_UNSIGNED_SHORT, (GLvoid*)(location));
 	}
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }
 
 
