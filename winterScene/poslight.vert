@@ -36,17 +36,23 @@ void main()
 	mat4 mv_matrix = view * model;		// Calculate the model-view transformation
 	P = mv_matrix * position_h;	// Modify the vertex position (x, y, z, w) by the model-view transformation
 	
-	if (colourmode == 1)
+	if (colourmode == 0)
+	{
 		diffuse_albedo =  vec4(1.0, 1.0, 1.0, 1.0);
+		fcolour = vec4(1.0,1.0,1.0,1.0);
+	}
 	else
+	{
 		diffuse_albedo = vec4(1.0, 1.0, 1.0, 1.0);
-		
+		fcolour = vec4(1.0,1.0,1.0,1.0);
+	}
 	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.8); 
+	
 		
 	
 	
 		
-    fcolour = vec4(1.0,0.0,0.0,1.0);
+    //fcolour = vec4(1.0,0.0,0.0,1.0);
 	gl_Position = (projection * view * model) * position_h;
 	ftexcoord = texture.xy;
 }

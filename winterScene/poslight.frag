@@ -27,7 +27,7 @@ vec3 N;
 vec3 L;
 vec3 V;
 vec3 R;
- vec4 texcolour = texture(tex1, ftexcoord);
+ vec4 texcolour = texture(tex1, ftexcoord) * fcolour;
 	N = normalize(normalmatrix * normals);		// Modify the normals by the normal-matrix (i.e. to model-view (or eye) coordinates )
     L = lightpos.xyz - P.xyz;		// Calculate the vector from the light position to the vertex in eye space
 	float distanceToLight = length(L);

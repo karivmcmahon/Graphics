@@ -316,9 +316,10 @@ void display()
 	/* Make the compiled shader program current */
 	glUseProgram(program);
 
-	renderSkybox();
+	
 	// Define the model transformations for the cube
-	trees.lsystem_transform.push(glm::mat4(1.0f));
+	glm::mat4 model = glm::mat4(1.0f);
+	//trees.lsystem_transform.push(glm::mat4(1.0f));
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	glm::mat4 Projection = glm::perspective(zoom, aspect_ratio, 0.1f, 100.0f);
 	// Camera matrix
@@ -333,27 +334,30 @@ void display()
 	glm::vec4 lightpos = View *  glm::vec4(light_x, light_y, light_z, 1.0);
 
 	// Define the normal matrix
-	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
+	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * model)));
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
 	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
+	renderSkybox();
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 
-	trees.lsystem_transform.push(trees.lsystem_transform.top());
+	//trees.lsystem_transform.push(trees.lsystem_transform.top());
 	terrain.drawObject(0, textureID);
-	trees.lsystem_transform.pop();
+	//trees.lsystem_transform.pop();
+	trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(10, -8, 0));
+	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(1, 1.5, 1));
+	trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), -90.0f, glm::vec3(0, 1, 0));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	trees.trees(3, texID, modelID, colourmodeID);
 
 	
-	trees.lsystem_transform.push(trees.lsystem_transform.top());
-	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(0, -5, 0));
-	trees.lsystem_transform.top() = glm::scale(trees.lsystem_transform.top(), glm::vec3(0.5, 0.5, 0.5));
-	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), 180.0f, glm::vec3(0, 1,0));
-	trees.trees(3,texID,modelID, colourmodeID);
-	trees.lsystem_transform.pop();
-
-	trees.lsystem_transform.pop();
-	//trees.lsystem_transform.top() = glm::rotate(trees.lsystem_transform.top(), 90.0f, glm::vec3(0.5,));
 	
 	
 

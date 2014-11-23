@@ -128,6 +128,7 @@ void terrain_object::drawObject(int drawmode,GLuint textureID)
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
 }
 
 
@@ -299,6 +300,6 @@ void terrain_object::keyPresses(int key)
 	if (key == 'X') perlin_octaves -= 1.0f;
 	if (key == 'C') scalee += 1.0f;
 	if (key == 'V') scalee -= 1.0f;
-	std::cout << "perlin : " << perlin_octaves << std::endl;
+	//std::cout << "perlin : " << perlin_octaves << std::endl;
 }
 
