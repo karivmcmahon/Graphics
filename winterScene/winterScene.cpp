@@ -22,7 +22,7 @@ if you prefer */
 #include "tree.h"
 #include <iostream>
 #include <stdlib.h>
-
+#include "points.h"
 /* Include GLM core and matrix extensions*/
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
@@ -36,6 +36,7 @@ GLuint quad_vbo5, quad_normals5, quad_colours5, quad_tex_coords5;
 GLuint quad_vbo6, quad_normals6, quad_colours6, quad_tex_coords6;
 std::vector < int > randoms,randomsz;
 GLuint program;		/* Identifier for the shader prgoram */
+GLuint program2;
 GLuint vao;			/* Vertex array (Containor) object. This is the index of the VAO that will be the container for
 					   our buffer objects */
 
@@ -47,7 +48,12 @@ GLfloat light_x, light_y, light_z;
 
 /* Uniforms*/
 GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, textureID, textureID2,textureID3, textureID4,textureID5, textureID6, textureID7, texID;
-GLuint colourmodeID, emitmodeID;
+GLuint colourmodeID, emitmodeID, pointSizeID, modelID2, projectionID2, colourmodeID2, viewID2;
+
+points *point_anim;
+GLfloat speed;
+GLfloat maxdist;
+GLfloat point_size;
 
 GLfloat aspect_ratio;		/* Aspect ratio of the window defined in the reshape callback*/
 terrain_object terrain;
@@ -70,11 +76,13 @@ void init(GLWrapper *glw)
 	terrain.createObject();
 	trees.createTree();
 	
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/* Load and build the vertex and fragment shaders */
 	try
 	{
 		program = glw->LoadShader("poslight.vert", "poslight.frag");
+		program2 = glw->LoadShader("point_sprites.vert", "point_sprites_analytic.frag");
 	}
 	catch (std::exception &e)
 	{
@@ -119,6 +127,13 @@ void init(GLWrapper *glw)
 	colourmodeID = glGetUniformLocation(program, "colourmode");
 	viewID = glGetUniformLocation(program, "view");
 	projectionID = glGetUniformLocation(program, "projection");
+	
+	
+	modelID2 = glGetUniformLocation(program2, "model");
+	colourmodeID2 = glGetUniformLocation(program2, "colourmode");
+	viewID2 = glGetUniformLocation(program2, "view");
+	projectionID2 = glGetUniformLocation(program2, "projection");
+	pointSizeID = glGetUniformLocation(program2, "size");
 
 	glGenBuffers(1, &quad_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo);
@@ -304,7 +319,11 @@ void init(GLWrapper *glw)
 		randomsz.push_back(rand() % 25 +1);
 	}
 
-	
+	speed = 4.f;
+	maxdist = 1.f;
+	point_anim = new points(10000, maxdist, speed);
+	point_anim->create();
+	point_size = 2;
 	
 
 }
@@ -321,6 +340,8 @@ void display()
 
 	/* Enable depth test  */
 	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
 
 	/* Make the compiled shader program current */
 	glUseProgram(program);
@@ -359,27 +380,27 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	terrain.drawObject(0, textureID);
 	
-for (GLuint x = 0; x < 4; x++)
-{
-		//std::cout << "LOOP" << std::endl;
-		trees.lsystem_transform.push(glm::mat4(1.0f));
-		trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(randoms.at(x), terrain.getHeight(randoms.at(x),randomsz.at(x)), randomsz.at(x) ));
-		glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
-		trees.trees(3, texID, modelID, colourmodeID);
-			
-} 
 
-		
+glUseProgram(0);
+glUseProgram(program2);
+model = glm::translate(model, glm::vec3(0, 0, 0));
+model = glm::scale(model, glm::vec3(1 * 5, 1 * 5, 1 * 5));
+glUniformMatrix4fv(modelID2, 1, GL_FALSE, &model[0][0]);
+glUniform1ui(colourmodeID2, 0);
+glUniform1f(pointSizeID, point_size);
+glUniformMatrix4fv(viewID2, 1, GL_FALSE, &View[0][0]);
+glUniformMatrix4fv(projectionID2, 1, GL_FALSE, &Projection[0][0]);
+point_anim->draw();
+point_anim->animate();
+glUseProgram(0);
+
 
 	
-
-
-	
 	
 	
 	
 
-	glUseProgram(0);
+	
 
 
 }

@@ -75,6 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="object_ldr.cpp" />
+    <ClCompile Include="points.cpp" />
     <ClCompile Include="tree.cpp" />
     <ClCompile Include="winterScene.cpp" />
     <ClCompile Include="terrain_object.cpp" />
@@ -82,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object_ldr.h" />
+    <ClInclude Include="points.h" />
     <ClInclude Include="terrain_object.h" />
     <ClInclude Include="tree.h" />
     <ClInclude Include="wrapper_glfw.h" />
