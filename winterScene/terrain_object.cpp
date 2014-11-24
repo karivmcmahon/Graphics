@@ -176,10 +176,10 @@ void terrain_object::calculateNoise(GLfloat freq, GLfloat scale)
 }
 GLfloat terrain_object::getHeight(GLuint x, GLuint z)
 {
-	//GLfloat heights = noise[(x*zsize + z) * 4 + 3];
-	float fScaleC = float(z) / (height - 0.5f)*height_scale;
-	float fScaleR = float(x) / (height - 0.5f)*height_scale;
-	return fScaleC - fScaleR;
+	//GLfloat heights = vertices[z - x*xsize ].y;
+	GLfloat heights = vertices[x*xsize - z].y;
+	//std::cout << "Height : " << heights << std::endl;
+	return heights;
 }
 /* Define the vertex array that specifies the terrain
 (x, y) specifies the pixel dimensions of the heightfield (x * y) vertices
@@ -228,7 +228,7 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 			GLfloat height = noise[(x*zsize + z) * 4 + 3];
 			vertices[x*xsize + z] = glm::vec3(xpos, (height - 0.5f)*height_scale, zpos);
 			normals[x*xsize + z] = glm::vec3(0, 1.0f, 0);		// Normals for a flat surface
-
+		//	std::cout << "Height : " << (height - 0.5f)*height_scale << std::endl;
 
 			texCoords.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
 			texCoords.push_back(glm::vec3(2.0f, 0.0f, 1.0f));
