@@ -74,8 +74,9 @@ void points::animate()
 		
 		if (vertices[i].y <= -0.6)
 		{
-			vertices[i] == glm::vec3(0, 0, 0);
+			vertices[i] += glm::vec3(0.0f, 1.0f, 0.0f);
 		}
+		
 	else
 		{
 			// Add velocity to the vertices 

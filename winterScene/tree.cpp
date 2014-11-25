@@ -19,8 +19,7 @@ tree::~tree()
 
 void tree::createTree()
 {
-	//glGenBuffers(1, &treeVbo);
-	//glBindBuffer(GL_ARRAY_BUFFER, treeVbo);
+	
 
 	for (int i = 0; i <= 32; i++) {
 		double angle = (2 * pi / 32) * i;
@@ -150,7 +149,7 @@ void tree::createTree()
 	glBindBuffer(GL_ARRAY_BUFFER, cylinderBottomTextureObject);
 	glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(glm::vec3), &texCoords[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//lsystem_transform.push(glm::mat4(1.0f));
+
 }
 
 void tree::drawBranch(int rotate, int color, GLuint texID, GLuint transID, GLuint colorID)
@@ -250,7 +249,6 @@ void tree::trees(int level, GLuint texID, GLuint transID, GLuint colorID) {
 				}
 				else if (lstring[current] == 'A')
 				{
-					//std::cout << "branch" << std::endl;
 					drawBranch(1, 0, texID,transID,colorID);
 				}
 				else if (lstring[current] == 'G')

@@ -1,6 +1,5 @@
 /* terrain_object.cpp
-Example class to show how to render a height map
-Iain Martin November 2014
+Modified version of Iain Martin's terrain_object class
 */
 
 #include "terrain_object.h"
@@ -18,12 +17,13 @@ terrain_object::terrain_object()
 {
 	attribute_v_coord = 0;
 	attribute_v_normal = 1;
-	xsize = 0;	// Set to zero because we havent' created the heightfield array yet
+	xsize = 0;	
 	zsize = 0;
 	perlin_octaves = 4;
 	height_scale = 0.3f;
 	frequency = 0.8;
 	scalee = 3;
+	
 
 }
 
@@ -203,11 +203,6 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 	/* First calculate the noise array which we'll use for our vertex height values */
 	calculateNoise(frequency, scalee);
 
-	/* Debug code to check that noise values are sensible */
-	//	for (int i = 0; i < (xsize*zsize*perlin_octaves); i++)
-	//	{
-	//		printf("\n noise[%d] = %f", i, noise[i]);
-	//	}
 
 	/* Define starting (x,z) positions and the step changes */
 	GLfloat xpos = -width / 2.f;
@@ -228,8 +223,8 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 			GLfloat height = noise[(x*zsize + z) * 4 + 3];
 			vertices[x*xsize + z] = glm::vec3(xpos, (height - 0.5f)*height_scale, zpos);
 			normals[x*xsize + z] = glm::vec3(0, 1.0f, 0);		// Normals for a flat surface
-		//	std::cout << "Height : " << (height - 0.5f)*height_scale << std::endl;
-
+		
+			//Texture coordinates
 			texCoords.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
 			texCoords.push_back(glm::vec3(2.0f, 0.0f, 1.0f));
 			texCoords.push_back(glm::vec3(0.0f, 2.0f, 1.0f));
@@ -271,7 +266,7 @@ void terrain_object::calculateNormals()
 			GLuint v1 = elements[element_pos];
 			GLuint v2 = elements[element_pos + 1];
 			GLuint v3 = elements[element_pos + 2];
-			//pos.push_back(glm::vec3(v1, v2, v3));
+			
 			// Define the two vectors for the triangle
 			AB = vertices[v2] - vertices[v1];
 			AC = vertices[v3] - vertices[v1];
@@ -303,13 +298,4 @@ void terrain_object::calculateNormals()
 	
 }
 
-void terrain_object::keyPresses(int key)
-{
-	
-	if (key == 'Z') perlin_octaves += 1.0f;
-	if (key == 'X') perlin_octaves -= 1.0f;
-	if (key == 'C') scalee += 1.0f;
-	if (key == 'V') scalee -= 1.0f;
-	//std::cout << "perlin : " << perlin_octaves << std::endl;
-}
 

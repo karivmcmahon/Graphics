@@ -1,7 +1,6 @@
-#pragma once
+
 /* terrain_object.h
-Example class to show how to create and render a height map
-Iain Martin November 2014
+Modified verision of Iain Martin's header
 */
 
 #pragma once
@@ -19,8 +18,6 @@ public:
 	void calculateNoise(GLfloat freq, GLfloat scale);
 	void createTerrain(GLuint xp, GLuint yp, GLfloat xs, GLfloat ys);
 	void calculateNormals();
-	void keyPresses(int key);
-
 	void createObject();
 	void drawObject(int drawmode, GLuint textureID);
 	GLfloat getHeight(GLuint x, GLuint z);
