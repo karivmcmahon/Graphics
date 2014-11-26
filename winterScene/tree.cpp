@@ -30,17 +30,11 @@ void tree::createTree()
 		stripTexCoords.push_back(0);
 		stripTexCoords.push_back(0);
 		cylinderStripPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 2.5f));
-		cylinderStripColours.push_back(0.0f);
-		cylinderStripColours.push_back(0.0f);
-		cylinderStripColours.push_back(1.0f);
 		cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
 		stripTexCoords.push_back(tc);
 		stripTexCoords.push_back(1);
 		stripTexCoords.push_back(0);
 		cylinderStripPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 0.0f));
-		cylinderStripColours.push_back(0.0f);
-		cylinderStripColours.push_back(0.0f);
-		cylinderStripColours.push_back(1.0f);
 		cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
 
 		tc = tc + (float)(2 * pi / 32) * i;
@@ -62,9 +56,6 @@ void tree::createTree()
 		double x = cos(angle);
 		double y = sin(angle);
 		cylinderTopPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 2.5f));
-		cylinderTopColours.push_back(0.0f);
-		cylinderTopColours.push_back(0.0f);
-		cylinderTopColours.push_back(1.0f);
 		cylinderTopNormals.push_back(glm::vec3(0, 0, 1));
 
 		texCoords.push_back((float(x) + 1.0) * 0.5);
@@ -86,9 +77,6 @@ void tree::createTree()
 		double x = cos(angle);
 		double y = sin(angle);
 		cylinderBottomPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 0.0f));
-		cylinderBottomColours.push_back(0.0f);
-		cylinderBottomColours.push_back(0.0f);
-		cylinderBottomColours.push_back(1.0f);
 		cylinderBottomNormals.push_back(glm::vec3(0, 0, -1));
 		texCoords.push_back((float(x) + 1.0) * 0.5);
 		texCoords.push_back((float(y) + 1.0) * 0.5);

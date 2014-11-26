@@ -60,6 +60,8 @@ void terrain_object::createObject()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()* sizeof(GLushort), &elements[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	
+
 
 }
 
@@ -96,7 +98,6 @@ void terrain_object::drawObject(int drawmode,GLuint textureID)
 		);
 
 	/* Bind cube texture coords. Note that this is in attribute index 3 */
-	
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_tex);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -106,6 +107,7 @@ void terrain_object::drawObject(int drawmode,GLuint textureID)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
 
 
 
@@ -177,7 +179,7 @@ void terrain_object::calculateNoise(GLfloat freq, GLfloat scale)
 GLfloat terrain_object::getHeight(GLuint x, GLuint z)
 {
 	//GLfloat heights = vertices[z - x*xsize ].y;
-	GLfloat heights = vertices[x*xsize - z].y;
+	GLfloat heights = vertices[x * zsize + z].y;
 	//std::cout << "Height : " << heights << std::endl;
 	return heights;
 }
@@ -218,8 +220,9 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 		GLfloat zpos = zpos_start;
 		for (GLuint z = 0; z < zsize; z++)
 		{
-			float fScaleC = float(z) / (height - 0.5f)*height_scale;
-			float fScaleR = float(x) / (height - 0.5f)*height_scale;
+			
+			//std::cout << "Z pos " << z << std::endl;
+		//	std::cout << "Z pos " << x << std::endl;
 			GLfloat height = noise[(x*zsize + z) * 4 + 3];
 			vertices[x*xsize + z] = glm::vec3(xpos, (height - 0.5f)*height_scale, zpos);
 			normals[x*xsize + z] = glm::vec3(0, 1.0f, 0);		// Normals for a flat surface
@@ -283,12 +286,14 @@ void terrain_object::calculateNormals()
 
 			// Move on to the next vertex along the strip
 			element_pos++;
+			
 		}
 
 		// Jump past the lat two element positions to reach the start of the strip
 		element_pos += 2;
+		
 	}
-
+	
 	// Normalise the normals
 	for (GLuint v = 0; v < xsize * zsize; v++)
 	{

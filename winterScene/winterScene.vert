@@ -20,7 +20,7 @@ out float distanceToLight;
 out vec3 emissive;
 
 // These are the uniforms that are defined in the application
-uniform mat4 model, view, projection;
+uniform mat4 model, view, projection, texMatrix;
 uniform uint colourmode, emitmode;
 
 
@@ -49,7 +49,8 @@ void main()
 	if (emitmode == 1) emissive = vec3(1.0, 1.0, 0.8); 
 	
 	gl_Position = (projection * view * model) * position_h;
-	ftexcoord = texture.xy;
+	vec4 tc4 = texMatrix * vec4(texture.xy, 0, 1.0);
+	ftexcoord = tc4.xy;
 }
 
 
