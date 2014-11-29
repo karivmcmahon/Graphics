@@ -12,7 +12,7 @@ points::points(GLuint number, GLfloat dist, GLfloat sp)
 
 points::~points()
 {
-	delete [] colours;
+	delete[] colours;
 	delete[] vertices;
 }
 
@@ -33,7 +33,7 @@ void  points::create()
 	for (int i = 0; i < numpoints; i++)
 	{
 		vertices[i] = glm::ballRand(1.f);
-		colours[i] = glm::vec3(1.0f,1.0f,1.0f);
+		colours[i] = glm::vec3(1.0f, 1.0f, 1.0f);
 		velocity[i] = glm::vec3(0.0f, 0.0001f, 0.0f);
 	}
 
@@ -70,24 +70,24 @@ void points::animate()
 {
 	for (int i = 0; i < numpoints; i++)
 	{
-		
-		
+
+
 		if (vertices[i].y <= -0.6)
 		{
 			vertices[i] += glm::vec3(0.0f, 1.0f, 0.0f);
 		}
-		
-	else
+
+		else
 		{
 			// Add velocity to the vertices 
 			vertices[i] -= velocity[i] * 4.f;
 		}
 
 
-		
-		
+
+
 	}
-	
+
 	// Update the vertex buffer data
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glBufferData(GL_ARRAY_BUFFER, numpoints * sizeof(glm::vec3), vertices, GL_DYNAMIC_DRAW);

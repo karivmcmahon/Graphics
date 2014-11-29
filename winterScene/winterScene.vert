@@ -52,5 +52,3 @@ void main()
 	vec4 tc4 = texMatrix * vec4(texture.xy, 0, 1.0);
 	ftexcoord = tc4.xy;
 }
-
-

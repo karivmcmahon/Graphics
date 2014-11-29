@@ -1,4 +1,4 @@
-// Minimal fragment shader
+/// Minimal fragment shader
 
 #version 400
 

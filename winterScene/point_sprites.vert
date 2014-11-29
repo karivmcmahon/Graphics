@@ -21,11 +21,12 @@ void main()
 	vec4 pos = vec4(position, 1.0);
 	vec4 pos2 = model * pos;
 	
+	
 	// Pass through the vertex colour
 	fcolour = colour_h;
 
 	// Define the vertex position
-	gl_Position = projection * view * model * pos;
+	gl_Position = (projection * view * model) * pos;
 
 	gl_PointSize = (1.0 - pos2.z / pos2.w) * size;
 }
