@@ -1,3 +1,8 @@
+/**
+Header for tree class. Based on Iain Martin's example
+November 2014
+**/
+
 #pragma once
 #include "wrapper_glfw.h"
 #include <glm/glm.hpp>

@@ -1,3 +1,7 @@
+/**
+Header for fire points based on Iain Martin's example poin sprites
+November 2014
+**/
 #pragma once
 #include <glm/glm.hpp>
 #include "wrapper_glfw.h"
@@ -7,30 +11,17 @@
 class firePoints
 {
 public:
-	firePoints(GLuint number, GLfloat dist, GLfloat sp);
+	firePoints(GLuint number);
 	~firePoints();
 
 	void create();
 	void draw(int i,int prev);
 	void animate(int i);
-	void updateParams(GLfloat dist, GLfloat sp);
-	void drawBranch(int rotate, int color, GLuint texID, GLuint transID, GLuint colorID);
-	void createTree();
 
 	glm::vec3 *vertices;
 	glm::vec3 *colours;
 	glm::vec3 *velocity;
 	std::stack<glm::mat4> m;
-	std::stack<glm::mat4> lsystem_transform;
-	std::vector<glm::vec3> cylinderStripPositions, cylinderTopPositions, cylinderBottomPositions;
-	std::vector<GLfloat> cylinderStripColours, cylinderTopColours, cylinderBottomColours;
-	std::vector<glm::vec3> cylinderStripNormals, cylinderTopNormals, cylinderBottomNormals;
-	GLuint cylinderStripBufferObject, cylinderStripNormalObject, cylinderStripColourObject, cylinderStripTextureObject;
-	GLuint cylinderTopBufferObject, cylinderTopNormalObject, cylinderTopColourObject, cylinderTopTextureObject;
-	GLuint cylinderBottomBufferObject, cylinderBottomNormalObject, cylinderBottomColourObject, cylinderBottomTextureObject;
-	std::vector<GLfloat> texCoords, stripTexCoords;
-	bool *active;
-	GLuint *bounceCount;
 
 	GLuint numpoints;		// Number of particles
 	GLuint vertex_buffer;

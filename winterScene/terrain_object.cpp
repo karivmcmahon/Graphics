@@ -1,6 +1,8 @@
 /* terrain_object.cpp
 Modified version of Iain Martin's terrain_object class
+November 2014
 */
+
 
 #include "terrain_object.h"
 #include "SOIL.h"

@@ -1,3 +1,7 @@
+/** Recursive tree class loosely based on Iain Martin's lsystem example
+November 2014
+**/
+
 #include "tree.h"
 #include <glm/glm.hpp>
 #include "glm/gtc/matrix_transform.hpp"
@@ -17,6 +21,7 @@ tree::~tree()
 
 }
 
+/** Sets up cylinder as basis for tree **/
 void tree::createTree()
 {
 	
@@ -140,6 +145,7 @@ void tree::createTree()
 
 }
 
+/** Draws branch **/
 void tree::drawBranch(int rotate, int color, GLuint texID, GLuint transID, GLuint colorID)
 {
 	lsystem_transform.push(lsystem_transform.top());
@@ -207,14 +213,10 @@ void tree::drawBranch(int rotate, int color, GLuint texID, GLuint transID, GLuin
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(2);
 	lsystem_transform.pop();
-
 	
 }
-void tree::setUp()
-{
-	//lsystem_transform.push(glm::mat4(1.0f));
-	//lsystem_transform.top() = glm::translate(lsystem_transform.top(), glm::vec3(-3, -4, 0));
-}
+
+/** Draws tree recursively **/
 void tree::trees(int level, GLuint texID, GLuint transID, GLuint colorID) {
 	int current;
 	current = 0;

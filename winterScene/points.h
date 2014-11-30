@@ -1,3 +1,8 @@
+/**
+Header for snow points based on Iain Martins example
+November 2014
+**/
+
 #pragma once
 
 #include <glm/glm.hpp>
@@ -6,13 +11,12 @@
 class points
 {
 public:
-	points(GLuint number, GLfloat dist, GLfloat sp);
+	points(GLuint number);
 	~points();
 
 	void create();
 	void draw();
 	void animate();
-	void updateParams(GLfloat dist, GLfloat sp);
 
 	glm::vec3 *vertices;
 	glm::vec3 *colours;

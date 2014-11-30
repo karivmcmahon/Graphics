@@ -1,3 +1,8 @@
+/**
+Class that handles overall scene
+Class originally developed by Iain Martin - Modified by Kari McMahon
+November 2014
+**/
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glloadD.lib")
 #pragma comment(lib, "opengl32.lib")
@@ -19,37 +24,40 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
 
-
-
-std::vector < int > randoms, randomsz;
+//programs for shader
 GLuint program, program2;
+//vertex array buffer
 GLuint vao;
+//model
 glm::mat4 model;
 
-/* Position and view globals */
-GLfloat  vx, vy, vz, xm, zm;
-GLfloat light_x, light_y, light_z;
+
+GLfloat  vx, vy, vz; //View variables
+GLfloat xm, zm; //Test variables
+GLfloat light_x, light_y, light_z; // Light pos
+GLfloat speed; //Animation speed
 
 /* Uniforms*/
-GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, textureID, textureID2, textureID3, textureID4, textureID5, textureID6, textureID7, texID;
-GLuint colourmodeID, pointSizeID, modelID2, projectionID2, colourmodeID2, viewID2, tex_matrixID;
+GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, tex_matrixID; // Shader 1 uniforms
+GLuint textureID, textureID2, textureID3, textureID4, textureID5, textureID6, textureID7, texID; //Texture id's
+GLuint colourmodeID, pointSizeID, modelID2, projectionID2, colourmodeID2, viewID2; //Shader 2 uniforms
 GLuint modelID3, projectionID3, colourmodeID3, viewID3;
 
-points *point_anim;
-firePoints *firePoint;
-//GLfloat speed;
-GLfloat maxdist;
-GLfloat point_size;
-GLfloat tangle_x, tangle_y, tangle_z, speed;
+points *point_anim; //instance of point animation for snow
+firePoints *firePoint; //instance of fire point for fire animation
+
+
+GLfloat tangle_x, tangle_y, tangle_z;
 std::vector<glm::vec3> pondTopPositions, pondTopNormals;
 std::vector<GLfloat> texCoords;
 GLuint pondObject, pondNormalObject, pondTextureObject;
-GLfloat aspect_ratio, angle;
+GLfloat aspect_ratio;
 terrain_object terrain;
 tree trees;
 Skybox skybox;
-GLfloat lx, lz, x, z;
 
+void createPond();
+void drawPond();
 
 
 /*
@@ -58,69 +66,36 @@ Use it for all your initialisation stuff
 */
 void init(GLWrapper *glw)
 {
-
-	angle = 0;
 	vx = vy = vz = xm = zm = 0;
 	aspect_ratio = 1.3333f;
 	speed = 2.0;
-	lx = 0.0f;
-	lz = -1.0f;
-	z = 5.0f;
 
 	// Generate index (name) for one vertex array object
 	glGenVertexArrays(1, &vao);
-	// Create the vertex array object and make it current
 	glBindVertexArray(vao);
 
-	//Set up objects
+	//Set up terrain
 	terrain.createTerrain(30, 30, 100.f, 100.f);
 	terrain.createObject();
+	//Set up tree
 	trees.createTree();
+	//Set up skybox
 	skybox.createSkybox();
-	firePoint = new firePoints(3000, maxdist, speed);
-	firePoint->createTree();
+	//Set up firepoints
+	firePoint = new firePoints(3000);
 	firePoint->create();
-	pondTopPositions.push_back(glm::vec3(0, 0, 2.5));    // Center vertex for top of cylinder.
-	texCoords.push_back(0.5);
-	texCoords.push_back(0.5);
-	texCoords.push_back(0.0f);
-	for (int i = 0; i <= 32; i++) {  // Vertices around the top.
-		double angle = (2 * 3.1415926535898 / 32) * i;
-		double x = cos(angle);
-		double y = sin(angle);
-		pondTopPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 2.5f));
-		pondTopNormals.push_back(glm::vec3(0, 0, 1));
-		texCoords.push_back((float(x) + 1.0) * 0.5);
-		texCoords.push_back((float(y) + 1.0) * 0.5);
-		texCoords.push_back(0.0f);
+	//Create pond
+	createPond();
+	//Set up snow points
+	point_anim = new points(5000);
+	point_anim->create();
+	
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-
-	}
-
-	glGenBuffers(1, &pondObject);
-	glBindBuffer(GL_ARRAY_BUFFER, pondObject);
-	glBufferData(GL_ARRAY_BUFFER, pondTopPositions.size() * sizeof(glm::vec3), &pondTopPositions[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &pondNormalObject);
-	glBindBuffer(GL_ARRAY_BUFFER, pondNormalObject);
-	glBufferData(GL_ARRAY_BUFFER, pondTopNormals.size() * sizeof(glm::vec3), &pondTopNormals[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glGenBuffers(1, &pondTextureObject);
-	glBindBuffer(GL_ARRAY_BUFFER, pondTextureObject);
-	glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(glm::vec3), &texCoords[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	/* Load and build the vertex and fragment shaders */
 	try
 	{
-		program = glw->LoadShader("winterScene.vert", "winterScene.frag");
-		program2 = glw->LoadShader("point_sprites.vert", "point_sprites_analytic.frag");
+		program = glw->LoadShader("winterScene.vert", "winterScene.frag"); //Shader for scene
+		program2 = glw->LoadShader("point_sprites.vert", "point_sprites_analytic.frag"); //Shader for point animations
 	}
 	catch (std::exception &e)
 	{
@@ -131,7 +106,7 @@ void init(GLWrapper *glw)
 
 	try
 	{
-		//Frost bite 512 or hanging stone for treeS
+		//Texture loading for scene
 		texID = SOIL_load_OGL_texture("bark2.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID = SOIL_load_OGL_texture("snow4.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID2 = SOIL_load_OGL_texture("water3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
@@ -145,13 +120,7 @@ void init(GLWrapper *glw)
 		{
 			printf("SOIL loading error: '%s'\n", SOIL_last_result());
 		}
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	
 		int loc = glGetUniformLocation(program, "tex1");
 		int loc2 = glGetUniformLocation(program, "tex1");
 		if (loc >= 0) glUniform1i(loc, 0);
@@ -160,64 +129,60 @@ void init(GLWrapper *glw)
 	{
 		printf("\nImage file loading failed.");
 	}
-	/* Define uniforms to send to vertex shader */
+
+	//Shader 1 uniforms
 	modelID = glGetUniformLocation(program, "model");
 	colourmodeID = glGetUniformLocation(program, "colourmode");
 	viewID = glGetUniformLocation(program, "view");
 	projectionID = glGetUniformLocation(program, "projection");
 	tex_matrixID = glGetUniformLocation(program, "texMatrix");
 	normalmatrixID = glGetUniformLocation(program, "normalmatrix");
-
-
+	//Shader 2 uniforms
 	modelID2 = glGetUniformLocation(program2, "model");
 	colourmodeID2 = glGetUniformLocation(program2, "colourmode");
 	viewID2 = glGetUniformLocation(program2, "view");
 	projectionID2 = glGetUniformLocation(program2, "projection");
 	pointSizeID = glGetUniformLocation(program2, "size");
 
-
-	point_anim = new points(5000, maxdist, speed);
-	point_anim->create();
-
-	point_size = 1.5;
-
 }
 
-/* Called to update the display. Note that this function is called in the event loop in the wrapper
-class because we registered display as a callback function */
+/* Called to update the display. */
 void display()
 {
 	/* Define the background colour */
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
 	/* Clear the colour and frame buffers */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	/* Enable depth test  */
 	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+
+	//Use shader 1
 	glUseProgram(program);
 	model = glm::mat4(1.0f);
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+	// Projection matrix
 	glm::mat4 Projection = glm::perspective(80.0f, aspect_ratio, 0.1f, 100.0f);
-
+	//View
 	glm::mat4 View = glm::lookAt(
 		glm::vec3(0,0,4),
-		glm::vec3(0,0,0),// Camera is at (0,0,4), in World Space
-		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+		glm::vec3(0,0,0),
+		glm::vec3(0, 1, 0)  
 		);
-	
+	//View rotations
+	View = glm::rotate(View, vx, glm::vec3(1, 0, 0));
 	View = glm::rotate(View, vy, glm::vec3(0, 1, 0));
+	//Light pos
 	glm::vec4 lightpos = View *  glm::vec4(0, 0, 0, 1.0);
-
+	//Normal matrix
 	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * model)));
-	glm::mat4 model3 = glm::mat4(1.0f);
-
+	//Tex transform marix
 	glm::mat4 tex_transform = glm::mat4(1.0f);
+	
+	//Skybox creation
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	//glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model3[0][0]);
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glDepthMask(0);
 	skybox.renderSkybox(textureID3, textureID4, textureID5, textureID6, textureID7, textureID);
@@ -234,56 +199,56 @@ void display()
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	terrain.drawObject(0, textureID);
 
-
+	//Tree 
 	tex_transform = glm::mat4(1.0f);
 	trees.lsystem_transform.push(glm::mat4(1.0f));
 	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(-3, (terrain.getHeight(-3, -8) + 1.5), -8));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	//glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	//trees.drawBranch(0, 3, texID, modelID, colourmodeID);
+	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	trees.trees(3, texID, modelID, colourmodeID);
-
-
+	
+	//Pond
 	glm::mat4 modelPond = glm::mat4(1.0f);
 	modelPond = glm::translate(modelPond, glm::vec3(3, (terrain.getHeight(3, -6) + 4.5), -6));
 	modelPond = glm::scale(modelPond, glm::vec3(8, 1, 5));
 	modelPond = glm::rotate(modelPond, 90.f, glm::vec3(1, 0, 0));
 	tex_transform = glm::mat4(1.0f);
-	tex_transform = glm::rotate(tex_transform, -tangle_x, glm::vec3(1, 0, 0)); //rotating in clockwise direction around x-axis
-	tex_transform = glm::rotate(tex_transform, -tangle_y, glm::vec3(0, 1, 0)); //rotating in clockwise direction around y-axis
-	tex_transform = glm::rotate(tex_transform, -tangle_z, glm::vec3(0, 0, 1)); //rotating in clockwise direction around z-axis
+	tex_transform = glm::rotate(tex_transform, -tangle_x, glm::vec3(1, 0, 0)); 
+	tex_transform = glm::rotate(tex_transform, -tangle_y, glm::vec3(0, 1, 0)); 
+	tex_transform = glm::rotate(tex_transform, -tangle_z, glm::vec3(0, 0, 1)); 
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelPond[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
 	//glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	glBindBuffer(GL_ARRAY_BUFFER, pondObject);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	drawPond();
 
-	glBindBuffer(GL_ARRAY_BUFFER, pondTextureObject);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindTexture(GL_TEXTURE_2D, textureID2);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, pondTopPositions.size());
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(2);
-
-
-
+	//Fire logs
+	tex_transform = glm::mat4(1.0f);
+	trees.lsystem_transform.push(glm::mat4(1.0f));
+	trees.lsystem_transform.top() = glm::translate(trees.lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	trees.drawBranch(1, 0, texID, modelID, colourmodeID2);
+	trees.drawBranch(2, 0, texID, modelID, colourmodeID2);
+	trees.drawBranch(3, 0, texID, modelID, colourmodeID2);
+	trees.drawBranch(4, 0, texID, modelID, colourmodeID2);
 
 	glUseProgram(0);
 
+	//Use shader 2
 	glUseProgram(program2);
 
+	//Snow drawing
 	glm::mat4 Projection2 = glm::perspective(30.0f, aspect_ratio, 0.1f, 100.0f); //Different projection for the snow
 	model = glm::translate(model, glm::vec3(0, 0, 0));
 	model = glm::scale(model, glm::vec3(1 * 5, 1 * 5, 1 * 5));
@@ -294,11 +259,9 @@ void display()
 	glUniformMatrix4fv(projectionID2, 1, GL_FALSE, &Projection2[0][0]);
 	point_anim->draw();
 	point_anim->animate();
-
-
-
 	
-for (int i = 0; i < firePoint->numpoints; i++)
+	//Draw fire
+	for (int i = 0; i < firePoint->numpoints; i++)
 	{
 		firePoint->m.push(glm::mat4(1.0f));
 		firePoint->m.top() = glm::translate(firePoint->m.top(), glm::vec3(0, terrain.getHeight(0, 4.6),4.6));
@@ -314,100 +277,69 @@ for (int i = 0; i < firePoint->numpoints; i++)
 	
 	glUseProgram(0);
 
-
-	glUseProgram(program);
-	tex_transform = glm::mat4(1.0f);
-	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
-	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	firePoint->drawBranch(1, 0, texID, modelID, colourmodeID2);
-
-	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
-	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	firePoint->drawBranch(2, 0, texID, modelID, colourmodeID2);
-
-	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
-	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	firePoint->drawBranch(3, 0, texID, modelID, colourmodeID2);
-
-	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
-	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	firePoint->drawBranch(4, 0, texID, modelID, colourmodeID2);
-
-
-	
-
-	
-
-
-	glUseProgram(0);
-
-
-
-
-
-
-
-
-
-
-
+	//Pond animations
 	tangle_x += speed;
 	if (tangle_x >= 50 || tangle_x <= -50) speed = -speed;
-
-
-
 }
 
+/**
+Sets up pond buffers
+**/
+void createPond()
+{
+	pondTopPositions.push_back(glm::vec3(0, 0, 2.5));
+	texCoords.push_back(0.5);
+	texCoords.push_back(0.5);
+	texCoords.push_back(0.0f);
+	for (int i = 0; i <= 32; i++)
+	{
+		double angle = (2 * 3.1415926535898 / 32) * i;
+		double x = cos(angle);
+		double y = sin(angle);
+		pondTopPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 2.5f));
+		pondTopNormals.push_back(glm::vec3(0, 0, 1));
+		texCoords.push_back((float(x) + 1.0) * 0.5);
+		texCoords.push_back((float(y) + 1.0) * 0.5);
+		texCoords.push_back(0.0f);
+	}
+
+	glGenBuffers(1, &pondObject);
+	glBindBuffer(GL_ARRAY_BUFFER, pondObject);
+	glBufferData(GL_ARRAY_BUFFER, pondTopPositions.size() * sizeof(glm::vec3), &pondTopPositions[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &pondNormalObject);
+	glBindBuffer(GL_ARRAY_BUFFER, pondNormalObject);
+	glBufferData(GL_ARRAY_BUFFER, pondTopNormals.size() * sizeof(glm::vec3), &pondTopNormals[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &pondTextureObject);
+	glBindBuffer(GL_ARRAY_BUFFER, pondTextureObject);
+	glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(glm::vec3), &texCoords[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+/**
+Draws pond
+**/
+void drawPond()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, pondObject);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, pondTextureObject);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	glBindTexture(GL_TEXTURE_2D, textureID2);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, pondTopPositions.size());
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(2);
+}
 
 	
-
-
-
-
-	
-	
-
-
-
-
-
-
-
-
-
-
 /* Called whenever the window is resized. The new window size is given, in pixels. */
 static void reshape(GLFWwindow* window, int w, int h)
 {
@@ -426,27 +358,8 @@ static void keyCallback(GLFWwindow* window, int key, int s, int action, int mods
 
 
 	GLfloat fraction = 0.1;
-	if (key == '1')
-	{
-		lx * fraction; z += lz * fraction;
-	}
-	if (key == '2')
-	{
-		x -= lx * fraction;
-		z -= lz * fraction;
-	}
-	if (key == '3')
-	{
-		angle += 0.01f;
-		lx = sin(angle);
-		lz = -cos(angle);
-	}
-	if (key == '4')
-	{
-		angle -= 0.01f;
-		lx = sin(angle);
-		lz = -cos(angle);
-	}
+	if (key == '1')	vx += 1.0f;	
+	if (key == '2') vx -= 1.0f;
 	if (key == '5') vy += 1.0f;
 	if (key == '6') vy -= 1.0f;
 	if (key == 'A') xm += 0.1f;

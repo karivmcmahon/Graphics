@@ -1,14 +1,16 @@
+/**
+Class for snow animation - Based on example from iain martin
+November 2014
+**/
 #include "points.h"
 #include "glm/gtc/random.hpp"
 #include <iostream>
 /* Constructor, set initial parameters*/
-points::points(GLuint number, GLfloat dist, GLfloat sp)
+points::points(GLuint number)
 {
 	numpoints = number;
-	maxdist = dist;
-	speed = sp;
-}
 
+}
 
 points::~points()
 {
@@ -16,13 +18,9 @@ points::~points()
 	delete[] vertices;
 }
 
-void points::updateParams(GLfloat dist, GLfloat sp)
-{
-	maxdist = dist;
-	speed = sp;
-}
-
-
+/**
+Create snow animation points
+**/
 void  points::create()
 {
 	vertices = new glm::vec3[numpoints];
@@ -48,7 +46,9 @@ void  points::create()
 	glBufferData(GL_ARRAY_BUFFER, numpoints * sizeof(glm::vec3), colours, GL_STATIC_DRAW);
 }
 
-
+/**
+Draw snow animations
+**/
 void points::draw()
 {
 	/* Bind  vertices. Note that this is in attribute index 0 */
@@ -56,7 +56,6 @@ void points::draw()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	/* Bind cube colours. Note that this is in attribute index 1 */
 	glBindBuffer(GL_ARRAY_BUFFER, colour_buffer);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -65,26 +64,23 @@ void points::draw()
 	glDrawArrays(GL_POINTS, 0, numpoints);
 }
 
-
+/**
+Animates snow animation
+**/
 void points::animate()
 {
 	for (int i = 0; i < numpoints; i++)
 	{
 
-
 		if (vertices[i].y <= -0.6)
 		{
 			vertices[i] += glm::vec3(0.0f, 1.0f, 0.0f);
 		}
-
 		else
 		{
-			// Add velocity to the vertices 
+
 			vertices[i] -= velocity[i] * 4.f;
 		}
-
-
-
 
 	}
 
