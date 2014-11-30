@@ -201,11 +201,12 @@ void display()
 	glm::mat4 Projection = glm::perspective(80.0f, aspect_ratio, 0.1f, 100.0f);
 
 	glm::mat4 View = glm::lookAt(
-		glm::vec3(x, 1.0f, z),
-		glm::vec3(x + lx, 1.0f, z + lz),// Camera is at (0,0,4), in World Space
+		glm::vec3(0,0,4),
+		glm::vec3(0,0,0),// Camera is at (0,0,4), in World Space
 		glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 		);
 	
+	View = glm::rotate(View, vy, glm::vec3(0, 1, 0));
 	glm::vec4 lightpos = View *  glm::vec4(0, 0, 0, 1.0);
 
 	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * model)));
@@ -275,7 +276,7 @@ void display()
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(2);
-	
+
 
 
 
@@ -294,20 +295,31 @@ void display()
 	point_anim->draw();
 	point_anim->animate();
 
-	model = glm::translate(model, glm::vec3(0, terrain.getHeight(0, 2), 2));
-	glUniformMatrix4fv(viewID2, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID2, 1, GL_FALSE, &Projection[0][0]);
-	glUniformMatrix4fv(modelID2, 1, GL_FALSE, &model[0][0]);
-	glUniform1f(pointSizeID, 2);
-	firePoint->draw();
-	firePoint->animate();
+
+
+	
+for (int i = 0; i < firePoint->numpoints; i++)
+	{
+		firePoint->m.push(glm::mat4(1.0f));
+		firePoint->m.top() = glm::translate(firePoint->m.top(), glm::vec3(0, terrain.getHeight(0, 4.6),4.6));
+		firePoint->m.top() = glm::scale(firePoint->m.top(), glm::vec3(1 * 15, 1*25, 1*5));
+		glUniformMatrix4fv(viewID2, 1, GL_FALSE, &View[0][0]);
+		glUniformMatrix4fv(projectionID2, 1, GL_FALSE, &Projection[0][0]);
+		glUniformMatrix4fv(modelID2, 1, GL_FALSE, &firePoint->m.top()[0][0]);
+		glUniform1f(pointSizeID, 4);
+		firePoint->draw(i,i-1);
+		firePoint->animate(i);
+		firePoint->m.pop();
+	}
+	
 	glUseProgram(0);
 
 
 	glUseProgram(program);
+	tex_transform = glm::mat4(1.0f);
 	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 16)), 16));
-	firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
+	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
+	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
 	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -318,8 +330,8 @@ void display()
 	firePoint->drawBranch(1, 0, texID, modelID, colourmodeID2);
 
 	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 16)), 16));
-	firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
+	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
+	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
 	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -330,8 +342,8 @@ void display()
 	firePoint->drawBranch(2, 0, texID, modelID, colourmodeID2);
 
 	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 16)), 16));
-	firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
+	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
+	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
 	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -342,8 +354,8 @@ void display()
 	firePoint->drawBranch(3, 0, texID, modelID, colourmodeID2);
 
 	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 16)), 16));
-	firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
+	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 5)), 5));
+	//firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.1, 0.1, 0.1));
 	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -354,31 +366,11 @@ void display()
 	firePoint->drawBranch(4, 0, texID, modelID, colourmodeID2);
 
 
-	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 17)), 17));
-	firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.3, 0.1, 0.3));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	firePoint->drawBranch(0, 0, texID, modelID, colourmodeID2);
-
-	firePoint->lsystem_transform.push(glm::mat4(1.0f));
-	firePoint->lsystem_transform.top() = glm::translate(firePoint->lsystem_transform.top(), glm::vec3(0, (terrain.getHeight(0, 15)), 15));
-	firePoint->lsystem_transform.top() = glm::scale(firePoint->lsystem_transform.top(), glm::vec3(0.3, 0.1, 0.3));
-	//glm::mat3 normalmatrix2 = glm::transpose(glm::inverse(glm::mat3(View * trees.lsystem_transform.top())));
-	glUniformMatrix4fv(modelID, 1, GL_FALSE, &firePoint->lsystem_transform.top()[0][0]);
-	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
-	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
-	firePoint->drawBranch(0, 0, texID, modelID, colourmodeID2);
+	
 
 	
+
+
 	glUseProgram(0);
 
 
@@ -455,19 +447,20 @@ static void keyCallback(GLFWwindow* window, int key, int s, int action, int mods
 		lx = sin(angle);
 		lz = -cos(angle);
 	}
-	if (key == '5') vz += 1.0f;
-	if (key == '6') vz -= 1.0f;
-	if (key == 'A') xm += 1.0f;
-	if (key == 'Z') xm -= 1.0f;
-	if (key == 'S') zm += 1.0f;
-	if (key == 'X') zm -= 1.0f;
+	if (key == '5') vy += 1.0f;
+	if (key == '6') vy -= 1.0f;
+	if (key == 'A') xm += 0.1f;
+	if (key == 'Z') xm -= 0.1;
+	if (key == 'S') zm += 0.1f;
+	if (key == 'X') zm -= 0.1;
 	if (key == 'D') tangle_x -= 0.5f;
 	if (key == 'F') tangle_x += 0.5f;
 	if (key == 'G') tangle_y -= 0.5f;
 	if (key == 'H') tangle_y += 0.5f;
 	if (key == 'J') tangle_z -= 0.5f;
 	if (key == 'K') tangle_z += 0.5f;
-	//std::cout << zm << std::endl;
+	std::cout << xm << std::endl;
+	std::cout << zm << std::endl;
 
 
 }

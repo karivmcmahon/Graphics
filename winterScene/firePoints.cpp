@@ -4,6 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <stack>
 
 /* Constructor, set initial parameters*/
 firePoints::firePoints(GLuint number, GLfloat dist, GLfloat sp)
@@ -43,7 +44,7 @@ void  firePoints::create()
 		//vertices[i] = glm::vec3(glm::linearRand(0.0, 0.03), glm::linearRand(0.0, 0.1), glm::linearRand(0.0, 0.05));
 		bounceCount[i] = 0;
 		active[i] = true;
-		vertices[i] = glm::vec3(glm::ballRand(glm::linearRand(0.0, 0.03)));
+		vertices[i] = glm::vec3(glm::ballRand(glm::linearRand(0.0,0.03)));
 		colours[i] = glm::vec3(1.0, glm::linearRand(0.3, 0.9), 0.0);
 
 		//velocity[i] = glm::vec3( );
@@ -65,11 +66,11 @@ void  firePoints::create()
 }
 
 
-void firePoints::draw()
+void firePoints::draw(int i, int prev)
 {
 	int prevPoint = 0;
-	for (int i = 0; i < numpoints; i++)
-	{
+
+		
 		//if (active[i] == true)
 		//{
 
@@ -89,20 +90,20 @@ void firePoints::draw()
 
 		/* Draw our points*/
 		//	glBindTexture(GL_TEXTURE_2D, tex);
-		glDrawArrays(GL_POINTS, 0, numpoints);
+		glDrawArrays(GL_POINTS, prev, i);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		
 		//}
-	}
+	
 }
 
 
-void firePoints::animate()
+void firePoints::animate(int i)
 {
 
-	for (int i = 0; i < numpoints; i++)
-	{
+
 
 
 
@@ -112,12 +113,12 @@ void firePoints::animate()
 		if (vertices[i].y > 0.04)
 		{
 			//vertices[i].y = 0;
-			vertices[i] = glm::vec3(glm::ballRand(glm::linearRand(0.0, 0.03)));
+			vertices[i] = glm::vec3(glm::ballRand(glm::linearRand(0.0,0.03)));
 		}
 
 
 
-	}
+	
 
 	// Update the vertex buffer data
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);

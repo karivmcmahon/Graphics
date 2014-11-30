@@ -11,8 +11,8 @@ public:
 	~firePoints();
 
 	void create();
-	void draw();
-	void animate();
+	void draw(int i,int prev);
+	void animate(int i);
 	void updateParams(GLfloat dist, GLfloat sp);
 	void drawBranch(int rotate, int color, GLuint texID, GLuint transID, GLuint colorID);
 	void createTree();
@@ -20,6 +20,7 @@ public:
 	glm::vec3 *vertices;
 	glm::vec3 *colours;
 	glm::vec3 *velocity;
+	std::stack<glm::mat4> m;
 	std::stack<glm::mat4> lsystem_transform;
 	std::vector<glm::vec3> cylinderStripPositions, cylinderTopPositions, cylinderBottomPositions;
 	std::vector<GLfloat> cylinderStripColours, cylinderTopColours, cylinderBottomColours;
