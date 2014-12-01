@@ -1,3 +1,7 @@
+/**
+Creates and draws a skybox
+Kari McMahon - November 2014
+**/
 #include "Skybox.h"
 #include "Soil.h"
 Skybox::Skybox()
@@ -11,6 +15,9 @@ Skybox::~Skybox()
 	
 }
 
+/**
+Sets up skybox based on quads
+**/
 void Skybox::createSkybox()
 {
 	static const GLfloat quad_data[] =
@@ -106,6 +113,9 @@ void Skybox::createSkybox()
 	
 }
 
+/**
+Draws the skybox
+**/
 void Skybox::renderSkybox(GLuint textureFront, GLuint textureBack, GLuint textureLeft, GLuint textureRight, GLuint textureTop, GLuint textureBottom)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, quad_vbo_front);

@@ -1,5 +1,5 @@
 /**
-Header for snow points based on Iain Martins example
+Header for snow points based on Iain Martins example (point sprites)
 November 2014
 **/
 

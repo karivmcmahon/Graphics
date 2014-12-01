@@ -1,3 +1,7 @@
+/**
+Header for the skybox
+Created by Kari McMahon - November 2014
+**/
 #pragma once
 
 #include "wrapper_glfw.h"

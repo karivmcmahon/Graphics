@@ -1,6 +1,6 @@
 #pragma once
 /* object_ldr.h
-Example class to show the start of an .obj mesh obkect file
+Example class to show the start of an .obj mesh object file
 loader
 Iain Martin November 2014
 */

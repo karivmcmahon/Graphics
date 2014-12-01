@@ -356,24 +356,11 @@ static void keyCallback(GLFWwindow* window, int key, int s, int action, int mods
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-
-	GLfloat fraction = 0.1;
 	if (key == '1')	vx += 1.0f;	
 	if (key == '2') vx -= 1.0f;
-	if (key == '5') vy += 1.0f;
-	if (key == '6') vy -= 1.0f;
-	if (key == 'A') xm += 0.1f;
-	if (key == 'Z') xm -= 0.1;
-	if (key == 'S') zm += 0.1f;
-	if (key == 'X') zm -= 0.1;
-	if (key == 'D') tangle_x -= 0.5f;
-	if (key == 'F') tangle_x += 0.5f;
-	if (key == 'G') tangle_y -= 0.5f;
-	if (key == 'H') tangle_y += 0.5f;
-	if (key == 'J') tangle_z -= 0.5f;
-	if (key == 'K') tangle_z += 0.5f;
-	std::cout << xm << std::endl;
-	std::cout << zm << std::endl;
+	if (key == '3') vy += 1.0f;
+	if (key == '4') vy -= 1.0f;
+	
 
 
 }

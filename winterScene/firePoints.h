@@ -1,5 +1,5 @@
 /**
-Header for fire points based on Iain Martin's example poin sprites
+Header for fire points based on Iain Martin's example point sprites
 November 2014
 **/
 #pragma once

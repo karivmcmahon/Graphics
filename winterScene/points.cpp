@@ -1,5 +1,5 @@
 /**
-Class for snow animation - Based on example from iain martin
+Class for snow animation - Based on example from iain martin (point sprites)
 November 2014
 **/
 #include "points.h"
