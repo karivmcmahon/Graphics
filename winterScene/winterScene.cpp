@@ -30,6 +30,7 @@ GLuint program, program2;
 GLuint vao;
 //model
 glm::mat4 model;
+//
 
 
 GLfloat  vx, vy, vz; //View variables
@@ -38,7 +39,7 @@ GLfloat light_x, light_y, light_z; // Light pos
 GLfloat speed; //Animation speed
 
 /* Uniforms*/
-GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, tex_matrixID; // Shader 1 uniforms
+GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, tex_matrixID, terrainID; // Shader 1 uniforms
 GLuint textureID, textureID2, textureID3, textureID4, textureID5, textureID6, textureID7, texID; //Texture id's
 GLuint colourmodeID, pointSizeID, modelID2, projectionID2, colourmodeID2, viewID2; //Shader 2 uniforms
 GLuint modelID3, projectionID3, colourmodeID3, viewID3;
@@ -89,6 +90,8 @@ void init(GLWrapper *glw)
 	//Set up snow points
 	point_anim = new points(5000);
 	point_anim->create();
+	
+
 
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -138,6 +141,7 @@ void init(GLWrapper *glw)
 	projectionID = glGetUniformLocation(program, "projection");
 	tex_matrixID = glGetUniformLocation(program, "texMatrix");
 	normalmatrixID = glGetUniformLocation(program, "normalmatrix");
+	terrainID = glGetUniformLocation(program, "terrainmode");
 	//Shader 2 uniforms
 	modelID2 = glGetUniformLocation(program2, "model");
 	colourmodeID2 = glGetUniformLocation(program2, "colourmode");
@@ -186,6 +190,7 @@ void display()
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
+	glUniform1ui(terrainID, 1);
 	glDepthMask(0);
 	skybox.renderSkybox(textureID3, textureID4, textureID5, textureID6, textureID7, textureID);
 	glDepthMask(1);
@@ -195,10 +200,12 @@ void display()
 	glm::mat4 model2 = glm::mat4(1.0f);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	//glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniform1ui(terrainID, 1);
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model2[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
+	glUniform1ui(terrainID, 1);
 	terrain.drawObject(0, textureID);
 
 	//Tree 
@@ -208,9 +215,10 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	//glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
+	glUniform1ui(terrainID, 0);
 	trees.trees(3, texID, modelID, colourmodeID);
 	
 	//Pond
@@ -226,8 +234,9 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelPond[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
-	//glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniform1ui(terrainID, 0);
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
 	drawPond();
 
 	//Fire logs
@@ -237,14 +246,24 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &trees.lsystem_transform.top()[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
-	//glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniform1ui(terrainID, 0);
 	trees.drawBranch(1, 0, texID, modelID, colourmodeID2);
 	trees.drawBranch(2, 0, texID, modelID, colourmodeID2);
 	trees.drawBranch(3, 0, texID, modelID, colourmodeID2);
 	trees.drawBranch(4, 0, texID, modelID, colourmodeID2);
 
+	glm::mat4 cabinmodel = glm::mat4(1.0f);
+	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
+	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
+	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
+	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniformMatrix4fv(modelID, 1, GL_FALSE, &cabinmodel[0][0]);
+	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
+	glUniform1ui(terrainID, 0);
+	//cabin.drawObject();
 	glUseProgram(0);
 
 	//Use shader 2
