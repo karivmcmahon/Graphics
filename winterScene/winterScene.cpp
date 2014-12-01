@@ -58,7 +58,7 @@ Skybox skybox;
 
 void createPond();
 void drawPond();
-
+void consoleOutput();
 
 /*
 This function is called before entering the main rendering loop.
@@ -89,6 +89,7 @@ void init(GLWrapper *glw)
 	//Set up snow points
 	point_anim = new points(5000);
 	point_anim->create();
+
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -144,6 +145,7 @@ void init(GLWrapper *glw)
 	projectionID2 = glGetUniformLocation(program2, "projection");
 	pointSizeID = glGetUniformLocation(program2, "size");
 
+	consoleOutput();
 }
 
 /* Called to update the display. */
@@ -282,6 +284,17 @@ void display()
 	if (tangle_x >= 50 || tangle_x <= -50) speed = -speed;
 }
 
+/**
+Displays control in console
+**/
+void consoleOutput()
+{
+	std::cout << "Winter Scene controls" << std::endl;
+	std::cout << "Press 1 to move camera down " << std::endl;
+	std::cout << "Press 2 to move camera up " << std::endl;
+	std::cout << "Press 3 to move camera right " << std::endl;
+	std::cout << "Press 4 to move camera left " << std::endl;
+}
 /**
 Sets up pond buffers
 **/
