@@ -8,6 +8,7 @@ http://en.wikibooks.org/wiki/OpenGL_Programming/Modern_OpenGL_Tutorial_Load_OBJ
 I made a few changes to fit in with my vertex shaders and added the code to
 bind the vertex buffers.
 Uses std::vector class as the containor for the array of glm::vec3 types
+Modified by Kari McMahon using tutorial http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
 */
 
 #include "object_ldr.h"
@@ -45,63 +46,97 @@ This function could be improved by extending the parsing to cope with face defin
 normals defined.
 */
 void object_ldr::load_obj(const char* filename) {
-	ifstream in(filename, ios::in);
-	if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
+	FILE * file = fopen(filename, "r");
+	//if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
 
 	string line;
-	while (getline(in, line))
+	while (1)
 	{
-		if (line.substr(0, 2) == "v ")
+		char lineHeader[128];
+		// read the first word of the line
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // EOF = End Of File. Quit the loop.
+
+		if (strcmp(lineHeader, "v") == 0)
 		{
-			istringstream s(line.substr(2));
-			glm::vec3 v; s >> v.x; s >> v.y; s >> v.z; /*v.w = 1.0f;*/
-			vertices.push_back(v);
+			glm::vec3 vertex;
+			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			vertices.push_back(vertex);
 		}
-		else if (line.substr(0, 2) == "f ")
+		else if (strcmp(lineHeader, "vt") == 0){
+			glm::vec2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			texture.push_back(glm::vec3(uv,1.0));
+		}
+	/**	if (line.substr(0, 2) == "vn")
 		{
 			istringstream s(line.substr(2));
-			GLushort a, b, c;
-			s >> a; s >> b; s >> c;
-			a--; b--; c--;
-			elements.push_back(a); elements.push_back(b); elements.push_back(c);
+			glm::vec3 vn; s >> vn.x; s >> vn.y; s >> vn.z;
+			normals.push_back(vn);
+		} **/
+	   else if (strcmp(lineHeader, "f") == 0)
+		{
+			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+			int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
+			
+			;
+			velements.push_back(vertexIndex[0]); velements.push_back(vertexIndex[1]); velements.push_back(vertexIndex[2]); //velements.push_back(dv);
+			//std::cout << bv << endl;
+			telements.push_back(uvIndex[0]); telements.push_back(uvIndex[1]); telements.push_back(uvIndex[2]); //telements.push_back(dt);
+		//	nelements.push_back(an); nelements.push_back(bn); nelements.push_back(cn);
 		}
 		else if (line[0] == '#') { /* ignoring this line */ }
 		else { /* ignoring this line */ }
 	}
 
-	normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
-	for (GLuint i = 0; i < elements.size(); i += 3) {
-		GLushort ia = elements[i];
-		GLushort ib = elements[i + 1];
-		GLushort ic = elements[i + 2];
-		glm::vec3 normal = glm::normalize(glm::cross(
-			glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
-			glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
-		normals[ia] = normals[ib] = normals[ic] = normal;
-	}
+	
 }
 
 
 /* Copy the vertices, normals and element indices into vertex buffers */
 void object_ldr::createObject()
 {
+	for (unsigned int i = 0; i < velements.size(); i++){
+		unsigned int vertexIndex = velements[i];
+		glm::vec3 vertex = vertices[vertexIndex - 1];
+		out_vertices.push_back(vertex);
+	}
+
+	for (unsigned int i = 0; i < telements.size(); i++){
+		unsigned int uvIndex = telements[i];
+		glm::vec3 uv = vertices[uvIndex - 1];
+		out_uv.push_back(uv);
+	}
 	/* Generate the vertex buffer object */
 	glGenBuffers(1, &vbo_mesh_vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_vertices);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &(vertices[0]), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, out_vertices.size() * sizeof(glm::vec3), &(out_vertices[0]), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	glGenBuffers(1, &vbo_mesh_textures);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_textures);
+	glBufferData(GL_ARRAY_BUFFER, out_uv.size() * sizeof(glm::vec3), &(out_uv[0]), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	
+
 	/* Store the normals in a buffer object */
-	glGenBuffers(1, &vbo_mesh_normals);
+	/*glGenBuffers(1, &vbo_mesh_normals);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_normals);
 	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &(normals[0]), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Generate a buffer for the indices
-	glGenBuffers(1, &ibo_mesh_elements);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_mesh_elements);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()* sizeof(GLushort), &(elements[0]), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glGenBuffers(1, &ibo_mesh_nelements);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_mesh_nelements);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, nelements.size()* sizeof(GLushort), &(nelements[0]), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0); */
+
+
+
+
+	
 
 }
 
@@ -110,12 +145,13 @@ Could improve efficiency by moving the vertex attribute pointer functions to the
 create object but this method is more general
 This code is almost untouched fomr the tutorial code except that I changed the
 number of elements per vertex from 4 to 3*/
-void object_ldr::drawObject()
+void object_ldr::drawObject(GLuint textureID8)
 {
 	int size;	// Used to get the byte size of the element (vertex index) array
 
 	// Describe our vertices array to OpenGL (it can't guess its format automatically)
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_vertices);
+	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		attribute_v_coord,  // attribute index
 		3,                  // number of elements per vertex, here (x,y,z)
@@ -124,51 +160,25 @@ void object_ldr::drawObject()
 		0,                  // no extra data between each position
 		0                   // offset of first element
 		);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_normals);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_textures);
+	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(
-		attribute_v_normal, // attribute
+		2,  // attribute index
 		3,                  // number of elements per vertex, here (x,y,z)
 		GL_FLOAT,           // the type of each element
 		GL_FALSE,           // take our values as-is
 		0,                  // no extra data between each position
 		0                   // offset of first element
 		);
+	
+	
+	glBindTexture(GL_TEXTURE_2D, textureID8);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glDrawArrays(GL_TRIANGLES, 0, out_vertices.size());
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_mesh_elements);
-	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-	glDrawElements(GL_TRIANGLES, size / sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
-}
-
-/* This is the smooth normals function given in the tutorial code */
-void object_ldr::smoothNormals()
-{
-	std::vector<GLuint> nb_seen;
-	normals.resize(vertices.size(), glm::vec3(0.0, 0.0, 0.0));
-	nb_seen.resize(vertices.size(), 0);
-	for (int i = 0; i < elements.size(); i += 3) {
-		GLushort ia = elements[i];
-		GLushort ib = elements[i + 1];
-		GLushort ic = elements[i + 2];
-		glm::vec3 normal = glm::normalize(glm::cross(
-			glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
-			glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
-
-		int v[3];  v[0] = ia;  v[1] = ib;  v[2] = ic;
-		for (int j = 0; j < 3; j++) {
-			GLushort cur_v = v[j];
-			nb_seen[cur_v]++;
-			if (nb_seen[cur_v] == 1) {
-				normals[cur_v] = normal;
-			}
-			else {
-				// average
-				normals[cur_v].x = normals[cur_v].x * (1.0 - 1.0 / nb_seen[cur_v]) + normal.x * 1.0 / nb_seen[cur_v];
-				normals[cur_v].y = normals[cur_v].y * (1.0 - 1.0 / nb_seen[cur_v]) + normal.y * 1.0 / nb_seen[cur_v];
-				normals[cur_v].z = normals[cur_v].z * (1.0 - 1.0 / nb_seen[cur_v]) + normal.z * 1.0 / nb_seen[cur_v];
-				normals[cur_v] = glm::normalize(normals[cur_v]);
-			}
-		}
-	}
-
+	glDisableVertexAttribArray(0);
+//	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }

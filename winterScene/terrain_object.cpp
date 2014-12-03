@@ -231,9 +231,9 @@ void terrain_object::createTerrain(GLuint xp, GLuint zp, GLfloat xs, GLfloat zs)
 		
 			//Texture coordinates
 			texCoords.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
-			texCoords.push_back(glm::vec3(2.0f, 0.0f, 1.0f));
-			texCoords.push_back(glm::vec3(0.0f, 2.0f, 1.0f));
-			texCoords.push_back(glm::vec3(2.0f, 2.0f, 1.0f));
+			texCoords.push_back(glm::vec3(4.0f, 0.0f, 1.0f));
+			texCoords.push_back(glm::vec3(0.0f, 4.0f, 1.0f));
+			texCoords.push_back(glm::vec3(4.0f, 4.0f, 1.0f));
 			zpos += zpos_step;
 		}
 		xpos += xpos_step;

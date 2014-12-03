@@ -30,17 +30,17 @@ GLuint program, program2;
 GLuint vao;
 //model
 glm::mat4 model;
-//
+object_ldr cabin;
 
 
 GLfloat  vx, vy, vz; //View variables
 GLfloat xm, zm; //Test variables
-GLfloat light_x, light_y, light_z; // Light pos
+GLfloat light_x, light_y, light_z,x,z; // Light pos
 GLfloat speed; //Animation speed
 
 /* Uniforms*/
 GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, tex_matrixID, terrainID; // Shader 1 uniforms
-GLuint textureID, textureID2, textureID3, textureID4, textureID5, textureID6, textureID7, texID; //Texture id's
+GLuint textureID, textureID2, textureID3, textureID4, textureID5, textureID6, textureID7, texID, textureID8; //Texture id's
 GLuint colourmodeID, pointSizeID, modelID2, projectionID2, colourmodeID2, viewID2; //Shader 2 uniforms
 GLuint modelID3, projectionID3, colourmodeID3, viewID3;
 
@@ -90,7 +90,9 @@ void init(GLWrapper *glw)
 	//Set up snow points
 	point_anim = new points(5000);
 	point_anim->create();
-	
+	cabin.load_obj("farm.obj");
+	//cabin.smoothNormals();
+	cabin.createObject();
 
 
 	
@@ -119,8 +121,9 @@ void init(GLWrapper *glw)
 		textureID5 = SOIL_load_OGL_texture("purplenebula_lf.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID6 = SOIL_load_OGL_texture("purplenebula_rt.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID7 = SOIL_load_OGL_texture("purplenebula_up.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		textureID8 = SOIL_load_OGL_texture("bark.png", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		/* check for an error during the load process */
-		if (textureID == 0 || texID == 0 || textureID3 == 0 || textureID4 == 0 || textureID5 == 0 || textureID6 == 0 || textureID7 == 0)
+		if (textureID == 0 || texID == 0 || textureID3 == 0 || textureID4 == 0 || textureID5 == 0 || textureID6 == 0 || textureID7 == 0 || textureID8 == 0)
 		{
 			printf("SOIL loading error: '%s'\n", SOIL_last_result());
 		}
@@ -142,6 +145,7 @@ void init(GLWrapper *glw)
 	tex_matrixID = glGetUniformLocation(program, "texMatrix");
 	normalmatrixID = glGetUniformLocation(program, "normalmatrix");
 	terrainID = glGetUniformLocation(program, "terrainmode");
+	lightposID = glGetUniformLocation(program, "lightpos");
 	//Shader 2 uniforms
 	modelID2 = glGetUniformLocation(program2, "model");
 	colourmodeID2 = glGetUniformLocation(program2, "colourmode");
@@ -220,16 +224,16 @@ void display()
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 0);
 	trees.trees(3, texID, modelID, colourmodeID);
-	
+
 	//Pond
 	glm::mat4 modelPond = glm::mat4(1.0f);
 	modelPond = glm::translate(modelPond, glm::vec3(3, (terrain.getHeight(3, -6) + 4.5), -6));
 	modelPond = glm::scale(modelPond, glm::vec3(8, 1, 5));
 	modelPond = glm::rotate(modelPond, 90.f, glm::vec3(1, 0, 0));
 	tex_transform = glm::mat4(1.0f);
-	tex_transform = glm::rotate(tex_transform, -tangle_x, glm::vec3(1, 0, 0)); 
-	tex_transform = glm::rotate(tex_transform, -tangle_y, glm::vec3(0, 1, 0)); 
-	tex_transform = glm::rotate(tex_transform, -tangle_z, glm::vec3(0, 0, 1)); 
+	tex_transform = glm::rotate(tex_transform, -tangle_x, glm::vec3(1, 0, 0));
+	tex_transform = glm::rotate(tex_transform, -tangle_y, glm::vec3(0, 1, 0));
+	tex_transform = glm::rotate(tex_transform, -tangle_z, glm::vec3(0, 0, 1));
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &modelPond[0][0]);
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
@@ -256,6 +260,8 @@ void display()
 	trees.drawBranch(4, 0, texID, modelID, colourmodeID2);
 
 	glm::mat4 cabinmodel = glm::mat4(1.0f);
+	cabinmodel = glm::translate(cabinmodel, glm::vec3(-7.6, terrain.getHeight(-7.6,4.7) - 2.0f,4.7));
+	cabinmodel = glm::scale(cabinmodel, glm::vec3(0.1, 0.1, 0.05));
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
 	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
@@ -263,7 +269,7 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &cabinmodel[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 0);
-	//cabin.drawObject();
+	cabin.drawObject(textureID8);
 	glUseProgram(0);
 
 	//Use shader 2
@@ -280,23 +286,25 @@ void display()
 	glUniformMatrix4fv(projectionID2, 1, GL_FALSE, &Projection2[0][0]);
 	point_anim->draw();
 	point_anim->animate();
-	
+
 	//Draw fire
 	for (int i = 0; i < firePoint->numpoints; i++)
 	{
 		firePoint->m.push(glm::mat4(1.0f));
-		firePoint->m.top() = glm::translate(firePoint->m.top(), glm::vec3(0, terrain.getHeight(0, 4.6),4.6));
-		firePoint->m.top() = glm::scale(firePoint->m.top(), glm::vec3(1 * 15, 1*25, 1*5));
+		firePoint->m.top() = glm::translate(firePoint->m.top(), glm::vec3(0, terrain.getHeight(0, 4.6), 4.6));
+		firePoint->m.top() = glm::scale(firePoint->m.top(), glm::vec3(1 * 15, 1 * 25, 1 * 5));
 		glUniformMatrix4fv(viewID2, 1, GL_FALSE, &View[0][0]);
 		glUniformMatrix4fv(projectionID2, 1, GL_FALSE, &Projection[0][0]);
 		glUniformMatrix4fv(modelID2, 1, GL_FALSE, &firePoint->m.top()[0][0]);
 		glUniform1f(pointSizeID, 4);
-		firePoint->draw(i,i-1);
+		firePoint->draw(i, i - 1);
 		firePoint->animate(i);
 		firePoint->m.pop();
 	}
-	
+
 	glUseProgram(0);
+
+
 
 	//Pond animations
 	tangle_x += speed;
@@ -392,7 +400,12 @@ static void keyCallback(GLFWwindow* window, int key, int s, int action, int mods
 	if (key == '2') vx -= 1.0f;
 	if (key == '3') vy += 1.0f;
 	if (key == '4') vy -= 1.0f;
-	
+	if (key == 'A') x -= 0.1f;
+	if (key == 'Z') x += 0.1f;
+	if (key == 'S') z -= 0.1f;
+	if (key == 'X') z += 0.1f;
+	std::cout << "X " << x << std::endl;
+	std::cout << "Z " << z << std::endl;
 
 
 }

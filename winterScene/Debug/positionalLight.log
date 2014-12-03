@@ -1,13 +1,14 @@
-﻿Build started 01/12/2014 19:55:41.
+﻿Build started 03/12/2014 11:25:14.
      1>Project "C:\Users\Kari\Documents\Graphics2\winterScene\positionalLight.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt winterScene.cpp
          winterScene.cpp
-     1>winterScene.cpp(132): warning C4101: 'e' : unreferenced local variable
-     1>winterScene.cpp(285): warning C4018: '<' : signed/unsigned mismatch
-     1>winterScene.cpp(288): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
-     1>winterScene.cpp(333): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>winterScene.cpp(334): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>winterScene.cpp(135): warning C4101: 'e' : unreferenced local variable
+     1>winterScene.cpp(263): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
+     1>winterScene.cpp(291): warning C4018: '<' : signed/unsigned mismatch
+     1>winterScene.cpp(294): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
+     1>winterScene.cpp(341): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>winterScene.cpp(342): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
          GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
        Link:
@@ -19,28 +20,9 @@
          Debug\winterScene.obj
          Debug\terrain_object.obj
          Debug\wrapper_glfw.obj
-     1>glfw3.lib(context.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(gamma.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(init.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(input.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(monitor.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(window.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_gamma.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_init.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_joystick.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_monitor.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_time.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(win32_window.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glfw3.lib(wgl_context.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glloadD.lib(gl_load.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>glloadD.lib(gl_load_cpp.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>SOIL.lib(image_DXT.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>SOIL.lib(image_helper.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>SOIL.lib(SOIL.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
-     1>SOIL.lib(stb_image_aug.obj) : warning LNK4204: 'C:\Users\Kari\Documents\Graphics2\winterScene\Debug\vc120.pdb' is missing debugging information for referencing module; linking object as if no debug info
          positionalLight.vcxproj -> C:\Users\Kari\Documents\Graphics2\winterScene\Debug\winterScene.exe
      1>Done Building Project "C:\Users\Kari\Documents\Graphics2\winterScene\positionalLight.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.09
+Time Elapsed 00:00:03.00
