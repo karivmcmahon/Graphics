@@ -90,7 +90,7 @@ void init(GLWrapper *glw)
 	//Set up snow points
 	point_anim = new points(5000);
 	point_anim->create();
-	cabin.load_obj("farm.obj");
+	cabin.load_obj("farm2.obj");
 	//cabin.smoothNormals();
 	cabin.createObject();
 
@@ -188,7 +188,7 @@ void display()
 	glm::mat3 normalmatrix = glm::transpose(glm::inverse(glm::mat3(View * model)));
 	//Tex transform marix
 	glm::mat4 tex_transform = glm::mat4(1.0f);
-	
+
 	//Skybox creation
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
@@ -198,7 +198,7 @@ void display()
 	glDepthMask(0);
 	skybox.renderSkybox(textureID3, textureID4, textureID5, textureID6, textureID7, textureID);
 	glDepthMask(1);
-
+	
 	//Terrain
 	tex_transform = glm::mat4(1.0f);
 	glm::mat4 model2 = glm::mat4(1.0f);
@@ -211,7 +211,7 @@ void display()
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 1);
 	terrain.drawObject(0, textureID);
-
+	
 	//Tree 
 	tex_transform = glm::mat4(1.0f);
 	trees.lsystem_transform.push(glm::mat4(1.0f));
@@ -260,7 +260,8 @@ void display()
 	trees.drawBranch(4, 0, texID, modelID, colourmodeID2);
 
 	glm::mat4 cabinmodel = glm::mat4(1.0f);
-	cabinmodel = glm::translate(cabinmodel, glm::vec3(-7.6, terrain.getHeight(-7.6,4.7) - 2.0f,4.7));
+	cabinmodel = glm::translate(cabinmodel, glm::vec3(-7.6, terrain.getHeight(-7.6, 4.7) - 2.0f, 4.7));
+	cabinmodel = glm::rotate(cabinmodel, -20.f,glm::vec3(0,1,0));
 	cabinmodel = glm::scale(cabinmodel, glm::vec3(0.1, 0.1, 0.05));
 	glUniformMatrix4fv(viewID, 1, GL_FALSE, &View[0][0]);
 	glUniformMatrix4fv(projectionID, 1, GL_FALSE, &Projection[0][0]);
@@ -270,9 +271,9 @@ void display()
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 0);
 	cabin.drawObject(textureID8);
+	
 	glUseProgram(0);
 
-	//Use shader 2
 	glUseProgram(program2);
 
 	//Snow drawing
@@ -303,6 +304,8 @@ void display()
 	}
 
 	glUseProgram(0);
+
+	
 
 
 

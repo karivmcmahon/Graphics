@@ -25,6 +25,7 @@ public:
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> out_vertices;
 	std::vector<glm::vec3> out_uv;
+	std::vector<glm::vec3> out_normals;
 	std::vector<glm::vec3> normals;
 	std::vector<glm::vec3> texture;
 	std::vector<GLushort> velements;

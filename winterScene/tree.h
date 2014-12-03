@@ -31,7 +31,7 @@ public:
 	GLuint cylinderStripBufferObject, cylinderStripNormalObject, cylinderStripColourObject, cylinderStripTextureObject;
 	GLuint cylinderTopBufferObject, cylinderTopNormalObject, cylinderTopColourObject, cylinderTopTextureObject;
 	GLuint cylinderBottomBufferObject, cylinderBottomNormalObject, cylinderBottomColourObject, cylinderBottomTextureObject;
-	std::vector<GLfloat> texCoords, stripTexCoords;
+	std::vector<glm::vec3> texCoords, stripTexCoords;
 
 
 };

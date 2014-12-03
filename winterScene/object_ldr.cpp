@@ -69,22 +69,22 @@ void object_ldr::load_obj(const char* filename) {
 			fscanf(file, "%f %f\n", &uv.x, &uv.y);
 			texture.push_back(glm::vec3(uv,0.0));
 		}
-	/**	if (line.substr(0, 2) == "vn")
+		else if (strcmp(lineHeader, "vn") == 0)
 		{
-			istringstream s(line.substr(2));
-			glm::vec3 vn; s >> vn.x; s >> vn.y; s >> vn.z;
-			normals.push_back(vn);
-		} **/
+			glm::vec3 vertexnormal;
+			fscanf(file, "%f %f %f\n", &vertexnormal.x, &vertexnormal.y, &vertexnormal.z);
+			normals.push_back(vertexnormal);
+		} 
 	   else if (strcmp(lineHeader, "f") == 0)
 		{
-			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-			int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
-			
-			;
-			velements.push_back(vertexIndex[0]); velements.push_back(vertexIndex[1]); velements.push_back(vertexIndex[2]); //velements.push_back(dv);
-			telements.push_back(uvIndex[0]); telements.push_back(uvIndex[1]); telements.push_back(uvIndex[2]); //telements.push_back(dt);
-		//	nelements.push_back(an); nelements.push_back(bn); nelements.push_back(cn);
-			std::cout << uvIndex[0] << uvIndex[1] << uvIndex[2] << endl;
+			GLuint vertexIndex[3], uvIndex[3], normalIndex[3];
+			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1],  &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+			if (matches != 9){
+				printf("File can't be read by our simple parser : ( Try exporting with other options\n");
+			}
+			velements.push_back(vertexIndex[0]); velements.push_back(vertexIndex[1]); velements.push_back(vertexIndex[2]); 
+			telements.push_back(uvIndex[0]); telements.push_back(uvIndex[1]); telements.push_back(uvIndex[2]); 
+			nelements.push_back(normalIndex[0]); nelements.push_back(normalIndex[1]); nelements.push_back(normalIndex[2]);
 	   }
 		else if (line[0] == '#') { /* ignoring this line */ }
 		else { /* ignoring this line */ }
@@ -109,6 +109,12 @@ void object_ldr::createObject()
 		out_uv.push_back(uv);
 	}
 
+	for (unsigned int i = 0; i < nelements.size(); i++){
+		unsigned int nIndex = nelements[i];
+		glm::vec3 n = normals[nIndex - 1];
+		out_normals.push_back(n);
+	} 
+
 	
 	/* Generate the vertex buffer object */
 	glGenBuffers(1, &vbo_mesh_vertices);
@@ -121,24 +127,10 @@ void object_ldr::createObject()
 	glBufferData(GL_ARRAY_BUFFER, out_uv.size() * sizeof(glm::vec3), &(out_uv[0]), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	
-
-	/* Store the normals in a buffer object */
-	/*glGenBuffers(1, &vbo_mesh_normals);
+	glGenBuffers(1, &vbo_mesh_normals);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_normals);
-	glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &(normals[0]), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// Generate a buffer for the indices
-	glGenBuffers(1, &ibo_mesh_nelements);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo_mesh_nelements);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, nelements.size()* sizeof(GLushort), &(nelements[0]), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0); */
-
-
-
-
-	
+	glBufferData(GL_ARRAY_BUFFER, out_normals.size() * sizeof(glm::vec3), &(out_normals[0]), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
 }
 
@@ -162,6 +154,18 @@ void object_ldr::drawObject(GLuint textureID8)
 		0,                  // no extra data between each position
 		0                   // offset of first element
 		);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_normals);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(
+		1,  // attribute index
+		3,                  // number of elements per vertex, here (x,y,z)
+		GL_FLOAT,           // the type of each element
+		GL_FALSE,           // take our values as-is
+		0,                  // no extra data between each position
+		0                   // offset of first element
+		); 
+
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_textures);
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(
@@ -176,12 +180,9 @@ void object_ldr::drawObject(GLuint textureID8)
 	
 	glBindTexture(GL_TEXTURE_2D, textureID8);
 	
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	
 	glDrawArrays(GL_TRIANGLES, 0, out_vertices.size());
 
 	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
-	//glDisableVertexAttribArray(1);
 }
