@@ -67,7 +67,7 @@ void object_ldr::load_obj(const char* filename) {
 		else if (strcmp(lineHeader, "vt") == 0){
 			glm::vec2 uv;
 			fscanf(file, "%f %f\n", &uv.x, &uv.y);
-			texture.push_back(glm::vec3(uv,1.0));
+			texture.push_back(glm::vec3(uv,0.0));
 		}
 	/**	if (line.substr(0, 2) == "vn")
 		{
@@ -82,10 +82,10 @@ void object_ldr::load_obj(const char* filename) {
 			
 			;
 			velements.push_back(vertexIndex[0]); velements.push_back(vertexIndex[1]); velements.push_back(vertexIndex[2]); //velements.push_back(dv);
-			//std::cout << bv << endl;
 			telements.push_back(uvIndex[0]); telements.push_back(uvIndex[1]); telements.push_back(uvIndex[2]); //telements.push_back(dt);
 		//	nelements.push_back(an); nelements.push_back(bn); nelements.push_back(cn);
-		}
+			std::cout << uvIndex[0] << uvIndex[1] << uvIndex[2] << endl;
+	   }
 		else if (line[0] == '#') { /* ignoring this line */ }
 		else { /* ignoring this line */ }
 	}
@@ -105,9 +105,11 @@ void object_ldr::createObject()
 
 	for (unsigned int i = 0; i < telements.size(); i++){
 		unsigned int uvIndex = telements[i];
-		glm::vec3 uv = vertices[uvIndex - 1];
+		glm::vec3 uv = texture[uvIndex - 1];
 		out_uv.push_back(uv);
 	}
+
+	
 	/* Generate the vertex buffer object */
 	glGenBuffers(1, &vbo_mesh_vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_mesh_vertices);
@@ -174,11 +176,12 @@ void object_ldr::drawObject(GLuint textureID8)
 	
 	glBindTexture(GL_TEXTURE_2D, textureID8);
 	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	
 	glDrawArrays(GL_TRIANGLES, 0, out_vertices.size());
 
 	glDisableVertexAttribArray(0);
-//	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+	//glDisableVertexAttribArray(1);
 }
