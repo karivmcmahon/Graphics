@@ -56,8 +56,7 @@ void tree::createTree()
 		cylinderTopNormals.push_back(glm::vec3(0, 0, 1));
 		texCoords.push_back(glm::vec3((float(x) + 1.0) * 0.5, (float(y) + 1.0) * 0.5, 0.0));
 	}
-	tex
-		Coords.push_back(glm::vec3((1.0 + 1.0) * 0.5, (0.0 + 1.0) * 0.5, 0.0));
+	texCoords.push_back(glm::vec3((1.0 + 1.0) * 0.5, (0.0 + 1.0) * 0.5, 0.0));
 	cylinderBottomPositions.push_back(glm::vec3(0, 0, 0));    // Center vertex for top of cylinder.
 	texCoords.push_back(glm::vec3(0.5, 0.5, 0.0));
 	for (int i = 0; i <= 32; i++) {  // Vertices around the top.
