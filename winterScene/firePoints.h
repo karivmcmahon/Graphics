@@ -1,6 +1,6 @@
 /**
 Header for fire points based on Iain Martin's example point sprites
-November 2014
+Modified by Kari McMahon November 2014
 **/
 #pragma once
 #include <glm/glm.hpp>

@@ -3,6 +3,7 @@
 Example class to show the start of an .obj mesh object file
 loader
 Iain Martin November 2014
+Modified by Kari McMahon November 2014
 */
 
 #pragma once

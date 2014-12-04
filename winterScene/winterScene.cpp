@@ -48,10 +48,12 @@ points *point_anim; //instance of point animation for snow
 firePoints *firePoint; //instance of fire point for fire animation
 
 
-GLfloat tangle_x, tangle_y, tangle_z;
+GLfloat tangle_x, tangle_y, tangle_z; //Pond moving variables
+//Pond related variables
 std::vector<glm::vec3> pondTopPositions, pondTopNormals;
 std::vector<GLfloat> texCoords;
 GLuint pondObject, pondNormalObject, pondTextureObject;
+
 GLfloat aspect_ratio;
 terrain_object terrain;
 tree trees;
@@ -90,8 +92,8 @@ void init(GLWrapper *glw)
 	//Set up snow points
 	point_anim = new points(5000);
 	point_anim->create();
+	//Create cabin
 	cabin.load_obj("farm2.obj");
-	//cabin.smoothNormals();
 	cabin.createObject();
 
 

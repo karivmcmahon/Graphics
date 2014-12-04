@@ -12,6 +12,7 @@ points::points(GLuint number)
 
 }
 
+//Destructor
 points::~points()
 {
 	delete[] colours;
@@ -74,12 +75,12 @@ void points::animate()
 
 		if (vertices[i].y <= -0.6)
 		{
-			vertices[i] += glm::vec3(0.0f, 1.0f, 0.0f);
+			vertices[i] += glm::vec3(0.0f, 1.0f, 0.0f); //If it reaches this point change vertices position
 		}
 		else
 		{
 
-			vertices[i] -= velocity[i] * 4.f;
+			vertices[i] -= velocity[i] * 4.f; //Move downwards like snow falling
 		}
 
 	}

@@ -1,6 +1,7 @@
 /**
 Class that draws the fire particles
 Based on Iain Martins point sprite example and this tutorial http://talkera.org/opengl/fire-in-opengl-particle-engine/
+Modified by Kari McMahon Nov 2014
 **/
 #include "firePoints.h"
 #include "glm/gtc/random.hpp"
@@ -17,7 +18,7 @@ firePoints::firePoints(GLuint number)
 	pi = 3.1415926535898;
 }
 
-
+//Destructor
 firePoints::~firePoints()
 {
 	delete[] colours;
@@ -38,11 +39,10 @@ void  firePoints::create()
 	for (int i = 0; i < numpoints; i++)
 	{
 		vertices[i] = glm::vec3(glm::ballRand(glm::linearRand(0.0,0.03)));
-		colours[i] = glm::vec3(1.0, glm::linearRand(0.3, 0.9), 0.0);
+		colours[i] = glm::vec3(1.0, glm::linearRand(0.3, 0.9), 0.0); //Create orange like colours
 	}
 
-	/* Create the vertex buffer object */
-	/* and the vertex buffer positions */
+	
 	glGenBuffers(1, &vertex_buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
 	glBufferData(GL_ARRAY_BUFFER, numpoints * sizeof(glm::vec3), vertices, GL_DYNAMIC_DRAW);
@@ -57,7 +57,7 @@ void  firePoints::create()
 Draws the fire points 
 Parameters :
 	int i - current point
-	int prev - previous poin
+	int prev - previous point
 **/
 void firePoints::draw(int i, int prev)
 {
@@ -80,16 +80,15 @@ void firePoints::draw(int i, int prev)
 }
 
 /**
-Animate fire points
+Animate fire points to create a bonfire look
 Parameters :
 	int i - current point
 **/
 void firePoints::animate(int i)
 {
 	vertices[i].y += 0.015f * i / 300;
-	if (vertices[i].y > 0.04)
+	if (vertices[i].y > 0.04) //if y reaches this point then create new rand pos
 	{
-		//vertices[i].y = 0;
 		vertices[i] = glm::vec3(glm::ballRand(glm::linearRand(0.0,0.03)));
 	}
 	// Update the vertex buffer data

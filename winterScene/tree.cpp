@@ -34,6 +34,7 @@ void tree::createTree()
 		stripTexCoords.push_back(glm::vec3(tc, 0, 0));
 		cylinderStripPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 2.5f));
 		cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
+		
 		stripTexCoords.push_back(glm::vec3(tc, 1, 0));
 		cylinderStripPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 0.0f));
 		cylinderStripNormals.push_back(glm::vec3(float(x), float(y), 0));
@@ -44,9 +45,9 @@ void tree::createTree()
 	}
 	stripTexCoords.push_back(glm::vec3(0, 0, 0));
 	stripTexCoords.push_back(glm::vec3(0, 1, 0));
+	
 	cylinderTopPositions.push_back(glm::vec3(0, 0, 2.5));    // Center vertex for top of cylinder.
 	texCoords.push_back(glm::vec3(0.5, 0.5, 0.0));
-
 	for (int i = 0; i <= 32; i++) {  // Vertices around the top.
 		double angle = (2 * pi / 32) * i;
 		double x = cos(angle);
@@ -54,12 +55,9 @@ void tree::createTree()
 		cylinderTopPositions.push_back(glm::vec3(float(x) * 0.5, float(y) * 0.5, 2.5f));
 		cylinderTopNormals.push_back(glm::vec3(0, 0, 1));
 		texCoords.push_back(glm::vec3((float(x) + 1.0) * 0.5, (float(y) + 1.0) * 0.5, 0.0));
-	
-
-
-
 	}
-	texCoords.push_back(glm::vec3((1.0 + 1.0) * 0.5, (0.0 + 1.0) * 0.5, 0.0));
+	tex
+		Coords.push_back(glm::vec3((1.0 + 1.0) * 0.5, (0.0 + 1.0) * 0.5, 0.0));
 	cylinderBottomPositions.push_back(glm::vec3(0, 0, 0));    // Center vertex for top of cylinder.
 	texCoords.push_back(glm::vec3(0.5, 0.5, 0.0));
 	for (int i = 0; i <= 32; i++) {  // Vertices around the top.
