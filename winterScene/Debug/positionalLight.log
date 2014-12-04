@@ -1,22 +1,16 @@
-﻿Build started 04/12/2014 19:22:50.
+﻿Build started 04/12/2014 22:05:58.
      1>Project "C:\Users\Kari\Documents\Graphics2\winterScene\positionalLight.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt tree.cpp winterScene.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt winterScene.cpp
          winterScene.cpp
-     1>winterScene.cpp(137): warning C4101: 'e' : unreferenced local variable
-     1>winterScene.cpp(265): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
-     1>winterScene.cpp(294): warning C4018: '<' : signed/unsigned mismatch
-     1>winterScene.cpp(297): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
-     1>winterScene.cpp(346): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>winterScene.cpp(347): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>winterScene.cpp(138): warning C4101: 'e' : unreferenced local variable
+     1>winterScene.cpp(272): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
+     1>winterScene.cpp(302): warning C4018: '<' : signed/unsigned mismatch
+     1>winterScene.cpp(305): warning C4244: 'argument' : conversion from 'double' to 'GLuint', possible loss of data
+     1>winterScene.cpp(356): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>winterScene.cpp(357): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
          GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
          GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-         tree.cpp
-     1>tree.cpp(14): warning C4305: '=' : truncation from 'double' to 'GLfloat'
-     1>tree.cpp(16): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include\string.h(112) : see declaration of 'strcpy'
-         GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Kari\Documents\Graphics2\winterScene\Debug\winterScene.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Kari\Documents\Graphics2\winterScene\Debug\winterScene.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Kari\Documents\Graphics2\winterScene\Debug\winterScene.lib" /MACHINE:X86 Debug\firePoints.obj
          Debug\object_ldr.obj
@@ -31,4 +25,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:07.11
+Time Elapsed 00:00:02.79

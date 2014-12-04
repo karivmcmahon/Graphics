@@ -39,10 +39,11 @@ GLfloat light_x, light_y, light_z,x,z; // Light pos
 GLfloat speed; //Animation speed
 
 /* Uniforms*/
-GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, tex_matrixID, terrainID; // Shader 1 uniforms
+GLuint modelID, viewID, projectionID, lightposID, normalmatrixID, tex_matrixID, terrainID, fogModeID; // Shader 1 uniforms
 GLuint textureID, textureID2, textureID3, textureID4, textureID5, textureID6, textureID7, texID, textureID8; //Texture id's
 GLuint colourmodeID, pointSizeID, modelID2, projectionID2, colourmodeID2, viewID2; //Shader 2 uniforms
 GLuint modelID3, projectionID3, colourmodeID3, viewID3;
+GLuint fogmode;
 
 points *point_anim; //instance of point animation for snow
 firePoints *firePoint; //instance of fire point for fire animation
@@ -115,7 +116,7 @@ void init(GLWrapper *glw)
 	try
 	{
 		//Texture loading for scene
-		texID = SOIL_load_OGL_texture("bark2.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
+		texID = SOIL_load_OGL_texture("bark11.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID = SOIL_load_OGL_texture("snow4.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID2 = SOIL_load_OGL_texture("water3.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
 		textureID3 = SOIL_load_OGL_texture("purplenebula_ft.tga", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT);
@@ -148,6 +149,7 @@ void init(GLWrapper *glw)
 	normalmatrixID = glGetUniformLocation(program, "normalmatrix");
 	terrainID = glGetUniformLocation(program, "terrainmode");
 	lightposID = glGetUniformLocation(program, "lightpos");
+	fogModeID = glGetUniformLocation(program, "fogmode");
 	//Shader 2 uniforms
 	modelID2 = glGetUniformLocation(program2, "model");
 	colourmodeID2 = glGetUniformLocation(program2, "colourmode");
@@ -197,6 +199,7 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 1);
+	glUniform1ui(fogModeID, fogmode);
 	glDepthMask(0);
 	skybox.renderSkybox(textureID3, textureID4, textureID5, textureID6, textureID7, textureID);
 	glDepthMask(1);
@@ -212,6 +215,7 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &model2[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 1);
+	glUniform1ui(fogModeID, fogmode);
 	terrain.drawObject(0, textureID);
 	
 	//Tree 
@@ -225,6 +229,7 @@ void display()
 	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 0);
+	glUniform1ui(fogModeID, fogmode);
 	trees.trees(3, texID, modelID, colourmodeID);
 
 	//Pond
@@ -243,6 +248,7 @@ void display()
 	glUniform1ui(terrainID, 0);
 	glUniformMatrix3fv(normalmatrixID, 1, GL_FALSE, &normalmatrix[0][0]);
 	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
+	glUniform1ui(fogModeID, fogmode);
 	drawPond();
 
 	//Fire logs
@@ -256,6 +262,7 @@ void display()
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform4fv(lightposID, 1, glm::value_ptr(lightpos));
 	glUniform1ui(terrainID, 0);
+	glUniform1ui(fogModeID, fogmode);
 	trees.drawBranch(1, 0, texID, modelID, colourmodeID2);
 	trees.drawBranch(2, 0, texID, modelID, colourmodeID2);
 	trees.drawBranch(3, 0, texID, modelID, colourmodeID2);
@@ -272,6 +279,7 @@ void display()
 	glUniformMatrix4fv(modelID, 1, GL_FALSE, &cabinmodel[0][0]);
 	glUniformMatrix4fv(tex_matrixID, 1, GL_FALSE, &tex_transform[0][0]);
 	glUniform1ui(terrainID, 0);
+	glUniform1ui(fogModeID, fogmode);
 	cabin.drawObject(textureID8);
 	
 	glUseProgram(0);
@@ -326,6 +334,8 @@ void consoleOutput()
 	std::cout << "Press 2 to move camera up " << std::endl;
 	std::cout << "Press 3 to move camera right " << std::endl;
 	std::cout << "Press 4 to move camera left " << std::endl;
+	std::cout << "Press A to turn fog on" << std::endl;
+	std::cout << "Press S to turn fog off" << std::endl;
 }
 /**
 Sets up pond buffers
@@ -405,13 +415,8 @@ static void keyCallback(GLFWwindow* window, int key, int s, int action, int mods
 	if (key == '2') vx -= 1.0f;
 	if (key == '3') vy += 1.0f;
 	if (key == '4') vy -= 1.0f;
-	if (key == 'A') x -= 0.1f;
-	if (key == 'Z') x += 0.1f;
-	if (key == 'S') z -= 0.1f;
-	if (key == 'X') z += 0.1f;
-	std::cout << "X " << x << std::endl;
-	std::cout << "Z " << z << std::endl;
-
+	if (key == 'A') fogmode = 1;
+	if (key == 'S') fogmode = 0;
 
 }
 

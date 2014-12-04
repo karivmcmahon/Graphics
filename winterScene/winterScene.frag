@@ -10,11 +10,14 @@ in float fdistance;
 uniform vec4 lightpos;
 uniform mat3 normalmatrix;
 uniform sampler2D tex1;
-uniform uint colourmode, emitmode, terrainmode;
+uniform uint colourmode,  terrainmode, fogmode;
 
 vec3 specular_albedo = vec3(1.0, 0.8, 0.6);
 int  shininess = 8;
-
+// Fog parameters, could make them uniforms and pass them into the shader
+float fog_maxdist = 20.0;
+float fog_mindist = 0.1;
+vec4  fog_colour = vec4(0.6, 0.6, 0.6, 1.0);
 out vec4 outputColor;
 
 void main()
@@ -52,15 +55,35 @@ void main()
 	float costheta = dot(N, L); //Used for hemispherical lighting from opengl red book
 	float a = costheta * 0.5 + 0.5;
 	
+	float dist = length(positionMV.xyz);
+	float fog_factor = (fog_maxdist-dist) / (fog_maxdist - fog_mindist);
+	fog_factor = clamp(fog_factor, 0.0, 1.0);
+	
 	if(terrainmode == 1)
 	{
 		vec3 Color = mix(texcolour.xyz, vec3(0.7,0.7,0.7), a); //Mix ground colour with sky colour - Light grey as black to overwhelming - From opengl red book
-		outputColor = vec4((Color + ambient  ), 1.0) * texcolour;
+		if( fogmode == 1)
+		{
+			vec4 shadedColor = vec4((Color + ambient  ), 1.0) * texcolour;
+			outputColor = mix(fog_colour, shadedColor, fog_factor);
+		}
+		else
+		{
+			outputColor = vec4((Color + ambient  ), 1.0) * texcolour;
+		}
 	}
 	else
 	{
 		//Regular lighting for objects
 		ambient = diffuse_albedo.xyz * 0.8;
-		outputColor = vec4((ambient + diffuse + specular ), 1.0) * texcolour;
+		if(fogmode == 1)
+		{
+		vec4 shadedColor = vec4((ambient + diffuse + specular ), 1.0) * texcolour;
+		outputColor = mix(fog_colour, shadedColor, fog_factor);
+		}
+		else
+		{
+			outputColor = vec4((ambient + diffuse + specular ), 1.0) * texcolour;
+		}
 	}
 }
